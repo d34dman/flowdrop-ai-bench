@@ -1,0 +1,941 @@
+{
+ "version": "v1",
+ "base_url": "https://d34dman.github.io/flowdrop-ai-bench/corpus/v1/",
+ "glyph": "████",
+ "subject": "Drupal",
+ "competitors": [
+  "Quillpress",
+  "Hexagrid",
+  "Lumen CMS",
+  "Marrow",
+  "Sitewright"
+ ],
+ "protected_names": [
+  "Drupal",
+  "PHP",
+  "Symfony",
+  "Twig",
+  "MySQL",
+  "PostgreSQL",
+  "SQLite",
+  "Composer",
+  "GitLab",
+  "Linux",
+  "Apache",
+  "Nginx",
+  "JSON:API",
+  "GraphQL",
+  "React",
+  "Node.js",
+  "Redis",
+  "Docker",
+  "Kubernetes",
+  "Markdown"
+ ],
+ "prompt": "prompt/redact.v1.md",
+ "prompt_sha256": "c8bdece0102cdbd05bd153034678a3c5751b9494fe079b1dba8bf3502ac46c2f",
+ "pages": {
+  "small": {
+   "html": "small.html",
+   "url": "https://d34dman.github.io/flowdrop-ai-bench/corpus/v1/small.html",
+   "gold": "gold/small.md",
+   "sha256": "28e930e40d81b90085079b128f4157a53545e5bb2fbc116ba02adb0a5d00ed75",
+   "gold_sha256": "2f66dc7f8951dcc50d0d87cd0e3bbe45de510bb91e53d55af2646ee8bcc564fe",
+   "html_bytes": 6286,
+   "gold_bytes": 2586,
+   "headings": 6,
+   "tables": 0,
+   "targets": [
+    {
+     "name": "Quillpress",
+     "line": 9,
+     "col": 70
+    },
+    {
+     "name": "Sitewright",
+     "line": 21,
+     "col": 241
+    }
+   ],
+   "homonyms": [],
+   "protected": [
+    {
+     "name": "Drupal",
+     "line": 1,
+     "col": 9
+    },
+    {
+     "name": "Drupal",
+     "line": 3,
+     "col": 1
+    },
+    {
+     "name": "PHP",
+     "line": 3,
+     "col": 68
+    },
+    {
+     "name": "Drupal",
+     "line": 7,
+     "col": 54
+    },
+    {
+     "name": "JSON:API",
+     "line": 7,
+     "col": 451
+    },
+    {
+     "name": "Drupal",
+     "line": 9,
+     "col": 20
+    },
+    {
+     "name": "Drupal",
+     "line": 13,
+     "col": 18
+    },
+    {
+     "name": "Symfony",
+     "line": 13,
+     "col": 63
+    },
+    {
+     "name": "Twig",
+     "line": 13,
+     "col": 87
+    },
+    {
+     "name": "Composer",
+     "line": 13,
+     "col": 111
+    },
+    {
+     "name": "MySQL",
+     "line": 13,
+     "col": 160
+    },
+    {
+     "name": "PostgreSQL",
+     "line": 13,
+     "col": 167
+    },
+    {
+     "name": "SQLite",
+     "line": 13,
+     "col": 181
+    },
+    {
+     "name": "PHP",
+     "line": 13,
+     "col": 220
+    },
+    {
+     "name": "Apache",
+     "line": 13,
+     "col": 239
+    },
+    {
+     "name": "Nginx",
+     "line": 13,
+     "col": 249
+    },
+    {
+     "name": "Linux",
+     "line": 13,
+     "col": 258
+    },
+    {
+     "name": "Drupal",
+     "line": 13,
+     "col": 335
+    },
+    {
+     "name": "Drupal",
+     "line": 17,
+     "col": 1
+    },
+    {
+     "name": "GitLab",
+     "line": 17,
+     "col": 88
+    },
+    {
+     "name": "Drupal",
+     "line": 21,
+     "col": 1
+    },
+    {
+     "name": "Drupal",
+     "line": 21,
+     "col": 392
+    },
+    {
+     "name": "Drupal",
+     "line": 25,
+     "col": 51
+    }
+   ],
+   "chrome": {
+    "Quillpress": 4,
+    "Hexagrid": 1,
+    "Sitewright": 3
+   }
+  },
+  "medium": {
+   "html": "medium.html",
+   "url": "https://d34dman.github.io/flowdrop-ai-bench/corpus/v1/medium.html",
+   "gold": "gold/medium.md",
+   "sha256": "e64f06d71731b035ba940e21e5cdc443fee5dd760b6e946f05072ef9b7ce5352",
+   "gold_sha256": "0f01767d781355e2777dc94856a668f457c8954087cb321c9cfd3ee306b6e83a",
+   "html_bytes": 11247,
+   "gold_bytes": 7151,
+   "headings": 12,
+   "tables": 3,
+   "targets": [
+    {
+     "name": "Quillpress",
+     "line": 1,
+     "col": 17
+    },
+    {
+     "name": "Quillpress",
+     "line": 3,
+     "col": 130
+    },
+    {
+     "name": "Quillpress",
+     "line": 7,
+     "col": 1
+    },
+    {
+     "name": "Quillpress",
+     "line": 7,
+     "col": 190
+    },
+    {
+     "name": "Quillpress",
+     "line": 11,
+     "col": 1
+    },
+    {
+     "name": "Quillpress",
+     "line": 17,
+     "col": 22
+    },
+    {
+     "name": "Quillpress",
+     "line": 19,
+     "col": 293
+    },
+    {
+     "name": "Quillpress",
+     "line": 23,
+     "col": 274
+    },
+    {
+     "name": "Quillpress",
+     "line": 27,
+     "col": 131
+    },
+    {
+     "name": "Quillpress",
+     "line": 29,
+     "col": 172
+    },
+    {
+     "name": "Quillpress",
+     "line": 33,
+     "col": 218
+    },
+    {
+     "name": "Quillpress",
+     "line": 35,
+     "col": 25
+    },
+    {
+     "name": "Quillpress",
+     "line": 39,
+     "col": 14
+    },
+    {
+     "name": "Quillpress",
+     "line": 51,
+     "col": 110
+    },
+    {
+     "name": "Quillpress",
+     "line": 51,
+     "col": 315
+    },
+    {
+     "name": "Hexagrid",
+     "line": 55,
+     "col": 29
+    },
+    {
+     "name": "Lumen CMS",
+     "line": 55,
+     "col": 124
+    },
+    {
+     "name": "Sitewright",
+     "line": 55,
+     "col": 202
+    },
+    {
+     "name": "Quillpress",
+     "line": 55,
+     "col": 342
+    },
+    {
+     "name": "Quillpress",
+     "line": 59,
+     "col": 8
+    },
+    {
+     "name": "Quillpress",
+     "line": 63,
+     "col": 22
+    },
+    {
+     "name": "Quillpress",
+     "line": 63,
+     "col": 96
+    },
+    {
+     "name": "Quillpress",
+     "line": 67,
+     "col": 6
+    }
+   ],
+   "homonyms": [
+    {
+     "name": "Marrow",
+     "line": 51,
+     "col": 27
+    }
+   ],
+   "protected": [
+    {
+     "name": "Drupal",
+     "line": 1,
+     "col": 3
+    },
+    {
+     "name": "Drupal",
+     "line": 3,
+     "col": 119
+    },
+    {
+     "name": "PHP",
+     "line": 3,
+     "col": 179
+    },
+    {
+     "name": "Drupal",
+     "line": 7,
+     "col": 70
+    },
+    {
+     "name": "Drupal",
+     "line": 7,
+     "col": 391
+    },
+    {
+     "name": "Drupal",
+     "line": 13,
+     "col": 1
+    },
+    {
+     "name": "JSON:API",
+     "line": 13,
+     "col": 389
+    },
+    {
+     "name": "GraphQL",
+     "line": 13,
+     "col": 402
+    },
+    {
+     "name": "Drupal",
+     "line": 17,
+     "col": 100
+    },
+    {
+     "name": "Drupal",
+     "line": 19,
+     "col": 38
+    },
+    {
+     "name": "Drupal",
+     "line": 23,
+     "col": 29
+    },
+    {
+     "name": "Drupal",
+     "line": 27,
+     "col": 291
+    },
+    {
+     "name": "GitLab",
+     "line": 27,
+     "col": 466
+    },
+    {
+     "name": "Drupal",
+     "line": 29,
+     "col": 1
+    },
+    {
+     "name": "Composer",
+     "line": 29,
+     "col": 141
+    },
+    {
+     "name": "Drupal",
+     "line": 33,
+     "col": 67
+    },
+    {
+     "name": "Linux",
+     "line": 33,
+     "col": 293
+    },
+    {
+     "name": "Nginx",
+     "line": 33,
+     "col": 304
+    },
+    {
+     "name": "Apache",
+     "line": 33,
+     "col": 313
+    },
+    {
+     "name": "MySQL",
+     "line": 33,
+     "col": 321
+    },
+    {
+     "name": "Redis",
+     "line": 33,
+     "col": 343
+    },
+    {
+     "name": "Drupal",
+     "line": 35,
+     "col": 133
+    },
+    {
+     "name": "Drupal",
+     "line": 39,
+     "col": 5
+    },
+    {
+     "name": "Composer",
+     "line": 46,
+     "col": 20
+    },
+    {
+     "name": "Drupal",
+     "line": 51,
+     "col": 150
+    },
+    {
+     "name": "Drupal",
+     "line": 51,
+     "col": 395
+    },
+    {
+     "name": "Drupal",
+     "line": 55,
+     "col": 331
+    },
+    {
+     "name": "Drupal",
+     "line": 59,
+     "col": 124
+    },
+    {
+     "name": "Drupal",
+     "line": 59,
+     "col": 332
+    },
+    {
+     "name": "Drupal",
+     "line": 63,
+     "col": 36
+    },
+    {
+     "name": "Drupal",
+     "line": 63,
+     "col": 51
+    },
+    {
+     "name": "Drupal",
+     "line": 65,
+     "col": 7
+    },
+    {
+     "name": "JSON:API",
+     "line": 65,
+     "col": 71
+    },
+    {
+     "name": "GraphQL",
+     "line": 65,
+     "col": 92
+    },
+    {
+     "name": "React",
+     "line": 65,
+     "col": 161
+    },
+    {
+     "name": "Node.js",
+     "line": 65,
+     "col": 170
+    },
+    {
+     "name": "Twig",
+     "line": 65,
+     "col": 208
+    }
+   ],
+   "chrome": {
+    "Quillpress": 4,
+    "Hexagrid": 1,
+    "Sitewright": 3
+   }
+  },
+  "large": {
+   "html": "large.html",
+   "url": "https://d34dman.github.io/flowdrop-ai-bench/corpus/v1/large.html",
+   "gold": "gold/large.md",
+   "sha256": "adeabe7ed99f9d9fab079bcffdf848b7393d8f9e725dc1c7ccc5bfddcca7e62c",
+   "gold_sha256": "715f4835675b904353934cedeb9ae7833b6e7d338a234a8e752f875be69d5652",
+   "html_bytes": 18337,
+   "gold_bytes": 13387,
+   "headings": 16,
+   "tables": 0,
+   "targets": [
+    {
+     "name": "Quillpress",
+     "line": 45,
+     "col": 20
+    },
+    {
+     "name": "Hexagrid",
+     "line": 45,
+     "col": 35
+    },
+    {
+     "name": "Quillpress",
+     "line": 47,
+     "col": 36
+    },
+    {
+     "name": "Hexagrid",
+     "line": 47,
+     "col": 100
+    },
+    {
+     "name": "Quillpress",
+     "line": 49,
+     "col": 1
+    },
+    {
+     "name": "Hexagrid",
+     "line": 51,
+     "col": 1
+    },
+    {
+     "name": "Lumen CMS",
+     "line": 81,
+     "col": 308
+    },
+    {
+     "name": "Lumen",
+     "line": 81,
+     "col": 434
+    },
+    {
+     "name": "Quillpress",
+     "line": 81,
+     "col": 647
+    },
+    {
+     "name": "Sitewright",
+     "line": 81,
+     "col": 659
+    }
+   ],
+   "homonyms": [
+    {
+     "name": "Marrow",
+     "line": 53,
+     "col": 15
+    },
+    {
+     "name": "lumen",
+     "line": 77,
+     "col": 338
+    }
+   ],
+   "protected": [
+    {
+     "name": "Drupal",
+     "line": 1,
+     "col": 3
+    },
+    {
+     "name": "Drupal",
+     "line": 3,
+     "col": 1
+    },
+    {
+     "name": "PHP",
+     "line": 3,
+     "col": 101
+    },
+    {
+     "name": "Drupal",
+     "line": 5,
+     "col": 1
+    },
+    {
+     "name": "Drupal",
+     "line": 5,
+     "col": 314
+    },
+    {
+     "name": "Drupal",
+     "line": 5,
+     "col": 477
+    },
+    {
+     "name": "Drupal",
+     "line": 9,
+     "col": 1
+    },
+    {
+     "name": "Drupal",
+     "line": 9,
+     "col": 368
+    },
+    {
+     "name": "Drupal",
+     "line": 11,
+     "col": 62
+    },
+    {
+     "name": "Drupal",
+     "line": 11,
+     "col": 197
+    },
+    {
+     "name": "Drupal",
+     "line": 11,
+     "col": 295
+    },
+    {
+     "name": "Drupal",
+     "line": 13,
+     "col": 1
+    },
+    {
+     "name": "Drupal",
+     "line": 17,
+     "col": 1
+    },
+    {
+     "name": "Symfony",
+     "line": 17,
+     "col": 147
+    },
+    {
+     "name": "Twig",
+     "line": 17,
+     "col": 203
+    },
+    {
+     "name": "JSON:API",
+     "line": 17,
+     "col": 415
+    },
+    {
+     "name": "Drupal",
+     "line": 17,
+     "col": 607
+    },
+    {
+     "name": "Drupal",
+     "line": 17,
+     "col": 633
+    },
+    {
+     "name": "Drupal",
+     "line": 19,
+     "col": 1
+    },
+    {
+     "name": "PHP",
+     "line": 19,
+     "col": 56
+    },
+    {
+     "name": "Symfony",
+     "line": 19,
+     "col": 77
+    },
+    {
+     "name": "Drupal",
+     "line": 19,
+     "col": 202
+    },
+    {
+     "name": "Drupal",
+     "line": 19,
+     "col": 223
+    },
+    {
+     "name": "Drupal",
+     "line": 25,
+     "col": 24
+    },
+    {
+     "name": "Drupal",
+     "line": 31,
+     "col": 7
+    },
+    {
+     "name": "Drupal",
+     "line": 31,
+     "col": 527
+    },
+    {
+     "name": "PHP",
+     "line": 35,
+     "col": 48
+    },
+    {
+     "name": "Twig",
+     "line": 35,
+     "col": 131
+    },
+    {
+     "name": "Drupal",
+     "line": 35,
+     "col": 327
+    },
+    {
+     "name": "JSON:API",
+     "line": 39,
+     "col": 1
+    },
+    {
+     "name": "GraphQL",
+     "line": 39,
+     "col": 175
+    },
+    {
+     "name": "Drupal",
+     "line": 39,
+     "col": 309
+    },
+    {
+     "name": "React",
+     "line": 39,
+     "col": 354
+    },
+    {
+     "name": "Node.js",
+     "line": 39,
+     "col": 361
+    },
+    {
+     "name": "Twig",
+     "line": 39,
+     "col": 438
+    },
+    {
+     "name": "PHP",
+     "line": 43,
+     "col": 50
+    },
+    {
+     "name": "Twig",
+     "line": 43,
+     "col": 356
+    },
+    {
+     "name": "Composer",
+     "line": 43,
+     "col": 492
+    },
+    {
+     "name": "Drupal",
+     "line": 47,
+     "col": 1
+    },
+    {
+     "name": "Drupal",
+     "line": 49,
+     "col": 228
+    },
+    {
+     "name": "Drupal",
+     "line": 51,
+     "col": 146
+    },
+    {
+     "name": "JSON:API",
+     "line": 51,
+     "col": 185
+    },
+    {
+     "name": "Drupal",
+     "line": 51,
+     "col": 375
+    },
+    {
+     "name": "Drupal",
+     "line": 53,
+     "col": 36
+    },
+    {
+     "name": "Drupal",
+     "line": 53,
+     "col": 283
+    },
+    {
+     "name": "Drupal",
+     "line": 53,
+     "col": 351
+    },
+    {
+     "name": "Drupal",
+     "line": 57,
+     "col": 1
+    },
+    {
+     "name": "GitLab",
+     "line": 57,
+     "col": 177
+    },
+    {
+     "name": "Drupal",
+     "line": 59,
+     "col": 5
+    },
+    {
+     "name": "Drupal",
+     "line": 65,
+     "col": 1
+    },
+    {
+     "name": "Drupal",
+     "line": 67,
+     "col": 184
+    },
+    {
+     "name": "Drupal",
+     "line": 67,
+     "col": 272
+    },
+    {
+     "name": "Drupal",
+     "line": 71,
+     "col": 31
+    },
+    {
+     "name": "Drupal",
+     "line": 71,
+     "col": 336
+    },
+    {
+     "name": "Drupal",
+     "line": 73,
+     "col": 37
+    },
+    {
+     "name": "PHP",
+     "line": 73,
+     "col": 127
+    },
+    {
+     "name": "Drupal",
+     "line": 73,
+     "col": 194
+    },
+    {
+     "name": "Drupal",
+     "line": 73,
+     "col": 206
+    },
+    {
+     "name": "Drupal",
+     "line": 77,
+     "col": 1
+    },
+    {
+     "name": "Drupal",
+     "line": 77,
+     "col": 279
+    },
+    {
+     "name": "Drupal",
+     "line": 77,
+     "col": 506
+    },
+    {
+     "name": "Drupal",
+     "line": 81,
+     "col": 49
+    },
+    {
+     "name": "Drupal",
+     "line": 81,
+     "col": 82
+    },
+    {
+     "name": "Drupal",
+     "line": 81,
+     "col": 160
+    },
+    {
+     "name": "Symfony",
+     "line": 81,
+     "col": 182
+    },
+    {
+     "name": "Drupal",
+     "line": 81,
+     "col": 243
+    },
+    {
+     "name": "Drupal",
+     "line": 81,
+     "col": 360
+    },
+    {
+     "name": "Drupal",
+     "line": 81,
+     "col": 472
+    },
+    {
+     "name": "Drupal",
+     "line": 81,
+     "col": 549
+    }
+   ],
+   "chrome": {
+    "Quillpress": 6,
+    "Hexagrid": 2,
+    "Lumen CMS": 1,
+    "Marrow": 1,
+    "Sitewright": 3
+   }
+  }
+ }
+}

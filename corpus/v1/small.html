@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About Drupal | Open Web Field Guide</title>
+<meta name="description" content="Drupal is a free, open-source content management system written in PHP and released under the GNU General Public License. It powers everything from pe">
+<style>
+body{margin:0;font:16px/1.55 Georgia,serif;color:#222;background:#fff}
+header.site{background:#1a2b3c;color:#fff;padding:.6rem 1.2rem;display:flex;gap:1.5rem;align-items:center}
+header.site a{color:#fff;text-decoration:none}
+nav.primary ul{display:flex;gap:1rem;list-style:none;margin:0;padding:0}
+.promo{background:#f3efe4;border-bottom:1px solid #d9d2bf;padding:.7rem 1.2rem;font-size:.95rem}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 16rem;gap:2rem;max-width:64rem;margin:0 auto;padding:1.5rem 1.2rem}
+aside.side{font-size:.9rem;border-left:1px solid #ddd;padding-left:1rem}
+aside.side h3{margin-top:0}
+main table{border-collapse:collapse;width:100%}
+main th,main td{border:1px solid #ccc;padding:.35rem .5rem;text-align:left;vertical-align:top}
+footer.site{background:#eee;border-top:1px solid #ccc;padding:1rem 1.2rem;font-size:.85rem;color:#444}
+footer.site ul{display:flex;flex-wrap:wrap;gap:1rem;list-style:none;padding:0;margin:.5rem 0}
+.refs{font-size:.9rem}
+@media (max-width:48rem){.layout{grid-template-columns:1fr}aside.side{border:0;padding:0}}
+</style>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="/">Open Web Field Guide</a>
+  <nav class="primary" aria-label="Primary">
+    <ul>
+      <li><a href="/guides/">Guides</a></li>
+      <li><a href="/compare/">Compare</a></li>
+      <li><a href="/compare/migrate-from-quillpress/" title="Migrating from Quillpress to Drupal">Migrate from Quillpress</a></li>
+      <li><a href="/newsletter/">Newsletter</a></li>
+      <li><a href="/about/">About</a></li>
+    </ul>
+  </nav>
+</header>
+<div class="promo">
+  <strong>Field Guide Live 2026</strong> — two days of talks on open web publishing, 12–13 November.
+  <a href="/live/">Early tickets</a>. Sponsored by the Hexagrid Partner Network.
+</div>
+<div class="layout">
+<main id="content">
+<h1>About Drupal</h1>
+<p>Drupal is a free, open-source content management system written in PHP and released under the GNU General Public License. It powers everything from personal blogs to the public websites of governments, universities and media groups, and it has been developed in the open by a volunteer community since 2001.</p>
+<h2>What makes it different</h2>
+<p>Most content management systems start from the page. Drupal starts from the content model. Editors describe the kinds of content a site holds, the fields each kind carries, and the relationships between them, and the system builds the forms, listings and APIs from that description. A recipe site can define a <em>Recipe</em> with ingredients, cooking time and a reference to a <em>Chef</em> without writing code, then expose the same data to a mobile app through JSON:API.</p>
+<p>This is the reason Drupal is often chosen over lighter tools such as Quillpress when a project has many content types, many editors and many outputs. It is also the reason it has a reputation for a steeper start: the flexibility is there from the first minute, and it asks to be used.</p>
+<h2>Built on shared foundations</h2>
+<p>Since version 8, Drupal has been built on components from the Symfony framework, uses Twig for templating and Composer for dependency management. Sites run on MySQL, PostgreSQL or SQLite and on any web server that runs PHP, most commonly Apache or Nginx on Linux. Nothing in the stack is proprietary, and nothing in it is specific to Drupal.</p>
+<h2>The community</h2>
+<p>Drupal is maintained by thousands of contributors coordinated through drupal.org and a GitLab instance where every module, theme and core change is reviewed in public. Contribution is credited to individuals and to the organisations that sponsor their time, which is how a large part of the professional ecosystem funds the work. Regional camps and two DrupalCon conferences a year bring the community together in person.</p>
+<h2>Where it fits</h2>
+<p>Drupal is a good fit when structured content, multilingual publishing, fine-grained permissions or long-term maintainability matter more than getting a first page online in an afternoon. For a five-page brochure site, a hosted product like Sitewright will be faster to launch. For a site that will still be growing in ten years, the content model is the thing to get right, and that is what Drupal is built around.</p>
+<h2>Learn more</h2>
+<ul><li>Try the online demo or install locally with the Drupal CMS quick-start.</li><li>Read the user guide, which walks through building a first site step by step.</li><li>Join the community chat and find the local meetup nearest to you.</li></ul>
+
+</main>
+<aside class="side">
+  <h3>In this series</h3>
+  <ul>
+    <li><a href="/guides/drupal-about/">About Drupal</a></li>
+    <li><a href="/compare/drupal-vs-quillpress/">Drupal versus Quillpress</a></li>
+    <li><a href="/guides/drupal-encyclopedia/">Drupal, the long article</a></li>
+  </ul>
+  <h3>Newsletter</h3>
+  <p>One email a month on open publishing. No tracking, unsubscribe any time.</p>
+  <form action="/newsletter/" method="post"><input type="email" name="email" placeholder="you@example.org" aria-label="Email"> <button type="submit">Subscribe</button></form>
+  <img src="/img/compare-chart.svg" width="240" height="120" alt="Chart comparing Drupal, Quillpress and Sitewright hosting costs">
+</aside>
+</div>
+<footer class="site">
+  <ul>
+    <li><a href="/about/">About the Field Guide</a></li>
+    <li><a href="/compare/sitewright-migration/" title="Sitewright migration guide">Sitewright migration guide</a></li>
+    <li><a href="/privacy/">Privacy</a></li>
+    <li><a href="/contact/">Contact</a></li>
+    <li><a href="https://github.com/d34dman/flowdrop-ai-bench">Source and licence</a></li>
+  </ul>
+  <p>Text © 2026 the FlowDrop AI Bench contributors, CC BY 4.0. Part of the <a href="https://github.com/d34dman/flowdrop-ai-bench">FlowDrop AI Bench</a> corpus, version v1. The products compared here other than Drupal are fictional.</p>
+</footer>
+</body>
+</html>
