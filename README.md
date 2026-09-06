@@ -66,6 +66,11 @@ model already knows rather than on the instruction.
 - [DEVELOPMENT.md](DEVELOPMENT.md), repository layout, the site framework, building locally.
 - [runner/README.md](runner/README.md), the Drupal site that runs the cells.
 
+## Sponsor
+
+Development of this benchmark and the model API usage behind every run are generously
+sponsored by [Factorial GmbH](https://www.factorial.io/), the company behind FlowDrop.
+
 ## Licence
 
 Code MIT (`LICENSE`), except the Drupal site and module under `runner/`, GPL-2.0-or-later

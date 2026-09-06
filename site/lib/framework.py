@@ -31,6 +31,9 @@ CELL = {'bench_0_floor': 'B0 floor', 'bench_1_reference': 'B1 reference', 'bench
         'bench_7_react_optimized': 'B7 ReAct, URL tool', 'bench_8_react_with_tools_in_parent': 'B8 ReAct, tools in parent',
         'bench_9_reflexion_with_tools_in_parent': 'B9 Reflexion, tools in parent'}
 LABELS = {'cell': CELL}
+# Factorial wordmark (site/lib/factorial.svg, fill=currentColor so it wears the footer ink). Factorial GmbH
+# sponsors the development of this benchmark and pays for the model API usage behind every run.
+SPONSOR_URL = 'https://www.factorial.io/'
 # Ledger columns that stay strings even when they look numeric.
 TEXT_COLUMNS = {'run_id', 'tag', 'workflow', 'url_key', 'corpus_version', 'page_sha256', 'prompt_sha256', 'glyph',
                 'flowdrop_version', 'harness_version', 'ts', 'pipeline_status', 'failed_nodes', 'models', 'model_family',
@@ -117,6 +120,10 @@ def build_facets(rows, filters):
 RESERVED = {'corpus', 'prompt', 'outputs', 'runs', 'data', 'lib'}
 
 
+def sponsor_mark():
+    return open(os.path.join(SITE_SRC, 'lib', 'factorial.svg'), encoding='utf-8').read().strip()
+
+
 def load_registry():
     ids = load_json(os.path.join(SITE_SRC, 'registry.json'))['visuals']
     vis = []
@@ -175,8 +182,11 @@ class Ctx:
                 f'<header class="site"><div class="in"><a class="brand" data-nav href="{root}">{SITE_NAME}<small>A living benchmark of AI content workflows</small></a><nav>{nav}</nav></div></header>'
                 f'<main><h1>{esc(heading or title)}</h1>' + (f'<p class="sub">{sub}</p>' if sub else '') +
                 f'<div id="bench-filters" data-filters="{",".join(flt)}"{foc}></div>{body}</main>'
-                f'<footer class="site">Source, corpus and every run: <a href="{REPO}">{REPO.split("//")[1]}</a>. '
-                f'Rebuilt by CI on every merge. Filters live in the address bar; copy it to share the view.</footer>'
+                f'<footer class="site"><p>Source, corpus and every run: <a href="{REPO}">{REPO.split("//")[1]}</a>. '
+                f'Rebuilt by CI on every merge. Filters live in the address bar; copy it to share the view.</p>'
+                f'<p class="sponsor"><a href="{SPONSOR_URL}" rel="noopener" aria-label="Factorial GmbH">{sponsor_mark()}</a>'
+                f'<span>Development of this benchmark and the API usage behind every run are generously sponsored by '
+                f'<a href="{SPONSOR_URL}" rel="noopener">Factorial GmbH</a>, the company behind FlowDrop.</span></p></footer>'
                 + ''.join(f'<script src="{s}"></script>' for s in js) + '</body></html>')
 
     def copy_visual_assets(self):

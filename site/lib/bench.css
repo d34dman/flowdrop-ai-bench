@@ -36,6 +36,11 @@ h3{font-family:var(--serif);font-size:1.05rem;font-weight:600;margin:0 0 .3rem}
 .note{color:var(--mut);font-size:.88rem;line-height:1.55;max-width:60rem}
 .note b{color:var(--fg);font-weight:600}
 footer.site{max-width:72rem;margin:3rem auto 0;padding:1.2rem 1.4rem 2.5rem;color:var(--mut);font-size:.82rem;border-top:1px solid var(--line);letter-spacing:.01em}
+footer.site p{margin:0 0 .8rem}
+footer.site .sponsor{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin-top:1.2rem;padding-top:1rem;border-top:1px solid var(--hair)}
+footer.site .sponsor a:first-child{border:0;color:var(--ink2);display:inline-flex}
+footer.site .sponsor a:first-child:hover{color:var(--fg)}
+footer.site .sponsor-mark{height:.95rem;width:auto;display:block}
 
 /* filter bar: a quiet controls row above the figures */
 #bench-filters{display:flex;flex-wrap:wrap;gap:.5rem .6rem;align-items:center;margin:0 0 1.6rem;padding:.7rem 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);min-height:2rem}
