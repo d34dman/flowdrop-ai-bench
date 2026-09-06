@@ -2,5 +2,11 @@
   "title": "Benchmark focus",
   "blurb": "Pick one benchmark (a workflow architecture) and compare the models that ran it: correctness, axes, cost.",
   "focus": "benchmark",
-  "filters": ["task", "page", "tag", "corpus"]
+  "filters": [
+    "task",
+    "model",
+    "page",
+    "tag",
+    "corpus"
+  ]
 }
