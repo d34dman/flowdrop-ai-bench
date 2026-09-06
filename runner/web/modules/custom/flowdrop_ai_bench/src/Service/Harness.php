@@ -8,6 +8,7 @@ use Drupal\Component\Uuid\UuidInterface;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Session\AccountSwitcherInterface;
+use Drupal\ai\AiProviderPluginManager;
 use Drupal\flowdrop_ai_bench\BenchRunContext;
 use Drupal\flowdrop_workflow_executor\DTO\LaunchOptions;
 use GuzzleHttp\ClientInterface;
@@ -51,6 +52,82 @@ class Harness {
   ];
 
   /**
+   * One line per cell, for bench:wizard and bench:models --cells.
+   *
+   * "no model" cells are free controls; everything else calls the model.
+   */
+  private const CELL_LABELS = [
+    'B0' => 'floor: fetch only, no conversion, no model (control)',
+    'B1' => 'reference: fixed pipeline, HTML to Markdown, no model (control)',
+    'B2' => 'raw HTML to one LLM call',
+    'B3' => 'Markdown to one LLM call',
+    'B4' => 'AI Agents module: one agent with a fetch tool',
+    'B5' => 'ReAct agent (sub-workflow) with tools',
+    'B6' => 'autonomous agent, no fixed plan',
+    'B7' => 'ReAct agent with optimized tools',
+    'B8' => 'ReAct agent, tools run in the parent pipeline (StateGraph)',
+    'B9' => 'Reflexion agent with critic, tools in the parent (StateGraph)',
+  ];
+
+  /**
+   * Cells the runner knows: letter => [workflow, label].
+   *
+   * @return array<string, array{workflow: string, label: string}>
+   */
+  public function cells(): array {
+    $out = [];
+    foreach (self::CELL_WORKFLOWS as $cell => $workflow) {
+      $out[$cell] = ['workflow' => $workflow, 'label' => self::CELL_LABELS[$cell] ?? $workflow];
+    }
+    return $out;
+  }
+
+  /**
+   * Chat models the provider offers right now, as the ai module sees them.
+   *
+   * Asks the provider plugin (for Anthropic that is a live call to the models
+   * API, so the list is whatever the account can use today); the same list
+   * the Drupal admin UI shows in its model dropdowns.
+   *
+   * @return array<string, string>
+   *   Model id => display name, sorted by id.
+   *
+   * @throws \RuntimeException
+   *   When the provider is unknown or not set up (no key).
+   */
+  public function listModels(string $provider): array {
+    try {
+      $plugin = $this->aiProviders->createInstance($provider);
+    }
+    catch (\Throwable $e) {
+      throw new \RuntimeException(sprintf('provider "%s" is not installed: %s', $provider, $e->getMessage()), 0, $e);
+    }
+    if (!$plugin->isUsable('chat')) {
+      throw new \RuntimeException(sprintf('provider "%s" is not set up for chat (missing key?): configure it at /admin/config/ai/providers', $provider));
+    }
+    $models = $plugin->getConfiguredModels('chat');
+    $out = [];
+    foreach ($models as $id => $name) {
+      $out[(string) $id] = is_scalar($name) ? (string) $name : (string) $id;
+    }
+    ksort($out);
+    return $out;
+  }
+
+  /**
+   * Every usable provider's chat models, keyed "provider__model".
+   *
+   * @return array<string, string>
+   */
+  public function listAllModels(): array {
+    $out = [];
+    foreach ($this->aiProviders->getSimpleProviderModelOptions('chat', FALSE) as $key => $label) {
+      $out[(string) $key] = (string) $label;
+    }
+    return $out;
+  }
+
+  /**
    * Workflows whose nodes carry the benchmark's model-facing system prompt.
    */
   private const PROMPT_WORKFLOWS = [
@@ -86,6 +163,7 @@ class Harness {
     private readonly BenchRunContext $runContext,
     #[Autowire(service: 'flowdrop_workflow_executor.launcher')]
     private readonly object $launcher,
+    private readonly AiProviderPluginManager $aiProviders,
   ) {}
 
   /**

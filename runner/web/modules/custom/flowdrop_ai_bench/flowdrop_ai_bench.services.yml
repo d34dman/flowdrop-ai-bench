@@ -18,6 +18,7 @@ services:
       - '@account_switcher'
       - '@flowdrop_ai_bench.run_context'
       - '@flowdrop_workflow_executor.launcher'
+      - '@ai.provider'
 
   # Explicit class aliases so Drush 13's AutowireTrait (which resolves
   # constructor parameters by looking up the container under their type-hint)

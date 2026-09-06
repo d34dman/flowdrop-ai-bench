@@ -73,11 +73,27 @@ exists is skipped with a warning.
 drush bench:collect
 ```
 
-### `bench:run <cells> <model> [--pages] [--reps] [--tag] [--provider] [--base] [--corpus] [--var] [--out]`
+### `bench:models [--provider=anthropic] [--all] [--cells]`
+
+Lists the chat model ids the provider offers right now, as the ai module sees
+them (for Anthropic a live call to the models API, so it is what the configured
+key can use today). `--all` lists every usable provider as `provider__model`.
+`--cells` lists the cells B0..B9 with one line each instead.
+
+### `bench:wizard [--provider] [--var] [--out]`
+
+Interactive front door for a first run: pick a model from the provider's list
+(or type one), the cells, the pages, repetitions and a tag, see the run count
+and the equivalent `bench:run` command, confirm, run. Nothing the wizard does
+is unavailable to `bench:run`; it only removes the need to know the ids.
+
+### `bench:run <cells> <model> [--pages] [--reps] [--tag] [--provider] [--force] [--base] [--corpus] [--var] [--out]`
 
 The one-command path: `bench:set-prompt`, `bench:set-model`, `bench:launch`,
 then `bench:collect`, aborting on the first failure. Prints a cost/time table
-for the runs it just launched. `--tag` defaults to `<cells>-<model>`.
+for the runs it just launched. `--tag` defaults to `<cells>-<model>`. The model must
+be one the provider lists (`bench:models`); `--force` skips that check for a model newer
+than the catalogue, or a control-only run such as `bench:run B1 none --force`.
 
 ```
 drush bench:run B5,B8 claude-sonnet-5

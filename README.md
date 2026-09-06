@@ -31,6 +31,7 @@ Results: <https://d34dman.github.io/flowdrop-ai-bench/>.
 
 ```sh
 echo 'ANTHROPIC_KEY=sk-ant-...' >> .ddev/.env && ddev start && sh bin/setup.sh
+ddev drush bench:wizard            # or, knowing the ids (ddev drush bench:models):
 ddev drush bench:run B3 claude-sonnet-5 --pages=small --tag=yourname-first
 git add runs outputs && git commit -m "runs: B3 on Sonnet 5, small" && git push -u origin HEAD
 ```

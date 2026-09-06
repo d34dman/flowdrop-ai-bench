@@ -13,8 +13,14 @@ covered by the same append-only check, and CI also rejects a trace over 3 MB.
 
 1. **Set up the runner** (once). Clone this repo, put `ANTHROPIC_KEY=sk-ant-...` in
    `.ddev/.env`, `ddev start`, `sh bin/setup.sh`. Needs [DDEV](https://ddev.readthedocs.io/).
-2. **Run a cell.**
+2. **Run a cell.** The first time, let the wizard ask:
    ```sh
+   ddev drush bench:wizard
+   ```
+   It lists the models your provider key can use, the cells B0–B9 with a line each, the
+   pages, and shows the equivalent `bench:run` before it runs anything. Afterwards:
+   ```sh
+   ddev drush bench:models      # model ids the provider offers; bench:run refuses others
    ddev drush bench:run B3 claude-sonnet-5 --pages=small --tag=yourname-first-run
    ```
    Cells B0–B9, pages `small,medium,large`, `--reps`, and a tag that says who and why.

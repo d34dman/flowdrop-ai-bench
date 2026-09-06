@@ -16,6 +16,8 @@ sh bin/setup.sh          # composer install, site install from runner/config/syn
 ## Run
 
 ```sh
+ddev drush bench:wizard                      # first time: pick model, cells, pages, confirm
+ddev drush bench:models                      # model ids the provider offers
 ddev drush bench:run B3 claude-haiku-4-5-20251001 --pages=small --tag=yourname-first
 ddev drush bench:run B2,B3,B5 claude-sonnet-5 --pages=small,medium,large --tag=yourname-sonnet5-sweep
 ddev drush bench:list B5 small sonnet-5

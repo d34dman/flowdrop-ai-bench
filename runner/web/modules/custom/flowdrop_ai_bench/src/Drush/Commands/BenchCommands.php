@@ -199,7 +199,9 @@ final class BenchCommands extends DrushCommands {
   #[CLI\Option(name: 'corpus', description: 'Corpus version. Env BENCH_CORPUS overrides the built-in default.')]
   #[CLI\Option(name: 'var', description: 'Runner var directory. Defaults to runner/var.')]
   #[CLI\Option(name: 'out', description: 'Repo root. Defaults to two levels above the Drupal root.')]
+  #[CLI\Option(name: 'force', description: 'Run even if the provider does not list the model (a model newer than the catalogue, or a control-only run).')]
   #[CLI\Usage(name: 'drush bench:run B5,B8 claude-sonnet-5', description: 'Set the prompt and model, launch B5 and B8 against every page, then collect metrics.')]
+  #[CLI\Usage(name: 'drush bench:run B1 none --force', description: 'A control cell that never calls the model; the placeholder is accepted with --force.')]
   public function run(string $cells, string $model, array $options = [
     'pages' => self::DEFAULT_PAGES,
     'reps' => 1,
@@ -211,7 +213,11 @@ final class BenchCommands extends DrushCommands {
     'corpus' => NULL,
     'var' => NULL,
     'out' => NULL,
+    'force' => FALSE,
   ]): void {
+    if (!$options['force']) {
+      $this->assertKnownModel($model, $options['provider']);
+    }
     $tag = $options['tag'] ?: sprintf('%s-%s', $cells, $model ?: 'unknown');
     $base = $this->resolveBase($options['base']);
     $corpus = $this->resolveCorpus($options['corpus']);
@@ -376,6 +382,136 @@ final class BenchCommands extends DrushCommands {
   /**
    * Prints a line only at -v or above.
    */
+  /**
+   * Lists the chat models the provider offers, i.e. what bench:run accepts.
+   */
+  #[CLI\Command(name: 'bench:models')]
+  #[CLI\Option(name: 'provider', description: 'AI provider plugin id. Defaults to anthropic.')]
+  #[CLI\Option(name: 'all', description: 'Every usable provider, keyed provider__model.')]
+  #[CLI\Option(name: 'cells', description: 'List the benchmark cells instead of models.')]
+  #[CLI\Usage(name: 'drush bench:models', description: 'Model ids the anthropic provider offers right now.')]
+  #[CLI\Usage(name: 'drush bench:models --cells', description: 'The cells B0..B9 with one line each.')]
+  public function models(array $options = ['provider' => self::DEFAULT_PROVIDER, 'all' => FALSE, 'cells' => FALSE]): void {
+    if ($options['cells']) {
+      foreach ($this->harness->cells() as $cell => $info) {
+        $this->output()->writeln(sprintf('%-3s %-42s %s', $cell, $info['workflow'], $info['label']));
+      }
+      return;
+    }
+    $models = $options['all'] ? $this->harness->listAllModels() : $this->harness->listModels($options['provider']);
+    foreach ($models as $id => $name) {
+      $this->output()->writeln($name !== $id ? sprintf('%-40s %s', $id, $name) : $id);
+    }
+    if (!$options['all']) {
+      $this->output()->writeln(sprintf("\n%d model(s) from provider %s. Run one with:  drush bench:run B3 <model> --pages=small --tag=<who-why>", count($models), $options['provider']));
+    }
+  }
+
+  /**
+   * Interactive front door: pick a model, cells, pages, reps and tag, then run.
+   */
+  #[CLI\Command(name: 'bench:wizard')]
+  #[CLI\Option(name: 'provider', description: 'AI provider plugin id. Defaults to anthropic.')]
+  #[CLI\Option(name: 'var', description: 'Runner var directory. Defaults to runner/var.')]
+  #[CLI\Option(name: 'out', description: 'Repo root. Defaults to two levels above the Drupal root.')]
+  #[CLI\Usage(name: 'drush bench:wizard', description: 'Answer a few questions, see the equivalent bench:run command, confirm, run.')]
+  public function wizard(array $options = ['provider' => self::DEFAULT_PROVIDER, 'var' => NULL, 'out' => NULL]): void {
+    $io = $this->io();
+    $provider = $options['provider'];
+
+    // --- model ---------------------------------------------------------
+    $models = [];
+    try {
+      $models = $this->harness->listModels($provider);
+    }
+    catch (\RuntimeException $e) {
+      $io->warning($e->getMessage());
+    }
+    $other = '(type another id)';
+    $choices = $models ? array_combine(array_keys($models), array_map(
+      static fn (string $id, string $name): string => $name !== $id ? "$id  ($name)" : $id,
+      array_keys($models), array_values($models))) : [];
+    $choices[$other] = $other;
+    $default = array_key_exists('claude-haiku-4-5-20251001', $models) ? 'claude-haiku-4-5-20251001' : array_key_first($choices);
+    $model = (string) $io->choice(sprintf('Model (provider %s)', $provider), $choices, $default);
+    if ($model === $other) {
+      $model = (string) $io->ask('Model id', NULL, NULL, 'claude-sonnet-5', TRUE);
+    }
+
+    // --- cells ---------------------------------------------------------
+    $cellChoices = [];
+    foreach ($this->harness->cells() as $cell => $info) {
+      $cellChoices[$cell] = sprintf('%s  %s', $cell, $info['label']);
+    }
+    $cells = (array) $io->choice('Cells (space to toggle, enter to accept)', $cellChoices, ['B3'], TRUE);
+    if (!$cells) {
+      throw new \RuntimeException('no cells selected');
+    }
+
+    // --- pages, reps, tag ------------------------------------------------
+    $pages = (array) $io->choice('Pages', ['small' => 'small (2.6 k)', 'medium' => 'medium (7.3 k)', 'large' => 'large (13 k)'], ['small'], TRUE);
+    if (!$pages) {
+      throw new \RuntimeException('no pages selected');
+    }
+    $reps = (int) $io->ask('Repetitions per cell and page', '1', NULL, '1', TRUE, static function ($v): ?string {
+      return ctype_digit((string) $v) && (int) $v >= 1 ? NULL : 'a whole number of 1 or more';
+    });
+    $who = trim((string) (getenv('BENCH_USER') ?: getenv('USER') ?: 'someone'));
+    $tag = (string) $io->ask('Tag: who ran this and why (goes into the run id and the published table)', sprintf('%s-%s', $who, date('Ymd')), NULL, '', FALSE);
+
+    // --- summary and confirm ------------------------------------------
+    $cellList = implode(',', $cells);
+    $pageList = implode(',', $pages);
+    $command = sprintf('drush bench:run %s %s --pages=%s --reps=%d%s', $cellList, $model, $pageList, $reps, $tag !== '' ? ' --tag=' . escapeshellarg($tag) : '');
+    $modelCells = count(array_filter($cells, static fn (string $c): bool => !in_array($c, ['B0', 'B1'], TRUE)));
+    $io->writeln('');
+    $io->writeln(sprintf('%d run(s): %d cell(s) x %d page(s) x %d rep(s); %d of the cells call %s.',
+      count($cells) * count($pages) * $reps, count($cells), count($pages), $reps, $modelCells * count($pages) * $reps, $model));
+    $io->writeln('Equivalent command:  ' . $command);
+    if (!$io->confirm('Run it now?', TRUE)) {
+      $io->writeln('Not run. The command above can be run later as is.');
+      return;
+    }
+    $this->run($cellList, $model, [
+      'pages' => $pageList,
+      'reps' => $reps,
+      'tag' => $tag !== '' ? $tag : NULL,
+      'provider' => $provider,
+      'prompt' => self::DEFAULT_PROMPT,
+      'critic' => self::DEFAULT_CRITIC,
+      'base' => NULL,
+      'corpus' => NULL,
+      'var' => $options['var'],
+      'out' => $options['out'],
+      // The wizard offered the provider's own list; a typed id is the user's call.
+      'force' => TRUE,
+    ]);
+  }
+
+  /**
+   * Refuses a model id the provider does not list, naming what it does.
+   *
+   * When the list itself cannot be fetched the run proceeds with a warning:
+   * a catalogue outage must not block a benchmark.
+   */
+  private function assertKnownModel(string $model, string $provider): void {
+    try {
+      $models = $this->harness->listModels($provider);
+    }
+    catch (\RuntimeException $e) {
+      $this->io()->warning('model list unavailable, not validating: ' . $e->getMessage());
+      return;
+    }
+    if (isset($models[$model])) {
+      return;
+    }
+    $known = implode("\n  ", array_keys($models));
+    throw new \RuntimeException(sprintf(
+      "provider %s does not list a model \"%s\". It offers:\n  %s\nPass --force to run anyway (a model newer than the catalogue, or a control-only run).",
+      $provider, $model, $known,
+    ));
+  }
+
   private function verbose(string $line): void {
     if ($this->output()->isVerbose()) {
       $this->output()->writeln($line);
