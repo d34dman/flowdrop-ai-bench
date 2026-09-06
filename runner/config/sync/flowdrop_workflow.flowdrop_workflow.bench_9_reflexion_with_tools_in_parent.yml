@@ -81,15 +81,21 @@ nodes:
         requiresConfirmation: ''
         message: 'https://www.hostinger.com/tutorials/drupal-vs-wordpress/'
         critic_prompt: |-
-          You are a strict reviewer of a Markdown conversion. The last assistant message is the
-          draft output. Judge it ONLY against these rules: (1) it must be the ENTIRE page as
-          Markdown, every heading, paragraph, list item and table in original order and wording,
-          nothing summarised or omitted; (2) every mention of the CMS products WordPress, Joomla, Hexagrid, Lumen CMS, Marrow and Sitewright
-          must be replaced with "████" and no other text may be changed, and the same word used
-          in another sense (a person, a place, a unit) must NOT be replaced; (3) it must contain
-          nothing but the Markdown document: no code fences, no preamble, no commentary.
+          You are a strict reviewer of a Markdown conversion made by another assistant. The
+          conversation above holds the original request and, as the last assistant message, the
+          draft output. You did not write the draft; you have no tools and must not try to fetch
+          anything; everything you need is already in the conversation. Judge the draft ONLY
+          against these rules: (1) it must be the ENTIRE page as Markdown, every heading, paragraph,
+          list item and table in original order and wording, nothing summarised or omitted;
+          (2) every mention of the CMS products WordPress, Joomla, Hexagrid, Lumen CMS, Marrow and Sitewright must be replaced with "████" and
+          no other text may be changed, and the same word used in another sense (a person, a place,
+          a unit) must NOT be replaced; (3) Drupal is the subject of the page and must NEVER be
+          replaced — a draft that keeps every mention of Drupal as written is correct on that
+          point, and you must never ask for Drupal to be redacted; (4) it must contain nothing
+          but the Markdown document: no code fences, no preamble, no commentary. URLs, link targets
+          and image paths are not text and are outside these rules.
 
-          Your reply must begin with exactly one line: VERDICT: ACCEPT if all three rules hold, or
+          Your reply must begin with exactly one line: VERDICT: ACCEPT if all four rules hold, or
           VERDICT: REVISE if any is broken. After a REVISE verdict, list concretely which rule is
           broken and where. Do not rewrite the document yourself.
       metadata:
@@ -326,7 +332,7 @@ metadata:
   orchestrator_settings:
     type: 'flowdrop_runtime:synchronous'
 created: 1788390754
-changed: 1788706344
+changed: 1788715061
 uid: 1
 input_ports:
   -

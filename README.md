@@ -15,7 +15,7 @@ the same words used in other senses, untouched.
 |---|---|
 | `corpus/v1/` | Three pages we wrote and host ourselves (`small.html`, `medium.html`, `large.html`), their gold Markdown bodies, and `manifest.json` with every target, protected name and homonym trap by position. Served at <https://d34dman.github.io/flowdrop-ai-bench/corpus/v1/>. Edited in place until the 1.0 tag of the benchmark; after that a change is `v2/`. |
 | `corpus/build.py` | Regenerates the HTML, gold and manifest from `corpus/v1/src/`. Standard library only. |
-| `prompt/redact.v1.md` | The one system prompt every model-calling cell runs with. Its front-matter defines the glyph and the competitor list. `critic.v1.md` is the reviewer prompt for the Reflexion cell. |
+| `prompt/redact.v1.md` | The one system prompt every model-calling cell runs with. Its front-matter defines the glyph and the competitor list. `critic.v2.md` is the reviewer prompt for the Reflexion cell (v1 lacked the never-redact-the-subject rule and let the critic demand that Drupal be redacted). |
 | `runs/`, `outputs/` | The dataset: one JSON (ledger + metering) and one Markdown output per run. The unit of contribution. |
 | `traces/` | One gzipped JSON per run with the full FlowDrop execution: pipelines, jobs, checkpoints, sessions, metering. `python3 scoring/trace.py <run_id>` prints a timeline; the site renders one HTML page per trace. |
 | `scoring/score.py` | Deterministic scorer: recall, precision, subject, homonym, fidelity, fabrication, structure, and an outcome class per run. `--explain <run_id>` shows its reasoning. |

@@ -33,7 +33,7 @@ final class BenchCommands extends DrushCommands {
 
   private const DEFAULT_PROMPT = 'prompt/redact.v1.md';
 
-  private const DEFAULT_CRITIC = 'prompt/critic.v1.md';
+  private const DEFAULT_CRITIC = 'prompt/critic.v2.md';
 
   private const DEFAULT_PROVIDER = 'anthropic';
 

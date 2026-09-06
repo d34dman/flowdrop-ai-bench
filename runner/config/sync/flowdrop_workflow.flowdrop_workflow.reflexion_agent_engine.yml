@@ -737,7 +737,7 @@ nodes:
 
           {{ critique }}
 
-          Address every point above and reply with the COMPLETE revised answer to the user's original request. Do not reply to the reviewer, do not explain the changes, output only the revised answer.
+          Address every point above that is consistent with the user's original request and reply with the COMPLETE revised answer to that request. If a point contradicts the user's instructions, ignore it silently. Do not reply to the reviewer, do not argue, do not explain the changes, do not restate the instructions: your entire reply is the revised answer and nothing else.
         dynamicInputs:
           -
             name: critique
@@ -1439,7 +1439,7 @@ metadata:
   createdAt: '2026-08-26T19:53:50.286Z'
   updatedAt: '2026-09-05T01:20:22.000Z'
 created: 1788567483
-changed: 1788703861
+changed: 1788714891
 uid: 1
 input_ports:
   -

@@ -90,7 +90,7 @@ one, OpenAI as the example:
 | Path | What |
 |---|---|
 | `composer.json`, `composer.lock`, `patches.lock.json` | The site's dependencies, pinned. `drupal/flowdrop` and `drupal/flowdrop_ai_provider` are `2.x-dev` at the commits in the lock. |
-| `patches/` | Two composer patches: FlowDrop memory's max value size made configurable (#3592436), and the 4000 `maxTokens` cap removed from the Chat nodes so a whole document can come back in one call. Both are part of the experiment and recorded in every run's `flowdrop_version`. |
+| `patches/` | Four composer patches. Two are part of the experiment: FlowDrop memory's max value size made configurable (#3592436), and the 4000 `maxTokens` cap removed from the Chat nodes so a whole document can come back in one call. Two carry unreleased FlowDrop 2.x fixes the bench found: a tool with one text answer replies to the model in plain text instead of a JSON literal (fddo 1834221c; Haiku copied the escaped literal back as its B7 answer), and a loop-free workflow no longer warns that its loop extent could not be restored (fddo 5f451c49). All are recorded in every run's `flowdrop_version`. |
 | `config/sync/` | The site's whole configuration: the nine cell workflows, six sub-workflows and their node types, two AI Agents entities, key, metering, and the FlowDrop settings the runs were made with (including `default_orchestrator`). |
 | `web/modules/custom/flowdrop_ai_bench/` | The module: `http_fetch` tool for the autonomous agent, the metering context tag that attributes tokens to one run, and the `bench:*` Drush commands. GPL-2.0-or-later. |
 | `var/` | Ledger and fetch cache, gitignored. |
@@ -100,3 +100,13 @@ one, OpenAI as the example:
 Build the workflow in the site (`/admin/structure/flowdrop-workflow`, the FlowDrop UI is
 installed), give it the id `bench_<n>_<name>`, export config (`ddev drush cex -y`), add the
 cell letter to the map in `Harness.php`, and describe the architecture in your PR.
+
+## Warnings a run prints, and what they mean
+
+| Warning | Cells | Meaning |
+|---|---|---|
+| `Removed disallowed Markdown link with URL: https://github.com/...` / `Removed disallowed AI output URL` | every model cell | The AI module's hostname filter strips links to hosts outside `ai.settings:allowed_hosts` from model output. It only ever hit the footer link to this repo, which is page chrome and not scored; `github.com` is now allowed so the model cells keep the link like B1 does. |
+| `Cross-iteration data read on pipeline N ... (BR-6); logged for observability only` | B5, B7, B8, B9 | The loop-staleness barrier noting that a consumer in iteration n read a producer's value from iteration 0. Expected for the conversation buffers feeding message assembly; nothing is gated. |
+| `ToolBox flowdrop_node_processor_toolbox.1 has no tools wired into it` | B8, B9 | By design: in the "tools in the parent" cells the engine's own ToolBox is empty and the tools arrive from the parent workflow as an execution argument. |
+| `Multiple sources target port 'loop_back' on node 'conversation_buffer.1'; keeping value from latest executor` | B9 | The Reflexion engine has two legitimate re-entry paths into the actor loop, tool results and critiques, both wired to the same trigger port. Whichever fired last wins, which is the intended semantics; neither edge can be removed. |
+| `Pipeline N has a loop-extent snapshot that could not be restored` | B7, B8, B9 (before the patch) | Was a false positive on the loop-free `url_to_markdown` tool sub-pipeline, whose well-formed empty snapshot restored to the same empty map a malformed one does; fixed by the `flowdrop-stategraph-loop-extent-empty-snapshot-silent` patch. |

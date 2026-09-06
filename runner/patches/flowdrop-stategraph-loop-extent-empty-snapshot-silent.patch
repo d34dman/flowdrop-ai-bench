@@ -1,0 +1,63 @@
+From 5f451c49ffa7668740f525853500cc5132ef4a50 Mon Sep 17 00:00:00 2001
+From: Shibin Das <shibinkidd@gmail.com>
+Date: Sun, 6 Sep 2026 19:14:49 +0200
+Subject: [PATCH] fix(stategraph): a loop-free workflow no longer warns that
+ its loop extent could not be restored
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+LoopMap::toArray() of a workflow without loops is {bodies: [], merged: [],
+ancestors: []}, which fromArray() restores to an empty map exactly like a
+malformed snapshot does — so every run of a loop-free workflow logged
+"has a loop-extent snapshot that could not be restored". The warning now
+requires the snapshot to be present AND malformed (no well-formed empty
+`bodies`); a well-formed empty snapshot is the ordinary case and is silent.
+---
+ .../src/Service/StateGraphOrchestrator.php    | 20 +++++++++++++++++--
+ 1 file changed, 18 insertions(+), 2 deletions(-)
+
+diff --git a/modules/flowdrop_stategraph/src/Service/StateGraphOrchestrator.php b/modules/flowdrop_stategraph/src/Service/StateGraphOrchestrator.php
+index da93f2ae..54b7c0cb 100644
+--- a/modules/flowdrop_stategraph/src/Service/StateGraphOrchestrator.php
++++ b/modules/flowdrop_stategraph/src/Service/StateGraphOrchestrator.php
+@@ -812,11 +812,14 @@ private function executePipelineWithState(
+     // loop_iteration stamp), because they answer a different question.
+     $rawLoopMap = $pipeline->getExecutionContext()[LoopMap::CONTEXT_KEY] ?? NULL;
+     $loopMap = LoopMap::fromArray($rawLoopMap);
+-    if ($rawLoopMap !== NULL && $loopMap->isEmpty()) {
++    if ($rawLoopMap !== NULL && $loopMap->isEmpty() && !self::isEmptyLoopMapSnapshot($rawLoopMap)) {
+       // A pipeline generated before extent existed has no snapshot at all and
+       // takes the per-node fallback quietly. A snapshot that is PRESENT and
+       // restores to nothing is different: every loop in this run silently
+-      // loses its round bound, and nothing downstream would say so.
++      // loses its round bound, and nothing downstream would say so. A
++      // snapshot that is present and well-formed but EMPTY is the ordinary
++      // case of a workflow with no loops — the fallback then bounds nothing,
++      // and there is nothing to warn about.
+       $this->logger->warning("Pipeline @pipeline has a loop-extent snapshot that could not be restored; loops in this run fall back to the per-node bound.", [
+         "@pipeline" => $pipeline->id(),
+       ]);
+@@ -1494,6 +1497,19 @@ private function retireSupersededJob(FlowDropJobInterface $job): void {
+     $this->jobStorage->save($job);
+   }
+ 
++  /**
++   * Whether a stored loop-extent snapshot is well-formed and lists no loops.
++   *
++   * `LoopMap::toArray()` of a loop-free workflow is `{bodies: [], merged: [],
++   * ancestors: []}`, which restores to an empty map exactly like a malformed
++   * snapshot does. The two must be told apart by shape, not by the result.
++   */
++  private static function isEmptyLoopMapSnapshot(mixed $raw): bool {
++    return is_array($raw)
++      && isset($raw['bodies']) && is_array($raw['bodies'])
++      && $raw['bodies'] === [];
++  }
++
+   /**
+    * Rebuilds the per-loop round counters from the jobs already on the pipeline.
+    *
+-- 
+2.50.1 (Apple Git-155)
+

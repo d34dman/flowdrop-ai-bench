@@ -29,7 +29,7 @@ class Harness {
   /**
    * Bumped whenever the ledger record shape changes.
    */
-  public const HARNESS_VERSION = '3.2.0';
+  public const HARNESS_VERSION = '3.3.0';
 
   /**
    * Cell letter to workflow id, per the retired run_cell.sh table.
@@ -280,8 +280,8 @@ class Harness {
       ? implode(', ', array_slice($competitors, 0, -1)) . ' and ' . end($competitors)
       : '';
     $critic = str_replace(
-      ['{{competitors}}', '{{glyph}}'],
-      [$competitorList, $meta['glyph'] ?? ''],
+      ['{{competitors}}', '{{glyph}}', '{{subject}}'],
+      [$competitorList, $meta['glyph'] ?? '', $meta['subject'] ?? ''],
       $criticTemplate,
     );
 

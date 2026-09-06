@@ -1,5 +1,5 @@
 {
-    "_hash": "0cc5b37c0091f9b4cf45dc495915efe8645365f1158baee9ee6e34509aafca3e",
+    "_hash": "a732385f2ae15d103f110f08b337aa502014ed41200ba9ecc36c8296857536ff",
     "patches": {
         "drupal/flowdrop": [
             {
@@ -7,6 +7,26 @@
                 "description": "Make MemoryManager::MAX_VALUE_BYTES configurable (#3592436)",
                 "url": "patches/flowdrop-memory-configurable-max-value-bytes.patch",
                 "sha256": "410f7264c0c459ed8d8a24297d857cbfa15ad495c7785a6baf58a3658adab263",
+                "depth": 1,
+                "extra": {
+                    "provenance": "root"
+                }
+            },
+            {
+                "package": "drupal/flowdrop",
+                "description": "ToolInvoke: a tool with one text answer replies in plain text, not a JSON literal (fddo 1834221c, unreleased)",
+                "url": "patches/flowdrop-tool-invoke-single-text-answer.patch",
+                "sha256": "76ec90216a162c1fa75365283d09edb0881d7725c389b8d67cbde34083652019",
+                "depth": 1,
+                "extra": {
+                    "provenance": "root"
+                }
+            },
+            {
+                "package": "drupal/flowdrop",
+                "description": "StateGraph: a loop-free workflow no longer warns that its loop extent could not be restored (fddo 5f451c49, unreleased)",
+                "url": "patches/flowdrop-stategraph-loop-extent-empty-snapshot-silent.patch",
+                "sha256": "8c6f894c64a3079dfd1f2674eadd1dc4b6570b93628d5c249cc76b81a10c3a5b",
                 "depth": 1,
                 "extra": {
                     "provenance": "root"
