@@ -1,0 +1,58 @@
+name: Score and publish
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  score:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Corpus is reproducible from src
+        run: |
+          python3 corpus/build.py > /dev/null
+          git diff --exit-code -- corpus/ || { echo "::error::corpus/ differs from what corpus/build.py generates; run it and commit"; exit 1; }
+      - name: Every run has its output
+        run: |
+          python3 - <<'EOF'
+          import json, os, sys
+          bad = 0
+          for fn in os.listdir('runs'):
+              r = json.load(open(f'runs/{fn}'))
+              for k in ('run_id', 'workflow', 'url_key', 'corpus_version', 'prompt_sha256', 'pipeline_status', 'tag'):
+                  if k not in r: print(f'::error file=runs/{fn}::missing {k}'); bad += 1
+              if r.get('pipeline_status') == 'completed' and not os.path.exists(f"outputs/{r['run_id']}.md"):
+                  print(f'::error file=runs/{fn}::completed run without outputs/{r["run_id"]}.md'); bad += 1
+          sys.exit(1 if bad else 0)
+          EOF
+      - name: Score and build the site
+        run: |
+          python3 scoring/score.py
+          python3 scoring/build_site.py
+      - uses: actions/upload-pages-artifact@v3
+        with: { path: _site }
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: score
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
