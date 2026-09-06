@@ -20,9 +20,9 @@ words used in other senses.
 | B1 | reference | Fixed pipeline, HTML to Markdown, no model. Control. |
 | B2 | raw HTML → LLM | Raw HTML to one LLM call. |
 | B3 | Markdown → LLM | Markdown to one LLM call. |
-| B4 | AI Agent + tool | Drupal AI Agents module, one agent with a fetch tool. |
-| B5 | ReAct agent | ReAct agent as a sub-workflow, with tools. |
-| B6 | autonomous agent | No fixed plan. |
+| B4 | AI Agent + tool | Drupal AI Agent given the HTML, owns the Markdown tool. Peer of B3. |
+| B5 | ReAct agent | FlowDrop ReAct agent given a URL, owns fetch and Markdown tools. |
+| B6 | autonomous agent | Drupal AI Agent given a URL, owns fetch and Markdown tools. Peer of B5. |
 | B7 | ReAct, URL tool | ReAct agent with optimized tools. |
 | B8 | ReAct, tools in parent | Tools run in the parent pipeline. |
 | B9 | Reflexion, tools in parent | Reflexion agent with a critic, tools in the parent. |
