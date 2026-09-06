@@ -1,0 +1,62 @@
+{
+    "run_id": "bench_8_react_with_tools_in_parent__medium__r1__1788724786__shibindas-20260906__5b63a3",
+    "workflow": "bench_8_react_with_tools_in_parent",
+    "url_key": "medium",
+    "url": "https://d34dman.github.io/flowdrop-ai-bench/corpus/v1/medium.html",
+    "corpus_version": "v1",
+    "page_sha256": "ea4e33df2ab05dfe9a143ce5c0d205ef250da9fe174f60008d985e8413a0a3e4",
+    "prompt_sha256": "272f2f41c1552fd77952bf1867eb98ffeea8cd5bc9d249166416511f69b66c8d",
+    "glyph": "████",
+    "flowdrop_version": "dev-2.x@771e7c77e1f9",
+    "harness_version": "3.3.0",
+    "model": "claude-sonnet-4-6",
+    "rep": 1,
+    "pipeline_id": "261",
+    "context_uuid": "c6355d33-2f4d-4899-bed9-c98dbe9fd349",
+    "wall_seconds": 45.0578,
+    "launch_status": "completed",
+    "launch_error": null,
+    "tag": "shibindas-20260906",
+    "ts": "2026-09-06T20:00:31+00:00",
+    "pipeline_status": "completed",
+    "failed_nodes": [],
+    "job_count": 3,
+    "payload_bytes": 55587,
+    "total_seconds": 44.957,
+    "ai_seconds": 44.957,
+    "deterministic_seconds": 0,
+    "llm_calls": 2,
+    "models": [
+        "claude-sonnet-4-6"
+    ],
+    "input_tokens": 4194,
+    "output_tokens": 2083,
+    "cached_tokens": 0,
+    "cost_usd": 0.043827,
+    "retries": 0,
+    "output_chars": 8579,
+    "nodes": [
+        {
+            "node_type": "chat_output",
+            "status": "completed",
+            "seconds": 0,
+            "is_ai": false,
+            "error": null
+        },
+        {
+            "node_type": "flowdrop_workflow_react_agent_engine",
+            "status": "completed",
+            "seconds": 44.957,
+            "is_ai": true,
+            "error": null
+        },
+        {
+            "node_type": "text_output",
+            "status": "completed",
+            "seconds": 0,
+            "is_ai": false,
+            "error": null
+        }
+    ],
+    "annotations": []
+}
