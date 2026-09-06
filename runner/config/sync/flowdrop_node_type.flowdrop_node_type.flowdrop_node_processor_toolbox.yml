@@ -1,0 +1,37 @@
+uuid: b0021a54-eb25-4ce3-9d87-116f1c3de83f
+langcode: en
+status: true
+dependencies:
+  module:
+    - flowdrop_node_processor
+id: flowdrop_node_processor_toolbox
+label: 'Tool Box'
+description: 'Bundle tools into a shared set that multiple agents can consume'
+category: processing
+icon: 'mdi:cog'
+plugin_version: 1.0.0
+enabled: true
+parameters:
+  tool:
+    configurable: false
+    connectable: true
+    exposed_by_default: true
+    required: false
+outputs: {  }
+tags: {  }
+executor_plugin: 'flowdrop_node_processor:toolbox'
+visual_type: default
+supported_visual_types:
+  - default
+unified_input_exposed: false
+unified_output_exposed: false
+tool_exposed: true
+confirmation:
+  author_controls:
+    - waive
+    - require
+  dynamic_controls: {  }
+reserved_port_exposure:
+  tool: true
+  trigger_input: false
+  trigger_output: false

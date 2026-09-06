@@ -1,0 +1,17 @@
+_core:
+  default_config_hash: O3q_XPrGTd9bnghfr9Dt9gD4Ez23LeBNGiU1vwzy9_o
+default_settings: |
+  {
+    "theme": {
+      "preference": "auto"
+    },
+    "ui": {
+      "configPlacement": "sidebar",
+      "consolePlacement": "sidebar"
+    }
+  }
+exposed_categories:
+  - theme
+  - ui
+draft_auto_save: true
+draft_storage: session

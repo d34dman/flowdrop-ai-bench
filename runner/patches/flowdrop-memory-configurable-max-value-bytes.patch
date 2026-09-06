@@ -1,0 +1,86 @@
+diff -ruN a/modules/flowdrop_memory/config/install/flowdrop_memory.settings.yml b/modules/flowdrop_memory/config/install/flowdrop_memory.settings.yml
+--- a/modules/flowdrop_memory/config/install/flowdrop_memory.settings.yml	2026-08-30 19:55:08
++++ b/modules/flowdrop_memory/config/install/flowdrop_memory.settings.yml	2026-08-30 19:55:24
+@@ -1,3 +1,4 @@
++max_value_bytes: 1048576
+ backend_config:
+   cached:
+     cache_bin: default
+diff -ruN a/modules/flowdrop_memory/config/schema/flowdrop_memory.schema.yml b/modules/flowdrop_memory/config/schema/flowdrop_memory.schema.yml
+--- a/modules/flowdrop_memory/config/schema/flowdrop_memory.schema.yml	2026-08-30 19:55:09
++++ b/modules/flowdrop_memory/config/schema/flowdrop_memory.schema.yml	2026-08-30 19:55:24
+@@ -2,6 +2,9 @@
+   type: config_object
+   label: 'FlowDrop Memory settings'
+   mapping:
++    max_value_bytes:
++      type: integer
++      label: 'Maximum serialized value size in bytes'
+     backend_config:
+       type: mapping
+       label: 'Backend-specific configuration'
+diff -ruN a/modules/flowdrop_memory/src/Service/MemoryManager.php b/modules/flowdrop_memory/src/Service/MemoryManager.php
+--- a/modules/flowdrop_memory/src/Service/MemoryManager.php	2026-08-30 19:55:08
++++ b/modules/flowdrop_memory/src/Service/MemoryManager.php	2026-08-30 19:55:24
+@@ -31,11 +31,19 @@
+ class MemoryManager {
+ 
+   /**
+-   * Maximum allowed size for a serialized value in bytes (1 MB).
++   * Default maximum size for a serialized value in bytes (1 MB).
++   *
++   * Used when flowdrop_memory.settings has no max_value_bytes override, so
++   * sites that never touch the setting keep the previous behaviour exactly.
+    */
+   const MAX_VALUE_BYTES = 1_048_576;
+ 
+   /**
++   * Resolved size ceiling, or NULL until first read from configuration.
++   */
++  private ?int $maxValueBytes = NULL;
++
++  /**
+    * Cache of instantiated backend instances, keyed by backend plugin ID.
+    *
+    * @var array<string, \Drupal\flowdrop_memory\Plugin\MemoryBackend\MemoryBackendInterface>
+@@ -138,16 +146,38 @@
+         $e->getMessage(),
+       ), 0, $e);
+     }
+-    if (strlen($serialized) > self::MAX_VALUE_BYTES) {
++    $limit = $this->getMaxValueBytes();
++    if (strlen($serialized) > $limit) {
+       throw new MemoryBackendException(sprintf(
+         'Memory value for key "%s" in scope "%s" exceeds the maximum allowed size of %d bytes (%d bytes given).',
+         $key,
+         $scope,
+-        self::MAX_VALUE_BYTES,
++        $limit,
+         strlen($serialized),
+       ));
+     }
+     $this->getBackend($backendId)->set($scope, $scope_id, $key, $value, $ttl);
++  }
++
++  /**
++   * Returns the effective maximum size for a serialized value, in bytes.
++   *
++   * Read from flowdrop_memory.settings:max_value_bytes, falling back to
++   * MAX_VALUE_BYTES. A non-positive or non-numeric setting is ignored rather
++   * than allowed to disable the guard.
++   *
++   * @return int
++   *   The size ceiling in bytes.
++   */
++  public function getMaxValueBytes(): int {
++    if ($this->maxValueBytes !== NULL) {
++      return $this->maxValueBytes;
++    }
++    $configured = $this->configFactory->get('flowdrop_memory.settings')->get('max_value_bytes');
++    $this->maxValueBytes = (is_numeric($configured) && (int) $configured > 0)
++      ? (int) $configured
++      : self::MAX_VALUE_BYTES;
++    return $this->maxValueBytes;
+   }
+ 
+   /**

@@ -1,0 +1,44 @@
+uuid: 8df5ed75-42ef-4cff-8333-e552ad31b72a
+langcode: en
+status: true
+dependencies:
+  module:
+    - flowdrop_node_processor
+_core:
+  default_config_hash: 27zf0GmdV3UeeWqgsBN2z6LgHScv-DLEpiI4XVuoDcc
+id: repeat
+label: Repeat
+description: 'Repeat a value N times'
+category: tools
+icon: 'mdi:repeat'
+plugin_version: 1.0.0
+enabled: true
+parameters:
+  count:
+    configurable: true
+    connectable: true
+    required: true
+  value:
+    configurable: true
+    connectable: true
+    required: false
+outputs:
+  count:
+    exposed: true
+    exposed_by_default: false
+  items:
+    exposed: true
+  value:
+    exposed: true
+    exposed_by_default: false
+tags: {  }
+executor_plugin: 'flowdrop_node_processor:repeat'
+visual_type: default
+supported_visual_types:
+  - default
+  - tool
+unified_input_exposed: true
+unified_output_exposed: true
+tool_exposed: true
+confirmation: {  }
+reserved_port_exposure: {  }

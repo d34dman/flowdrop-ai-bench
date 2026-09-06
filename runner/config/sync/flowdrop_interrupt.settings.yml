@@ -1,0 +1,6 @@
+_core:
+  default_config_hash: QRKrbUbOOOu_PyC23lLLzsaz3lIOf2WENtL2JbUFvNM
+cleanup_enabled: true
+cleanup_max_age: 604800
+timer_max_delay: 31536000
+gate_expiry: 259200

@@ -1,0 +1,39 @@
+uuid: 5739d909-7e92-4f82-afa5-0980b236934c
+langcode: en
+status: true
+dependencies:
+  module:
+    - flowdrop_node_processor
+_core:
+  default_config_hash: vmi5ymG5yvRaNaX_67-wWi3CqdSEFKEEpjyw2Wzejd4
+id: stop
+label: Stop
+description: 'End the workflow run here, abandoning any downstream nodes.'
+category: logic
+icon: 'mdi:stop-circle'
+plugin_version: 1.0.0
+enabled: true
+parameters:
+  reason:
+    configurable: true
+    connectable: true
+    exposed_by_default: false
+    required: false
+    default: ''
+  result:
+    configurable: false
+    connectable: true
+    required: false
+outputs: {  }
+tags: {  }
+executor_plugin: 'flowdrop_node_processor:stop'
+visual_type: default
+supported_visual_types:
+  - default
+  - simple
+  - square
+unified_input_exposed: false
+unified_output_exposed: false
+tool_exposed: false
+confirmation: {  }
+reserved_port_exposure: {  }

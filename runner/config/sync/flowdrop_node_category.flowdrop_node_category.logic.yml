@@ -1,0 +1,11 @@
+uuid: e6939cf4-97bd-43cf-b433-ca27f1390f67
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: lliBsH76dBwkhNDBDKmyu_3yXdQ8GwhtcLYDvebrWDQ
+id: logic
+label: Logic
+description: 'Control your workflow with conditional branching, loops, switches, and other decision-making nodes that determine which path to follow.'
+icon: 'mdi:source-branch'
+color: '#a855f7'

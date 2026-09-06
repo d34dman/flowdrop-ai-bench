@@ -1,0 +1,67 @@
+uuid: 4f832bb0-5bba-49c5-972e-8ee4dcaa1319
+langcode: en
+status: true
+dependencies:
+  module:
+    - flowdrop_stategraph
+_core:
+  default_config_hash: ZCsVP2x7dR3oAMKm5POQHF83Yqc5V4rJle7sW0WPqGk
+id: foreach
+label: 'ForEach Loop'
+description: 'Iterates over an array, processing each item in sequence'
+category: logic
+icon: 'mdi:repeat'
+plugin_version: 1.0.0
+enabled: true
+parameters:
+  __iterator__:
+    configurable: false
+    connectable: false
+    required: false
+  item_result:
+    configurable: false
+    connectable: false
+    required: false
+  items:
+    configurable: false
+    connectable: true
+    required: false
+  loop_back:
+    configurable: false
+    connectable: true
+    required: false
+outputs:
+  collected_results:
+    exposed: true
+  current_index:
+    exposed: true
+    exposed_by_default: false
+  current_item:
+    exposed: true
+  has_more:
+    exposed: true
+  is_first:
+    exposed: true
+    exposed_by_default: false
+  is_last:
+    exposed: true
+    exposed_by_default: false
+  loop_active:
+    exposed: true
+    exposed_by_default: false
+  state_update:
+    exposed: true
+    exposed_by_default: false
+  total_count:
+    exposed: true
+    exposed_by_default: false
+tags: {  }
+executor_plugin: 'flowdrop_stategraph:foreach'
+visual_type: default
+supported_visual_types:
+  - default
+unified_input_exposed: false
+unified_output_exposed: false
+tool_exposed: false
+confirmation: {  }
+reserved_port_exposure: {  }

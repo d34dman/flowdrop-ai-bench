@@ -1,0 +1,66 @@
+uuid: ca9b0f6d-2a8f-4c2c-96a0-06723582072d
+langcode: en
+status: true
+dependencies:
+  module:
+    - ai
+    - flowdrop_ui_agents
+    - modeler_api
+third_party_settings:
+  modeler_api:
+    modeler_id: flowdrop_agents
+    version: 1.0.0
+  flowdrop_ui_agents:
+    positions:
+      agent_agent_w81pomww:
+        x: 100
+        'y': 250
+    display_settings: {  }
+id: agent_w81pomww
+label: 'HTML in Markdown Out with Redaction'
+description: 'Use the HTML to Markdown tool to convert given html to markdown. Redacts certain competitor brand names.'
+system_prompt: |-
+  Convert the ENTIRE page to Markdown. If you are given a URL rather than the page,
+  fetch the content at that URL first.
+
+  Reproduce the full document: every heading, paragraph, list item and table, in
+  the original order and wording. Do not summarise, abridge, omit or re-word
+  anything. Redaction is the only change you may make to the text.
+
+  Redaction: the page discusses Drupal and its competing content management
+  products. Replace every mention of the CMS products Quillpress, Hexagrid, Lumen
+  CMS, Marrow and Sitewright with "████". Redact only the product: the same word
+  used in another sense (a person, a place, a unit, an ordinary word) is not a
+  product and must stay as written. Never redact Drupal.
+
+  Output the Markdown document and nothing else. No code fences, no preamble, no
+  commentary, no explanation of what you did.
+secured_system_prompt: '[ai_agent:agent_instructions]'
+tools:
+  'ai_agent:html_to_markdown': true
+tool_settings:
+  'ai_agent:html_to_markdown':
+    return_directly: false
+    require_usage: false
+    use_artifacts: false
+    description_override: ''
+    progress_message: ''
+    restrict_multiple_calls: false
+    multiple_call_error_message: ''
+orchestration_agent: false
+triage_agent: false
+max_loops: 10
+max_loops_message: ''
+default_information_tools: ''
+tool_usage_limits:
+  'ai_agent:html_to_markdown':
+    content:
+      action: ''
+      hide_property: false
+      values: ''
+exclude_users_role: false
+masquerade_roles: {  }
+structured_output_enabled: false
+structured_output_schema: ''
+hostname_filter_disabled: false
+guardrail_set: ''

@@ -1,0 +1,63 @@
+uuid: cb3121c1-31ed-4811-8a5e-4b8688433e3b
+langcode: en
+status: true
+dependencies:
+  module:
+    - flowdrop_workflow_executor
+_core:
+  default_config_hash: lVVYaCdjITx_VMs41OK40fovdo50LFjbjV_4cSgKb7k
+id: workflow_results_retriever
+label: 'Workflow Results Retriever'
+description: 'Retrieve results from an async workflow execution'
+category: processing
+icon: 'mdi:download-circle-outline'
+plugin_version: ''
+enabled: true
+parameters:
+  poll_interval_ms:
+    configurable: true
+    connectable: true
+    exposed_by_default: false
+    required: false
+    default: 2000
+  session_id:
+    configurable: false
+    connectable: true
+    required: true
+  timeout:
+    configurable: true
+    connectable: true
+    exposed_by_default: false
+    required: false
+    default: 300
+  wait_for_completion:
+    configurable: true
+    connectable: true
+    exposed_by_default: false
+    required: false
+    default: true
+outputs:
+  error_message:
+    exposed: true
+  outputs:
+    exposed: true
+  status:
+    exposed: true
+  success:
+    exposed: true
+  wait_time_ms:
+    exposed: true
+    exposed_by_default: false
+tags:
+  - processing
+  - workflow
+  - automation
+executor_plugin: 'flowdrop_workflow_executor:workflow_results_retriever'
+visual_type: default
+supported_visual_types:
+  - default
+unified_input_exposed: true
+unified_output_exposed: true
+tool_exposed: true
+confirmation: {  }
+reserved_port_exposure: {  }

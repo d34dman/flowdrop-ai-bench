@@ -1,0 +1,6 @@
+_core:
+  default_config_hash: Ab_DU6QUCaKv1Ikk4tZLWE7E440bpJBMmAy6RXpcD60
+max_value_bytes: 10485760
+backend_config:
+  cached:
+    cache_bin: default

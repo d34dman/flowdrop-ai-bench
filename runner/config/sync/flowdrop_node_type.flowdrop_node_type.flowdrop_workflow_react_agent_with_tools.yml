@@ -1,0 +1,51 @@
+uuid: c3b12c49-29de-4ec4-9a0a-adc8490da8ab
+langcode: en
+status: true
+dependencies:
+  module:
+    - flowdrop_workflow_executor
+id: flowdrop_workflow_react_agent_with_tools
+label: 'ReAct Agent with Tools'
+description: ''
+category: agents
+icon: 'mdi:face-agent'
+plugin_version: 1.0.0
+enabled: true
+parameters:
+  executionMode:
+    configurable: true
+    connectable: false
+    required: false
+    default: job
+  message:
+    configurable: false
+    connectable: true
+    exposed_by_default: true
+    required: false
+  system_prompt:
+    configurable: true
+    connectable: true
+    exposed_by_default: false
+    required: false
+outputs:
+  message:
+    exposed: true
+    exposed_by_default: true
+  reason:
+    exposed: true
+    exposed_by_default: true
+tags: {  }
+executor_plugin: 'flowdrop_workflow_executor:flowdrop_workflow:react_agent_with_tools'
+visual_type: default
+supported_visual_types:
+  - default
+unified_input_exposed: false
+unified_output_exposed: false
+tool_exposed: false
+confirmation:
+  author_controls:
+    - waive
+    - require
+  dynamic_controls: {  }
+reserved_port_exposure:
+  trigger_input: false

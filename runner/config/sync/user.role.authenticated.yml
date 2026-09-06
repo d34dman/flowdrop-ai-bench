@@ -1,0 +1,16 @@
+uuid: 809d1ce5-cd0a-4910-9ce5-1a2cfd9b13a5
+langcode: en
+status: true
+dependencies:
+  module:
+    - ai_metering
+    - system
+_core:
+  default_config_hash: dJ0L2DNSj5q6XVZAGsuVDpJTh5UeYkIPwKrUOOpr8YI
+id: authenticated
+label: 'Authenticated user'
+weight: 1
+is_admin: false
+permissions:
+  - 'access content'
+  - 'use ai_metering'

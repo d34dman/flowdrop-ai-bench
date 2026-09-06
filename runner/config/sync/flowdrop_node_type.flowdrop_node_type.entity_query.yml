@@ -1,0 +1,109 @@
+uuid: ae6fd888-3239-4e48-95a8-f93fc0636f3d
+langcode: en
+status: true
+dependencies:
+  module:
+    - flowdrop_node_processor
+_core:
+  default_config_hash: bsOGUo-Xg1IT46zgsAlsaP1KYl4ekdgbd8m0GTeXpd0
+id: entity_query
+label: 'Entity Query'
+description: 'Query Drupal entities (nodes, terms, users, etc.) with configurable conditions'
+category: data
+icon: 'mdi:database-search'
+plugin_version: ''
+enabled: true
+parameters:
+  bundle:
+    configurable: true
+    connectable: true
+    required: false
+    default: ''
+  changed_after:
+    configurable: true
+    connectable: true
+    required: false
+    default: 0
+  conditions:
+    configurable: true
+    connectable: true
+    required: false
+    default: {  }
+  entity_type:
+    configurable: true
+    connectable: false
+    required: true
+    default: node
+  limit:
+    configurable: true
+    connectable: true
+    exposed_by_default: false
+    required: false
+    default: 100
+  load_entities:
+    configurable: true
+    connectable: true
+    exposed_by_default: false
+    required: false
+    default: false
+  offset:
+    configurable: true
+    connectable: true
+    required: false
+    default: 0
+  published_only:
+    configurable: true
+    connectable: true
+    exposed_by_default: false
+    required: false
+    default: true
+  sort_direction:
+    configurable: true
+    connectable: true
+    exposed_by_default: false
+    required: false
+    default: DESC
+  sort_field:
+    configurable: true
+    connectable: true
+    exposed_by_default: false
+    required: false
+    default: changed
+outputs:
+  bundle:
+    exposed: true
+    exposed_by_default: false
+  count:
+    exposed: true
+    exposed_by_default: false
+  entities:
+    exposed: true
+    exposed_by_default: false
+  entity_type:
+    exposed: true
+    exposed_by_default: false
+  error_message:
+    exposed: true
+  has_more:
+    exposed: true
+    exposed_by_default: false
+  ids:
+    exposed: true
+    exposed_by_default: false
+  results:
+    exposed: true
+  success:
+    exposed: true
+tags:
+  - data
+  - query
+  - entity
+executor_plugin: 'flowdrop_node_processor:entity_query'
+visual_type: default
+supported_visual_types:
+  - default
+unified_input_exposed: true
+unified_output_exposed: true
+tool_exposed: true
+confirmation: {  }
+reserved_port_exposure: {  }

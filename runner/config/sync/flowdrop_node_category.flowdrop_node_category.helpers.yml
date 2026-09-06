@@ -1,0 +1,11 @@
+uuid: d66ac79f-34c1-4697-b2a4-30deef83d8d9
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: xhJICoZVbT17jQ85Usy2ucdUKqIGX9LvtH8cgT_AqXk
+id: helpers
+label: Helpers
+description: 'Handy utility nodes for common tasks like formatting, validation, debugging, logging, and workflow organization.'
+icon: 'mdi:help-circle'
+color: '#64748b'

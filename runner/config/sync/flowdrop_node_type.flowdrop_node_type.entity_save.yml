@@ -1,0 +1,96 @@
+uuid: 6f56c1f7-2ab6-490a-9957-cbc3b7281ca3
+langcode: en
+status: true
+dependencies:
+  module:
+    - flowdrop_node_processor
+_core:
+  default_config_hash: pUFGuaf-nxrFkvjCZ-19ZkDIhH1Jy8UYnEJmv6DTnaM
+id: entity_save
+label: 'Entity Save'
+description: 'Create or update Drupal entities'
+category: data
+icon: 'mdi:content-save'
+plugin_version: 1.0.0
+enabled: true
+parameters:
+  allowed_fields:
+    configurable: true
+    connectable: false
+    required: false
+    default: {  }
+  bundle:
+    configurable: true
+    connectable: true
+    required: false
+    default: ''
+  entity_id:
+    configurable: false
+    connectable: true
+    required: false
+    default: ''
+  entity_type:
+    configurable: true
+    connectable: false
+    required: true
+    default: node
+  new_revision:
+    configurable: true
+    connectable: true
+    required: false
+    default: false
+  revision_log_message:
+    configurable: true
+    connectable: true
+    required: false
+    default: ''
+  values:
+    configurable: true
+    connectable: true
+    required: false
+    default: {  }
+outputs:
+  bundle:
+    exposed: true
+    exposed_by_default: false
+  changed:
+    exposed: true
+    exposed_by_default: false
+  created:
+    exposed: true
+    exposed_by_default: false
+  entity_id:
+    exposed: true
+  entity_type:
+    exposed: true
+    exposed_by_default: false
+  is_new:
+    exposed: true
+    exposed_by_default: false
+  label:
+    exposed: true
+    exposed_by_default: false
+  revision_id:
+    exposed: true
+    exposed_by_default: false
+  skipped_fields:
+    exposed: true
+    exposed_by_default: false
+  uuid:
+    exposed: true
+    exposed_by_default: false
+tags: {  }
+executor_plugin: 'flowdrop_node_processor:entity_save'
+visual_type: default
+supported_visual_types:
+  - default
+unified_input_exposed: true
+unified_output_exposed: true
+tool_exposed: true
+confirmation:
+  policy: skip
+  author_controls:
+    - waive
+    - require
+  dynamic_controls: {  }
+reserved_port_exposure: {  }

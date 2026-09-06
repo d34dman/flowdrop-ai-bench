@@ -1,0 +1,24 @@
+diff --git a/src/Plugin/FlowDropNodeProcessor/Chat.php b/src/Plugin/FlowDropNodeProcessor/Chat.php
+index 2fa198b..188cf6c 100644
+--- a/src/Plugin/FlowDropNodeProcessor/Chat.php
++++ b/src/Plugin/FlowDropNodeProcessor/Chat.php
+@@ -341,7 +341,6 @@ public function getParameterSchema(): array {
+           'description' => 'Maximum tokens to generate',
+           'default' => 1000,
+           'minimum' => 1,
+-          'maximum' => 4000,
+         ],
+         'systemPrompt' => [
+           'type' => 'string',
+diff --git a/src/Plugin/FlowDropNodeProcessor/SimpleChat.php b/src/Plugin/FlowDropNodeProcessor/SimpleChat.php
+index 6d79182..bbedb5c 100644
+--- a/src/Plugin/FlowDropNodeProcessor/SimpleChat.php
++++ b/src/Plugin/FlowDropNodeProcessor/SimpleChat.php
+@@ -341,7 +341,6 @@ public function getParameterSchema(): array {
+           'description' => 'Maximum tokens to generate',
+           'default' => 1000,
+           'minimum' => 1,
+-          'maximum' => 4000,
+         ],
+         'systemPrompt' => [
+           'type' => 'string',

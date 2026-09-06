@@ -1,0 +1,46 @@
+uuid: 1e177f99-8447-4829-a2b2-9b58aff4910c
+langcode: en
+status: true
+dependencies:
+  module:
+    - flowdrop_node_processor
+_core:
+  default_config_hash: lYPDBaopiRdmt_d2QiSdSlrLiefaIVGSos-PemyaFLI
+id: data_mapper
+label: 'Data Mapper'
+description: 'Map multiple inputs to multiple outputs using configurable expressions'
+category: processing
+icon: 'mdi:swap-horizontal'
+plugin_version: 1.0.0
+enabled: true
+parameters:
+  dynamicInputs:
+    configurable: true
+    connectable: false
+    required: false
+    default: {  }
+  dynamicOutputs:
+    configurable: true
+    connectable: false
+    required: false
+    default: {  }
+  engine:
+    configurable: true
+    connectable: true
+    exposed_by_default: false
+    required: false
+    default: expression_language
+outputs: {  }
+tags:
+  - transform
+  - mapping
+  - data
+executor_plugin: 'flowdrop_node_processor:data_mapper'
+visual_type: default
+supported_visual_types:
+  - default
+unified_input_exposed: false
+unified_output_exposed: false
+tool_exposed: true
+confirmation: {  }
+reserved_port_exposure: {  }

@@ -1,0 +1,87 @@
+uuid: 69f3ea1e-842a-4ca7-b4e1-c79210e18457
+langcode: en
+status: true
+dependencies:
+  module:
+    - flowdrop_node_processor
+_core:
+  default_config_hash: BQDJzE3s2VFYUFygnozLnlQxGR8h6hV-1J8ugEwHmO0
+id: idea
+label: Idea
+description: 'Conceptual idea node for BPMN-like flow diagrams. Chain ideas together without committing to specific implementations.'
+category: helpers
+icon: 'mdi:lightbulb-outline'
+plugin_version: 1.1.0
+enabled: true
+parameters:
+  color:
+    configurable: true
+    connectable: false
+    required: false
+    default: '#6366f1'
+  enableBottomPort:
+    configurable: true
+    connectable: false
+    required: false
+    default: false
+  enableLeftPort:
+    configurable: true
+    connectable: false
+    required: false
+    default: true
+  enableRightPort:
+    configurable: true
+    connectable: false
+    required: false
+    default: true
+  enableTopPort:
+    configurable: true
+    connectable: false
+    required: false
+    default: false
+  icon:
+    configurable: true
+    connectable: false
+    required: false
+    default: 'mdi:lightbulb-outline'
+  instanceDescription:
+    configurable: true
+    connectable: false
+    required: false
+    default: 'Describe your idea here...'
+  instanceTitle:
+    configurable: true
+    connectable: false
+    required: false
+    default: 'New Idea'
+outputs:
+  color:
+    exposed: false
+  enableBottomPort:
+    exposed: false
+  enableLeftPort:
+    exposed: false
+  enableRightPort:
+    exposed: false
+  enableTopPort:
+    exposed: false
+  icon:
+    exposed: false
+  message:
+    exposed: false
+tags:
+  - idea
+  - concept
+  - bpmn
+  - flow
+  - planning
+  - brainstorm
+executor_plugin: 'flowdrop_node_processor:idea'
+visual_type: idea
+supported_visual_types:
+  - idea
+unified_input_exposed: false
+unified_output_exposed: false
+tool_exposed: false
+confirmation: {  }
+reserved_port_exposure: {  }

@@ -1,0 +1,11 @@
+uuid: f188cc5f-1c47-44ec-946b-ce555dae9737
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: cCy-1z6UJgG-E54mxsh47Ttv9pH1jKi0rngKGHSEBu8
+id: processing
+label: Processing
+description: 'Transform, filter, parse, and manipulate data as it flows through your workflow to prepare it for the next step.'
+icon: 'mdi:application-braces-outline'
+color: '#14b8a6'

@@ -1,0 +1,116 @@
+uuid: ca3ffc55-5d4f-4f91-9253-d813731272d4
+langcode: en
+status: true
+dependencies:
+  config:
+    - flowdrop_node_type.flowdrop_node_type.chat_output
+    - flowdrop_node_type.flowdrop_node_type.flowdrop_workflow_react_agent_with_optimized_tools
+id: bench_7_react_optimized
+label: 'Bench 7 · ReAct with url_to_markdown tool'
+description: 'Peer of Bench 5. Same shape, same prompt; the agent is additionally given a url_to_markdown tool so page content never has to pass through the model to reach the converter.'
+nodes:
+  -
+    id: chat_output.3
+    position:
+      x: 860
+      'y': 140
+    data:
+      label: 'Chat Output'
+      config:
+        format: text
+        showTimestamp: false
+        nodeType: default
+        maxRetries: 0
+        requiresConfirmation: ''
+        ports:
+          outputs:
+            -
+              id: message
+            -
+              id: format
+            -
+              id: timestamp
+            -
+              id: metadata
+            -
+              id: trigger
+              exposed: false
+            -
+              id: error
+          inputs:
+            -
+              id: message
+            -
+              id: loop_back
+            -
+              id: trigger
+              exposed: false
+      metadata:
+        node_type_id: chat_output
+    measured:
+      width: 280
+      height: 242
+  -
+    id: flowdrop_workflow_react_agent_with_optimized_tools.1
+    position:
+      x: 440
+      'y': 80
+    data:
+      label: 'ReAct Agent with Optimized Tools'
+      config:
+        executionMode: job
+        maxRetries: 0
+        requiresConfirmation: ''
+      metadata:
+        node_type_id: flowdrop_workflow_react_agent_with_optimized_tools
+    measured:
+      width: 280
+      height: 362
+edges:
+  -
+    id: xy-edge__flowdrop_workflow_react_agent_with_optimized_tools.1flowdrop_workflow_react_agent_with_optimized_tools.1-output-reason-chat_output.3chat_output.3-input-message
+    source: flowdrop_workflow_react_agent_with_optimized_tools.1
+    target: chat_output.3
+    data:
+      targetNodeType: universalNode
+      targetCategory: processing
+      metadata:
+        edgeType: data
+        sourcePortDataType: string
+    sourceHandle: flowdrop_workflow_react_agent_with_optimized_tools.1-output-reason
+    targetHandle: chat_output.3-input-message
+    style: 'stroke: var(--fd-edge-data);'
+    markerEnd:
+      type: arrowclosed
+      width: 16
+      height: 16
+      color: var(--fd-edge-data)
+    class: flowdrop--edge--data
+metadata:
+  createdAt: '2026-08-27T08:03:34.948Z'
+  updatedAt: '2026-08-28T14:11:44.184Z'
+  orchestrator_settings:
+    type: 'flowdrop_runtime:synchronous'
+created: 1788169121
+changed: 1788169133
+uid: 0
+input_ports:
+  -
+    name: url
+    node_id: flowdrop_workflow_react_agent_with_optimized_tools.1
+    port: message
+    title: URL
+    description: 'The page to fetch, convert to Markdown and redact.'
+    required: true
+output_ports: null
+parameter_schema:
+  type: object
+  required:
+    - url
+  properties:
+    url:
+      title: URL
+      description: 'The page to fetch, convert to Markdown and redact.'
+      x-data-type: mixed
+output_schema: null
+schema_version: 1.1.0

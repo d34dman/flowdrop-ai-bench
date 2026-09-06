@@ -1,0 +1,71 @@
+uuid: cb67a76b-20e3-446b-b5b5-a0a2754a67b5
+langcode: en
+status: true
+dependencies:
+  module:
+    - flowdrop_node_processor
+_core:
+  default_config_hash: c1Nd4aqV6Fd9DU_YiQehcJwGUo3eiHyGydLCyZCqrOU
+id: dataframe_operations
+label: 'Dataframe Operations'
+description: 'Operations on dataframe data'
+category: data
+icon: 'mdi:database-cog-outline'
+plugin_version: 1.0.0
+enabled: true
+parameters:
+  columns:
+    configurable: true
+    connectable: true
+    exposed_by_default: false
+    required: false
+    default: {  }
+  condition:
+    configurable: true
+    connectable: true
+    exposed_by_default: false
+    required: false
+  dataframe:
+    configurable: false
+    connectable: true
+    required: false
+  operation:
+    configurable: true
+    connectable: true
+    exposed_by_default: false
+    required: false
+    default: head
+  rows:
+    configurable: true
+    connectable: true
+    exposed_by_default: false
+    required: false
+    default: 5
+outputs:
+  columns:
+    exposed: true
+    exposed_by_default: false
+  input_rows:
+    exposed: true
+    exposed_by_default: false
+  operation:
+    exposed: true
+    exposed_by_default: false
+  output_rows:
+    exposed: true
+    exposed_by_default: false
+  result:
+    exposed: true
+  rows:
+    exposed: true
+    exposed_by_default: false
+tags: {  }
+executor_plugin: 'flowdrop_node_processor:dataframe_operations'
+visual_type: default
+supported_visual_types:
+  - default
+unified_input_exposed: true
+unified_output_exposed: true
+tool_exposed: true
+confirmation: {  }
+reserved_port_exposure: {  }

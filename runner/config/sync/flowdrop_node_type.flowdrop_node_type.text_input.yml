@@ -1,0 +1,39 @@
+uuid: 711f766e-a6e5-4275-bc71-d9751ee50e8e
+langcode: en
+status: true
+dependencies:
+  module:
+    - flowdrop_node_processor
+_core:
+  default_config_hash: 71RrA4XHrwWjIbOEmYVLQNeRmgcaef1qONc5v-qZ0SY
+id: text_input
+label: 'Text Input'
+description: 'User text input field'
+category: inputs
+icon: 'mdi:alphabetical-variant'
+plugin_version: 1.0.0
+enabled: true
+parameters:
+  data:
+    configurable: false
+    connectable: true
+    required: false
+  defaultValue:
+    configurable: true
+    connectable: false
+    required: false
+outputs:
+  text:
+    exposed: true
+tags: {  }
+executor_plugin: 'flowdrop_node_processor:text_input'
+visual_type: simple
+supported_visual_types:
+  - default
+  - simple
+  - square
+unified_input_exposed: false
+unified_output_exposed: false
+tool_exposed: false
+confirmation: {  }
+reserved_port_exposure: {  }

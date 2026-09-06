@@ -1,0 +1,103 @@
+_core:
+  default_config_hash: fh7auhmIekTtiCeInDIfcS4wHuWar_dpO2T_xnmMKa8
+model_routing:
+  small_model: claude-haiku-4-5-20251001
+pricing:
+  active_source: litellm
+  'anthropic:claude-haiku-4-5-20251001':
+    input_per_token: 1.0E-6
+    output_per_token: 5.0E-6
+    cache_read_per_token: 1.0E-7
+    cache_write_per_token: 1.25E-6
+  'anthropic:claude-sonnet-4-5-20250929':
+    input_per_token: 3.0E-6
+    output_per_token: 1.5E-5
+    cache_read_per_token: 3.0E-7
+    source: manual
+  'anthropic:claude-opus-4-5-20250929':
+    input_per_token: 1.5E-5
+    output_per_token: 7.5E-5
+    cache_read_per_token: 1.5E-6
+    source: manual
+  'openai:gpt-4o':
+    input_per_token: 2.5E-6
+    output_per_token: 1.0E-5
+    cache_read_per_token: 1.25E-6
+    source: manual
+  'openai:gpt-4o-mini':
+    input_per_token: 1.5E-7
+    output_per_token: 6.0E-7
+    cache_read_per_token: 7.5E-8
+    source: manual
+  'ollama:_default':
+    input_per_token: 0.0
+    output_per_token: 0.0
+    cache_read_per_token: 0.0
+  'anthropic:claude-sonnet-4-6':
+    input_per_token: 3.0E-6
+    output_per_token: 1.5E-5
+    cache_read_per_token: 3.0E-7
+    cache_write_per_token: 3.75E-6
+  'anthropic:claude-sonnet-5':
+    input_per_token: 2.0E-6
+    output_per_token: 1.0E-5
+    cache_read_per_token: 2.0E-7
+    cache_write_per_token: 2.5E-6
+  'anthropic:claude-opus-5':
+    input_per_token: 5.0E-6
+    output_per_token: 2.5E-5
+    cache_read_per_token: 5.0E-7
+    cache_write_per_token: 6.25E-6
+  'anthropic:claude-opus-4-5-20251101':
+    input_per_token: 1.5E-5
+    output_per_token: 7.5E-5
+    cache_read_per_token: 1.5E-6
+    cache_write_per_token: 1.875E-5
+  'anthropic:claude-haiku-4-5':
+    input_per_token: 1.0E-6
+    output_per_token: 5.0E-6
+    cache_read_per_token: 1.0E-7
+    cache_write_per_token: 1.25E-6
+  'anthropic:claude-sonnet-4-5':
+    input_per_token: 3.0E-6
+    output_per_token: 1.5E-5
+    cache_read_per_token: 3.0E-7
+    source: manual
+  'anthropic:claude-opus-4-5':
+    input_per_token: 1.5E-5
+    output_per_token: 7.5E-5
+    cache_read_per_token: 1.5E-6
+    cache_write_per_token: 1.875E-5
+usage_retention_days: 0
+local_provider_ids: {  }
+quota:
+  default_monthly_tokens: 10000000
+  anonymous_monthly_tokens: 498000
+  output_ratio: 0.2
+  fallback_provider: ''
+  fallback_model: ''
+  translate_output_ratio: 1.1
+  role_defaults: {  }
+  cache_inclusive_providers:
+    - openai
+    - gemini
+alerts:
+  threshold_pct: 75
+  emails: {  }
+  webhook_url: ''
+notifications:
+  user_on_fallback: true
+  admin_on_fallback: true
+litellm:
+  enabled: false
+  proxy_url: ''
+  api_key: ''
+currency:
+  display: USD
+  cache_ttl: 3600
+  manual_rates:
+    CAD: 1.36
+    EUR: 0.92
+    GBP: 0.78
+    AUD: 1.52
+    JPY: 153.0

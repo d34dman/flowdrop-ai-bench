@@ -1,0 +1,52 @@
+uuid: a31ce16b-3cd9-4a7b-8a70-61d46ade0f5c
+langcode: en
+status: true
+dependencies:
+  module:
+    - flowdrop_workflow_executor
+id: flowdrop_workflow_url_to_markdown
+label: 'Run workflow: URL to Markdown'
+description: ''
+category: tools
+icon: 'mdi:language-markdown'
+plugin_version: 1.0.0
+enabled: true
+parameters:
+  executionMode:
+    configurable: true
+    connectable: false
+    required: false
+    default: job
+  url:
+    configurable: true
+    connectable: true
+    exposed_by_default: true
+    required: false
+outputs:
+  body:
+    exposed: true
+    exposed_by_default: false
+  markdown:
+    exposed: true
+    exposed_by_default: true
+  status_code:
+    exposed: true
+    exposed_by_default: false
+  success:
+    exposed: true
+    exposed_by_default: false
+tags: {  }
+executor_plugin: 'flowdrop_workflow_executor:flowdrop_workflow:url_to_markdown'
+visual_type: default
+supported_visual_types:
+  - default
+  - tool
+unified_input_exposed: false
+unified_output_exposed: false
+tool_exposed: true
+confirmation:
+  author_controls:
+    - waive
+    - require
+  dynamic_controls: {  }
+reserved_port_exposure: {  }

@@ -1,0 +1,57 @@
+uuid: 788584f2-8f32-4887-a438-0e719a6bba45
+langcode: en
+status: true
+dependencies:
+  module:
+    - flowdrop_ai_provider
+_core:
+  default_config_hash: Ezc3dXnMu0LPzR6Dvfu1H7HxctgkylpJU0XtnxqNCQ4
+id: flowdrop_ai_provider_image_classification
+label: 'Image Classification'
+description: 'Classify images and identify their content using AI models'
+category: ai
+icon: 'mdi:image-search'
+plugin_version: 1.0.0
+enabled: true
+parameters:
+  image_file:
+    configurable: false
+    connectable: true
+    required: false
+  image_url:
+    configurable: true
+    connectable: true
+    required: false
+    default: ''
+  labels:
+    configurable: true
+    connectable: true
+    required: false
+    default: {  }
+  model:
+    configurable: true
+    connectable: false
+    required: false
+    default: ''
+outputs:
+  classifications:
+    exposed: true
+  model:
+    exposed: false
+  provider:
+    exposed: false
+tags:
+  - model
+  - ai
+  - image
+  - classification
+  - vision
+executor_plugin: 'flowdrop_ai_provider:image_classification'
+visual_type: default
+supported_visual_types:
+  - default
+unified_input_exposed: false
+unified_output_exposed: false
+tool_exposed: false
+confirmation: {  }
+reserved_port_exposure: {  }

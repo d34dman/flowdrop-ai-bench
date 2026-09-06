@@ -1,0 +1,99 @@
+uuid: f934ad75-b14d-4340-b2fd-cf419b5a451f
+langcode: en
+status: true
+dependencies:
+  module:
+    - flowdrop_agents
+id: flowdrop_agents_ai_agents_executor
+label: 'AI Agent Executor'
+description: 'Execute AI Agents with full status and output tracking'
+category: agents
+icon: 'mdi:robot-happy-outline'
+plugin_version: 1.0.0
+enabled: true
+parameters:
+  additional_context:
+    configurable: true
+    connectable: true
+    exposed_by_default: false
+    required: false
+  agent_id:
+    configurable: true
+    connectable: false
+    required: false
+  chat_history:
+    configurable: false
+    connectable: true
+    exposed_by_default: false
+    required: false
+    default: {  }
+  create_directly:
+    configurable: true
+    connectable: false
+    required: false
+    default: true
+  llm_model:
+    configurable: true
+    connectable: false
+    required: false
+  task_description:
+    configurable: true
+    connectable: false
+    required: true
+  task_title:
+    configurable: true
+    connectable: false
+    required: false
+  tool_usage_limits:
+    configurable: true
+    connectable: false
+    required: false
+    default: {  }
+outputs:
+  agent_id:
+    exposed: true
+    exposed_by_default: false
+  agent_type:
+    exposed: true
+    exposed_by_default: false
+  error_message:
+    exposed: true
+    exposed_by_default: false
+  execution_metadata:
+    exposed: true
+    exposed_by_default: false
+  information:
+    exposed: true
+    exposed_by_default: false
+  job_status:
+    exposed: true
+    exposed_by_default: false
+  job_status_label:
+    exposed: true
+    exposed_by_default: false
+  questions:
+    exposed: true
+    exposed_by_default: false
+  response:
+    exposed: true
+    exposed_by_default: true
+  structured_output:
+    exposed: true
+    exposed_by_default: false
+  success:
+    exposed: true
+    exposed_by_default: false
+tags: {  }
+executor_plugin: 'flowdrop_agents:ai_agents_executor'
+visual_type: default
+supported_visual_types:
+  - default
+unified_input_exposed: false
+unified_output_exposed: false
+tool_exposed: false
+confirmation:
+  author_controls:
+    - waive
+    - require
+  dynamic_controls: {  }
+reserved_port_exposure: {  }

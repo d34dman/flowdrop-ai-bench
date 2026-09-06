@@ -1,0 +1,49 @@
+uuid: f10e974c-9279-4a53-88f6-2464026d91f2
+langcode: en
+status: true
+dependencies:
+  module:
+    - flowdrop_node_processor
+id: prompt_template
+label: 'Prompt Template'
+description: 'Create prompts using templates with variable substitution'
+category: prompts
+icon: 'mdi:code-block-braces'
+plugin_version: 1.0.0
+enabled: true
+parameters:
+  dynamicInputs:
+    configurable: true
+    connectable: false
+    required: false
+    default: {  }
+  template:
+    configurable: true
+    connectable: true
+    exposed_by_default: false
+    required: false
+  variables:
+    configurable: false
+    connectable: true
+    required: false
+    default: {  }
+outputs:
+  prompt:
+    exposed: true
+  template:
+    exposed: true
+    exposed_by_default: false
+  variables:
+    exposed: true
+    exposed_by_default: false
+tags: {  }
+executor_plugin: 'flowdrop_node_processor:prompt_template'
+visual_type: default
+supported_visual_types:
+  - default
+  - simple
+unified_input_exposed: false
+unified_output_exposed: false
+tool_exposed: true
+confirmation: {  }
+reserved_port_exposure: {  }

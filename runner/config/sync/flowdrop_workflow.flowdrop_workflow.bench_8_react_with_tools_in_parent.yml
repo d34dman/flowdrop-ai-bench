@@ -1,0 +1,384 @@
+uuid: 4f55cfae-eecd-4628-ac5b-3a8a9814af5a
+langcode: en
+status: true
+dependencies:
+  config:
+    - flowdrop_node_type.flowdrop_node_type.chat_output
+    - flowdrop_node_type.flowdrop_node_type.flowdrop_workflow_react_agent_engine
+    - flowdrop_node_type.flowdrop_node_type.flowdrop_workflow_url_to_markdown
+    - flowdrop_node_type.flowdrop_node_type.html_to_markdown
+    - flowdrop_node_type.flowdrop_node_type.http_request
+    - flowdrop_node_type.flowdrop_node_type.text_output
+id: bench_8_react_with_tools_in_parent
+label: 'Bench 8 · ReAct with Tools in Parent'
+description: 'Peer of Bench 5. Same shape, same prompt; the agent is additionally given a url_to_markdown tool so page content never has to pass through the model to reach the converter.'
+nodes:
+  -
+    id: chat_output.3
+    position:
+      x: 1040
+      'y': 120
+    data:
+      label: 'Chat Output'
+      config:
+        format: text
+        showTimestamp: false
+        nodeType: default
+        maxRetries: 0
+        requiresConfirmation: ''
+        ports:
+          outputs:
+            -
+              id: message
+            -
+              id: format
+            -
+              id: timestamp
+            -
+              id: metadata
+            -
+              id: trigger
+              exposed: false
+            -
+              id: error
+          inputs:
+            -
+              id: message
+            -
+              id: loop_back
+            -
+              id: trigger
+              exposed: false
+      metadata:
+        node_type_id: chat_output
+    measured:
+      width: 280
+      height: 242
+  -
+    id: flowdrop_workflow_react_agent_engine.1
+    position:
+      x: 380
+      'y': -300
+    data:
+      label: 'ReAct Agent Engine'
+      config:
+        system_prompt: |-
+          Convert the ENTIRE page to Markdown. If you are given a URL rather than the page,
+          fetch the content at that URL first.
+
+          Reproduce the full document: every heading, paragraph, list item and table, in
+          the original order and wording. Do not summarise, abridge, omit or re-word
+          anything. Redaction is the only change you may make to the text.
+
+          Redaction: the page discusses Drupal and its competing content management
+          products. Replace every mention of the CMS products Quillpress, Hexagrid, Lumen
+          CMS, Marrow and Sitewright with "████". Redact only the product: the same word
+          used in another sense (a person, a place, a unit, an ordinary word) is not a
+          product and must stay as written. Never redact Drupal.
+
+          Output the Markdown document and nothing else. No code fences, no preamble, no
+          commentary, no explanation of what you did.
+        maxRetries: 0
+        requiresConfirmation: ''
+        message: 'https://www.hostinger.com/tutorials/drupal-vs-wordpress/'
+      metadata:
+        node_type_id: flowdrop_workflow_react_agent_engine
+    measured:
+      width: 280
+      height: 542
+  -
+    id: flowdrop_workflow_url_to_markdown.1
+    position:
+      x: -60
+      'y': -480
+    data:
+      label: 'Run workflow: URL to Markdown'
+      config:
+        url: ''
+        executionMode: job
+        nodeType: default
+        maxRetries: 0
+        requiresConfirmation: waive
+        ports:
+          outputs:
+            -
+              id: status_code
+              exposed: true
+            -
+              id: markdown
+            -
+              id: success
+            -
+              id: body
+            -
+              id: trigger
+              exposed: false
+            -
+              id: tool
+              exposed: true
+            -
+              id: error
+          inputs:
+            -
+              id: url
+            -
+              id: loop_back
+            -
+              id: trigger
+              exposed: false
+        instanceTitle: 'URL to Markdown'
+        instanceDescription: 'Fetches a URL and converts the content to Markdown'
+      metadata:
+        node_type_id: flowdrop_workflow_url_to_markdown
+    measured:
+      width: 280
+      height: 382
+  -
+    id: http_request.1
+    position:
+      x: -480
+      'y': -360
+    data:
+      label: 'HTTP Request'
+      config:
+        url: ''
+        method: GET
+        headers: {  }
+        body: ''
+        timeout: 30
+        follow_redirects: true
+        maxRetries: 0
+        requiresConfirmation: waive
+        ports:
+          outputs:
+            -
+              id: status_code
+            -
+              id: headers
+              exposed: false
+            -
+              id: body
+            -
+              id: json
+              exposed: false
+            -
+              id: url
+              exposed: false
+            -
+              id: method
+              exposed: false
+            -
+              id: request_time
+              exposed: false
+            -
+              id: trigger
+              exposed: false
+            -
+              id: tool
+              exposed: true
+            -
+              id: error
+          inputs:
+            -
+              id: url
+            -
+              id: loop_back
+            -
+              id: trigger
+              exposed: false
+      metadata:
+        node_type_id: http_request
+    measured:
+      width: 280
+      height: 362
+  -
+    id: html_to_markdown.1
+    position:
+      x: -60
+      'y': 0
+    data:
+      label: 'HTML to Markdown'
+      config:
+        heading_style: atx
+        bold_style: '**'
+        italic_style: '*'
+        strip_placeholder_links: false
+        maxRetries: 0
+        requiresConfirmation: waive
+        ports:
+          outputs:
+            -
+              id: markdown
+            -
+              id: success
+            -
+              id: trigger
+              exposed: false
+            -
+              id: tool
+              exposed: true
+            -
+              id: error
+          inputs:
+            -
+              id: html
+            -
+              id: loop_back
+            -
+              id: trigger
+              exposed: false
+      metadata:
+        node_type_id: html_to_markdown
+    measured:
+      width: 280
+      height: 382
+  -
+    id: text_output.1
+    position:
+      x: 1040
+      'y': -200
+    data:
+      label: 'Text Output'
+      config:
+        maxLength: 1000000
+        format: plain
+        nodeType: default
+        maxRetries: 0
+        requiresConfirmation: ''
+        ports:
+          outputs:
+            -
+              id: text
+              exposed: true
+            -
+              id: length
+            -
+              id: trigger
+            -
+              id: error
+      metadata:
+        node_type_id: text_output
+    measured:
+      width: 280
+      height: 302
+edges:
+  -
+    id: xy-edge__flowdrop_workflow_react_agent_engine.1flowdrop_workflow_react_agent_engine.1-output-reason-chat_output.3chat_output.3-input-message
+    source: flowdrop_workflow_react_agent_engine.1
+    target: chat_output.3
+    data:
+      targetNodeType: universalNode
+      targetCategory: processing
+      metadata:
+        edgeType: data
+        sourcePortDataType: string
+    sourceHandle: flowdrop_workflow_react_agent_engine.1-output-reason
+    targetHandle: chat_output.3-input-message
+    style: 'stroke: var(--fd-edge-data);'
+    markerEnd:
+      type: arrowclosed
+      width: 16
+      height: 16
+      color: var(--fd-edge-data)
+    class: flowdrop--edge--data
+  -
+    id: xy-edge__flowdrop_workflow_url_to_markdown.1flowdrop_workflow_url_to_markdown.1-output-tool-flowdrop_workflow_react_agent_engine.1flowdrop_workflow_react_agent_engine.1-input-tool
+    source: flowdrop_workflow_url_to_markdown.1
+    target: flowdrop_workflow_react_agent_engine.1
+    data:
+      targetNodeType: universalNode
+      targetCategory: agents
+      metadata:
+        edgeType: tool
+        sourcePortDataType: tool
+    sourceHandle: flowdrop_workflow_url_to_markdown.1-output-tool
+    targetHandle: flowdrop_workflow_react_agent_engine.1-input-tool
+    style: 'stroke: var(--fd-edge-tool); stroke-dasharray: 5 3;'
+    markerEnd:
+      type: arrowclosed
+      width: 16
+      height: 16
+      color: var(--fd-edge-tool)
+    class: flowdrop--edge--tool
+  -
+    id: xy-edge__http_request.1http_request.1-output-tool-flowdrop_workflow_react_agent_engine.1flowdrop_workflow_react_agent_engine.1-input-tool
+    source: http_request.1
+    target: flowdrop_workflow_react_agent_engine.1
+    data:
+      targetNodeType: universalNode
+      targetCategory: agents
+      metadata:
+        edgeType: tool
+        sourcePortDataType: tool
+    sourceHandle: http_request.1-output-tool
+    targetHandle: flowdrop_workflow_react_agent_engine.1-input-tool
+    style: 'stroke: var(--fd-edge-tool); stroke-dasharray: 5 3;'
+    markerEnd:
+      type: arrowclosed
+      width: 16
+      height: 16
+      color: var(--fd-edge-tool)
+    class: flowdrop--edge--tool
+  -
+    id: xy-edge__html_to_markdown.1html_to_markdown.1-output-tool-flowdrop_workflow_react_agent_engine.1flowdrop_workflow_react_agent_engine.1-input-tool
+    source: html_to_markdown.1
+    target: flowdrop_workflow_react_agent_engine.1
+    data:
+      targetNodeType: universalNode
+      targetCategory: agents
+      metadata:
+        edgeType: tool
+        sourcePortDataType: tool
+    sourceHandle: html_to_markdown.1-output-tool
+    targetHandle: flowdrop_workflow_react_agent_engine.1-input-tool
+    style: 'stroke: var(--fd-edge-tool); stroke-dasharray: 5 3;'
+    markerEnd:
+      type: arrowclosed
+      width: 16
+      height: 16
+      color: var(--fd-edge-tool)
+    class: flowdrop--edge--tool
+  -
+    id: xy-edge__flowdrop_workflow_react_agent_engine.1flowdrop_workflow_react_agent_engine.1-output-reason-text_output.1text_output.1-input-text
+    source: flowdrop_workflow_react_agent_engine.1
+    target: text_output.1
+    data:
+      targetNodeType: universalNode
+      targetCategory: outputs
+      metadata:
+        edgeType: data
+        sourcePortDataType: string
+    sourceHandle: flowdrop_workflow_react_agent_engine.1-output-reason
+    targetHandle: text_output.1-input-text
+    style: 'stroke: var(--fd-edge-data);'
+    markerEnd:
+      type: arrowclosed
+      width: 16
+      height: 16
+      color: var(--fd-edge-data)
+    class: flowdrop--edge--data
+metadata:
+  createdAt: '2026-08-27T08:03:34.948Z'
+  updatedAt: '2026-09-05T16:40:46.109Z'
+  orchestrator_settings:
+    type: 'flowdrop_runtime:synchronous'
+created: 1788390754
+changed: 1788706344
+uid: 1
+input_ports:
+  -
+    name: url
+    node_id: flowdrop_workflow_react_agent_engine.1
+    port: message
+    title: URL
+    description: 'The URL to be processed'
+output_ports: null
+parameter_schema:
+  type: object
+  properties:
+    url:
+      title: URL
+      description: 'The URL to be processed'
+      x-data-type: mixed
+output_schema: null
+schema_version: 1.0.1

@@ -1,0 +1,11 @@
+uuid: 8e721b25-34ad-41ec-ad7f-de8bba67ad6e
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: QhbLitomddDQxFmkxdalUSnV5lJLvOv2NNVOV5XG4yU
+id: data
+label: Data
+description: 'Store, retrieve, and manage structured data including databases, key-value stores, and persistent storage solutions.'
+icon: 'mdi:database'
+color: '#f97316'

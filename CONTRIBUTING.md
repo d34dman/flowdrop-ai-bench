@@ -6,22 +6,20 @@ by CI from those two folders on every merge. You never edit a CSV.
 
 ## The path
 
-1. **Get a runner.** Today that is the FlowDrop Drupal demo: clone
-   <https://github.com/d34dman/flowdrop-drupal-demo>, `ddev start`, `ddev composer install`,
-   `ddev drush si --existing-config`, put `ANTHROPIC_KEY=sk-ant-...` in `.ddev/.env`, `ddev restart`.
-2. **Run a cell.** Inside the demo checkout:
+1. **Set up the runner** (once). Clone this repo, put `ANTHROPIC_KEY=sk-ant-...` in
+   `.ddev/.env`, `ddev start`, `sh runner/bin/setup.sh`. Needs [DDEV](https://ddev.readthedocs.io/).
+2. **Run a cell.**
    ```sh
-   ddev exec sh scratchpad/bench/run_cell.sh B3 claude-sonnet-5 small 1 yourname-first-run
+   ddev drush bench:run B3 claude-sonnet-5 --pages=small --tag=yourname-first-run
    ```
-   Cells B0–B9, pages `small,medium,large`, repetitions, and a tag that says who and why.
-   The runner fetches the corpus pages and the prompt from this repo's site, so the same
-   corpus version and prompt hash are recorded in every run.
-3. **Look at it.** `python3 scratchpad/bench/summarize.py B3 small sonnet-5` and open
-   `scratchpad/bench/results/outputs/<run_id>.md`.
-4. **Export and open a PR.**
+   Cells B0–B9, pages `small,medium,large`, `--reps`, and a tag that says who and why.
+   The runner fetches the corpus pages and the prompt from this repo's published site, so
+   the same corpus version and prompt hash are recorded in every run.
+3. **Look at it.** `ddev drush bench:list B3 small sonnet-5` and open `outputs/<run_id>.md`.
+4. **Commit and open a PR.** The runner has already written `runs/<run_id>.json` and
+   `outputs/<run_id>.md` into the checkout.
    ```sh
-   python3 scratchpad/bench/export.py /path/to/flowdrop-ai-bench yourname-
-   cd /path/to/flowdrop-ai-bench && git checkout -b runs/yourname && git add runs outputs && git commit -m "runs: B3 on Sonnet 5, small" && git push -u origin HEAD
+   git checkout -b runs/yourname && git add runs outputs && git commit -m "runs: B3 on Sonnet 5, small" && git push -u origin HEAD
    ```
    CI scores your runs on the PR. Merge publishes them.
 
@@ -29,9 +27,9 @@ by CI from those two folders on every merge. You never edit a CSV.
 
 - New models, including non-Anthropic ones once the runner supports the provider.
 - Repetitions of existing cells; most cells are a single draw today.
-- Failures, when the failure is the finding. Include them with `--include-failed` and say why.
-- A new variant: copy one of the `bench_*` workflows in the runner, give it the next number,
-  add it to `run_cell.sh`, and describe the architecture in the PR.
+- Failures, when the failure is the finding. Commit the failed run's JSON and say why in the PR.
+- A new variant: build it in the runner site, export config, add its cell letter to the
+  map in the module, and describe the architecture in the PR (see `runner/README.md`).
 
 ## What changes the experiment
 

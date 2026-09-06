@@ -1,0 +1,70 @@
+uuid: 918ff69e-520f-4606-83d0-62d15b58a0ab
+langcode: en
+status: true
+dependencies:
+  module:
+    - flowdrop_interrupt
+_core:
+  default_config_hash: A0CRxtc2oe0wsrbS2z6OdtP2_Z4Q7wku8dl7mDbyy5c
+id: text_input_interrupt
+label: 'Text Input (Interrupt)'
+description: 'Pauses workflow for user to enter text'
+category: human_in_loop
+icon: 'mdi:text-box-edit-outline'
+plugin_version: 1.0.0
+enabled: true
+parameters:
+  default_value:
+    configurable: true
+    connectable: true
+    required: false
+  max_length:
+    configurable: true
+    connectable: true
+    exposed_by_default: false
+    required: false
+  message:
+    configurable: true
+    connectable: true
+    required: true
+  min_length:
+    configurable: true
+    connectable: true
+    exposed_by_default: false
+    required: false
+  multiline:
+    configurable: true
+    connectable: true
+    exposed_by_default: false
+    required: false
+  placeholder:
+    configurable: true
+    connectable: true
+    exposed_by_default: false
+    required: false
+outputs:
+  length:
+    exposed: true
+    exposed_by_default: false
+  response_time:
+    exposed: true
+    exposed_by_default: false
+  text:
+    exposed: true
+  user_id:
+    exposed: true
+    exposed_by_default: false
+tags:
+  - human-in-loop
+  - interrupt
+  - text-input
+executor_plugin: 'flowdrop_interrupt:text_input_interrupt'
+visual_type: default
+supported_visual_types:
+  - default
+  - simple
+unified_input_exposed: false
+unified_output_exposed: false
+tool_exposed: false
+confirmation: {  }
+reserved_port_exposure: {  }

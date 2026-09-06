@@ -1,0 +1,161 @@
+uuid: 3b1f567f-dcd0-4999-a36b-eb8818eaa102
+langcode: en
+status: true
+dependencies:
+  config:
+    - flowdrop_node_type.flowdrop_node_type.chat_output
+    - flowdrop_node_type.flowdrop_node_type.flowdrop_agents_ai_agents_executor
+id: bench_6_agent_autonomous
+label: 'Bench 6 · Drupal AI Agent, Autonomous Fetch'
+description: 'The Drupal AI Agents peer of Bench 5. The workflow passes only a URL; the agent retrieves the page with its own http_fetch tool, converts it and redacts. No FlowDrop HTTP node is involved, so what is measured is the agent doing the whole job.'
+nodes:
+  -
+    id: flowdrop_agents_ai_agents_executor.1
+    position:
+      x: 0
+      'y': 60
+    data:
+      label: 'AI Agent Executor'
+      config:
+        agent_id: agent_bench_autonomous
+        create_directly: true
+        tool_usage_limits: {  }
+        llm_model: anthropic__claude-haiku-4-5-20251001
+        maxRetries: 0
+        requiresConfirmation: ''
+        task_description: 'Given a URL, fetch it, convert to Markdown and redact competitors.'
+        task_title: 'Fetch, convert and redact'
+        ports:
+          inputs:
+            -
+              id: chat_history
+            -
+              id: additional_context
+              exposed: true
+            -
+              id: loop_back
+            -
+              id: trigger
+              exposed: false
+          outputs:
+            -
+              id: response
+            -
+              id: agent_id
+            -
+              id: agent_type
+            -
+              id: job_status
+            -
+              id: job_status_label
+            -
+              id: structured_output
+            -
+              id: questions
+            -
+              id: information
+            -
+              id: success
+            -
+              id: error_message
+            -
+              id: execution_metadata
+            -
+              id: trigger
+              exposed: false
+            -
+              id: error
+      metadata:
+        node_type_id: flowdrop_agents_ai_agents_executor
+    measured:
+      width: 280
+      height: 262
+  -
+    id: chat_output.1
+    position:
+      x: 900
+      'y': 80
+    data:
+      label: 'Chat Output'
+      config:
+        format: text
+        showTimestamp: false
+        nodeType: default
+        maxRetries: 0
+        requiresConfirmation: ''
+        ports:
+          outputs:
+            -
+              id: message
+            -
+              id: format
+            -
+              id: timestamp
+            -
+              id: metadata
+            -
+              id: trigger
+              exposed: false
+            -
+              id: error
+          inputs:
+            -
+              id: trigger
+            -
+              id: message
+            -
+              id: loop_back
+      metadata:
+        node_type_id: chat_output
+    measured:
+      width: 280
+      height: 302
+edges:
+  -
+    id: xy-edge__flowdrop_agents_ai_agents_executor.1flowdrop_agents_ai_agents_executor.1-output-response-chat_output.1chat_output.1-input-message
+    source: flowdrop_agents_ai_agents_executor.1
+    target: chat_output.1
+    data:
+      targetNodeType: universalNode
+      targetCategory: processing
+      metadata:
+        edgeType: data
+        sourcePortDataType: string
+    sourceHandle: flowdrop_agents_ai_agents_executor.1-output-response
+    targetHandle: chat_output.1-input-message
+    style: 'stroke: var(--fd-edge-data);'
+    markerEnd:
+      type: arrowclosed
+      width: 16
+      height: 16
+      color: var(--fd-edge-data)
+    class: flowdrop--edge--data
+metadata:
+  orchestrator_settings:
+    type: 'flowdrop_runtime:synchronous'
+created: 1788110248
+changed: 1788703861
+uid: 0
+input_ports:
+  -
+    name: url
+    node_id: flowdrop_agents_ai_agents_executor.1
+    port: additional_context
+    title: URL
+    description: 'The page the agent should fetch, convert to Markdown and redact.'
+    required: true
+output_ports: null
+parameter_schema:
+  type: object
+  required:
+    - url
+  properties:
+    url:
+      type: string
+      title: URL
+      description: 'The page the agent should fetch, convert to Markdown and redact.'
+      format: textarea
+      x-data-type: string
+      required: false
+output_schema: null
+schema_version: 1.0.0

@@ -1,0 +1,9 @@
+name: 'FlowDrop AI Benchmark'
+type: module
+description: 'Drush harness and supporting plugins for the FlowDrop pipeline-vs-agent benchmark. Provides an HTTP fetch tool so a Drupal AI Agent can retrieve a URL itself, a run-context tag so ai_metering can attribute tokens to one benchmark run, and bench:* Drush commands that set the prompt/model, launch cells and collect metrics.'
+package: FlowDrop
+core_version_requirement: ^11
+dependencies:
+  - ai:ai
+  - flowdrop:flowdrop
+  - ai_metering:ai_metering

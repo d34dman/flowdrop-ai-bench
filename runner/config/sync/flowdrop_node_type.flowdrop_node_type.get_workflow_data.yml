@@ -1,0 +1,56 @@
+uuid: 811d2114-b9b4-47bc-80a8-32d247ab80c7
+langcode: en
+status: true
+dependencies:
+  module:
+    - flowdrop_node_processor
+_core:
+  default_config_hash: 7XUpCjkw7IlHVdCyVsw7XMt0jpGiVLVimCqbzw5kCX4
+id: get_workflow_data
+label: 'Get Workflow Data'
+description: 'Retrieve data passed to the workflow at execution time.'
+category: data
+icon: 'mdi:phone-incoming'
+plugin_version: 1.0.0
+enabled: true
+parameters:
+  default_value:
+    configurable: true
+    connectable: true
+    exposed_by_default: false
+    required: false
+  path:
+    configurable: true
+    connectable: true
+    required: false
+outputs:
+  data:
+    exposed: true
+  execution_id:
+    exposed: true
+    exposed_by_default: false
+  exists:
+    exposed: true
+    exposed_by_default: false
+  initial_data:
+    exposed: true
+    exposed_by_default: false
+  path:
+    exposed: true
+    exposed_by_default: false
+  pipeline_id:
+    exposed: true
+    exposed_by_default: false
+  workflow_id:
+    exposed: true
+    exposed_by_default: false
+tags: {  }
+executor_plugin: 'flowdrop_node_processor:get_workflow_data'
+visual_type: default
+supported_visual_types:
+  - default
+unified_input_exposed: true
+unified_output_exposed: true
+tool_exposed: true
+confirmation: {  }
+reserved_port_exposure: {  }

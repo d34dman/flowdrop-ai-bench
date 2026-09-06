@@ -1,0 +1,56 @@
+uuid: c7932ba3-536e-43b8-a91e-e8b8dc5b137f
+langcode: en
+status: true
+dependencies:
+  module:
+    - flowdrop_node_processor
+_core:
+  default_config_hash: ieqtrTtbEGOVICo8DU_9DJs7Vq3MASes8OAyyacaR8Y
+id: range
+label: Range
+description: 'Generate a numeric sequence (e.g., 1 to 10)'
+category: tools
+icon: 'mdi:ray-start-end'
+plugin_version: 1.0.0
+enabled: true
+parameters:
+  end:
+    configurable: true
+    connectable: true
+    required: true
+  start:
+    configurable: true
+    connectable: true
+    required: false
+    default: 1
+  step:
+    configurable: true
+    connectable: true
+    required: false
+    default: 1
+outputs:
+  count:
+    exposed: true
+    exposed_by_default: false
+  end:
+    exposed: true
+    exposed_by_default: false
+  items:
+    exposed: true
+  start:
+    exposed: true
+    exposed_by_default: false
+  step:
+    exposed: true
+    exposed_by_default: false
+tags: {  }
+executor_plugin: 'flowdrop_node_processor:range'
+visual_type: default
+supported_visual_types:
+  - default
+  - tool
+unified_input_exposed: true
+unified_output_exposed: true
+tool_exposed: true
+confirmation: {  }
+reserved_port_exposure: {  }

@@ -1,0 +1,183 @@
+uuid: a02d63f2-3774-491d-9662-f8f71e280fe2
+langcode: en
+status: true
+dependencies:
+  config:
+    - flowdrop_node_type.flowdrop_node_type.html_to_markdown
+    - flowdrop_node_type.flowdrop_node_type.http_request
+id: url_to_markdown
+label: 'URL to Markdown'
+description: ''
+nodes:
+  -
+    id: http_request.1
+    position:
+      x: 380
+      'y': 280
+    data:
+      label: 'HTTP Request'
+      config:
+        url: ''
+        method: GET
+        headers: {  }
+        body: ''
+        timeout: 30
+        follow_redirects: true
+        maxRetries: 0
+        requiresConfirmation: waive
+        ports:
+          outputs:
+            -
+              id: status_code
+            -
+              id: headers
+              exposed: false
+            -
+              id: body
+            -
+              id: json
+              exposed: false
+            -
+              id: url
+              exposed: false
+            -
+              id: method
+              exposed: false
+            -
+              id: request_time
+              exposed: false
+            -
+              id: trigger
+              exposed: false
+            -
+              id: tool
+            -
+              id: error
+          inputs:
+            -
+              id: url
+            -
+              id: loop_back
+            -
+              id: trigger
+              exposed: false
+      metadata:
+        node_type_id: http_request
+    measured:
+      width: 280
+      height: 722
+  -
+    id: html_to_markdown.1
+    position:
+      x: 800
+      'y': 380
+    data:
+      label: 'HTML to Markdown'
+      config:
+        heading_style: atx
+        bold_style: '**'
+        italic_style: '*'
+        strip_placeholder_links: false
+        maxRetries: 0
+        requiresConfirmation: waive
+        ports:
+          outputs:
+            -
+              id: markdown
+            -
+              id: success
+            -
+              id: trigger
+              exposed: false
+            -
+              id: tool
+            -
+              id: error
+          inputs:
+            -
+              id: html
+            -
+              id: loop_back
+            -
+              id: trigger
+              exposed: false
+      metadata:
+        node_type_id: html_to_markdown
+    measured:
+      width: 280
+      height: 322
+edges:
+  -
+    id: xy-edge__http_request.1http_request.1-output-body-html_to_markdown.1html_to_markdown.1-input-html
+    source: http_request.1
+    target: html_to_markdown.1
+    data:
+      targetNodeType: universalNode
+      targetCategory: data
+      metadata:
+        edgeType: data
+        sourcePortDataType: string
+    sourceHandle: http_request.1-output-body
+    targetHandle: html_to_markdown.1-input-html
+    style: 'stroke: var(--fd-edge-data);'
+    markerEnd:
+      type: arrowclosed
+      width: 16
+      height: 16
+      color: var(--fd-edge-data)
+    class: flowdrop--edge--data
+metadata:
+  createdAt: '2026-08-31T09:28:13.831Z'
+  updatedAt: '2026-08-31T09:30:46.420Z'
+created: 1788168487
+changed: 1788169184
+uid: 0
+input_ports:
+  -
+    name: url
+    node_id: http_request.1
+    port: url
+    title: URL
+    description: 'The URL to request'
+output_ports:
+  -
+    name: status_code
+    node_id: http_request.1
+    port: status_code
+  -
+    name: markdown
+    node_id: html_to_markdown.1
+    port: markdown
+  -
+    name: success
+    node_id: html_to_markdown.1
+    port: success
+  -
+    name: body
+    node_id: http_request.1
+    port: body
+parameter_schema:
+  type: object
+  properties:
+    url:
+      type: string
+      title: URL
+      description: 'The URL to request'
+      x-data-type: string
+      default: ''
+output_schema:
+  type: object
+  properties:
+    status_code:
+      type: integer
+      x-data-type: number
+    markdown:
+      type: string
+      x-data-type: string
+    success:
+      type: boolean
+      x-data-type: boolean
+    body:
+      type: string
+      x-data-type: string
+schema_version: 1.0.0

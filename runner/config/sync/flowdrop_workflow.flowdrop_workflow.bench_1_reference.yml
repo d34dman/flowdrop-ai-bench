@@ -1,0 +1,218 @@
+uuid: 9677eef4-9a86-4daa-ba32-7a85f01623be
+langcode: en
+status: true
+dependencies:
+  config:
+    - flowdrop_node_type.flowdrop_node_type.chat_output
+    - flowdrop_node_type.flowdrop_node_type.html_to_markdown
+    - flowdrop_node_type.flowdrop_node_type.http_request
+id: bench_1_reference
+label: 'Bench 1 · Deterministic Reference (no LLM)'
+description: 'Fetch, then convert to Markdown with the html_to_markdown node. No model is called, so this run costs nothing and its output is byte-identical every time. It is the ground truth the LLM variants are scored against for structure — and, having no redaction step, the control that shows what the redaction is actually adding.'
+nodes:
+  -
+    id: http_request.1
+    position:
+      x: -20
+      'y': 20
+    data:
+      label: 'HTTP Request'
+      config:
+        method: GET
+        headers: {  }
+        body: ''
+        timeout: 30
+        follow_redirects: true
+        maxRetries: 0
+        requiresConfirmation: waive
+        ports:
+          inputs:
+            -
+              id: url
+              exposed: true
+            -
+              id: loop_back
+            -
+              id: trigger
+              exposed: false
+          outputs:
+            -
+              id: status_code
+              exposed: false
+            -
+              id: headers
+              exposed: false
+            -
+              id: body
+            -
+              id: json
+              exposed: false
+            -
+              id: url
+              exposed: false
+            -
+              id: method
+              exposed: false
+            -
+              id: request_time
+              exposed: false
+            -
+              id: trigger
+              exposed: false
+            -
+              id: error
+        url: 'https://d34dman.github.io/flowdrop-ai-bench/corpus/v1/medium.html'
+      metadata:
+        node_type_id: http_request
+    measured:
+      width: 280
+      height: 242
+  -
+    id: html_to_markdown.1
+    position:
+      x: 360
+      'y': 0
+    data:
+      label: 'HTML to Markdown'
+      config:
+        heading_style: atx
+        bold_style: '**'
+        italic_style: '*'
+        strip_placeholder_links: false
+        maxRetries: 0
+        requiresConfirmation: ''
+        ports:
+          inputs:
+            -
+              id: html
+            -
+              id: loop_back
+            -
+              id: trigger
+              exposed: false
+          outputs:
+            -
+              id: markdown
+            -
+              id: success
+              exposed: false
+            -
+              id: trigger
+              exposed: false
+            -
+              id: error
+      metadata:
+        node_type_id: html_to_markdown
+    measured:
+      width: 280
+      height: 262
+  -
+    id: chat_output.3
+    position:
+      x: 1120
+      'y': 20
+    data:
+      label: 'Chat Output'
+      config:
+        format: text
+        showTimestamp: false
+        nodeType: default
+        maxRetries: 0
+        requiresConfirmation: ''
+        ports:
+          outputs:
+            -
+              id: message
+            -
+              id: format
+            -
+              id: timestamp
+            -
+              id: metadata
+            -
+              id: trigger
+              exposed: false
+            -
+              id: error
+          inputs:
+            -
+              id: message
+            -
+              id: loop_back
+            -
+              id: trigger
+              exposed: false
+      metadata:
+        node_type_id: chat_output
+    measured:
+      width: 280
+      height: 242
+edges:
+  -
+    id: xy-edge__http_request.1http_request.1-output-body-html_to_markdown.1html_to_markdown.1-input-html
+    source: http_request.1
+    target: html_to_markdown.1
+    data:
+      targetNodeType: universalNode
+      targetCategory: data
+      metadata:
+        edgeType: data
+        sourcePortDataType: string
+    sourceHandle: http_request.1-output-body
+    targetHandle: html_to_markdown.1-input-html
+    style: 'stroke: var(--fd-edge-data);'
+    markerEnd:
+      type: arrowclosed
+      width: 16
+      height: 16
+      color: var(--fd-edge-data)
+    class: flowdrop--edge--data
+  -
+    id: xy-edge__html_to_markdown.1html_to_markdown.1-output-markdown-chat_output.3chat_output.3-input-message
+    source: html_to_markdown.1
+    target: chat_output.3
+    data:
+      targetNodeType: universalNode
+      targetCategory: processing
+      metadata:
+        edgeType: data
+        sourcePortDataType: string
+    sourceHandle: html_to_markdown.1-output-markdown
+    targetHandle: chat_output.3-input-message
+    style: 'stroke: var(--fd-edge-data);'
+    markerEnd:
+      type: arrowclosed
+      width: 16
+      height: 16
+      color: var(--fd-edge-data)
+    class: flowdrop--edge--data
+metadata:
+  createdAt: '2026-08-27T08:03:34.948Z'
+  updatedAt: '2026-08-28T11:55:20.888Z'
+  orchestrator_settings:
+    type: 'flowdrop_runtime:synchronous'
+created: 1788088648
+changed: 1788088648
+uid: 0
+input_ports:
+  -
+    name: url
+    node_id: http_request.1
+    port: url
+    title: URL
+    description: 'The page to fetch, convert to Markdown and redact.'
+    required: true
+output_ports: null
+parameter_schema:
+  type: object
+  required:
+    - url
+  properties:
+    url:
+      type: string
+      title: URL
+      description: 'The page to fetch, convert to Markdown and redact.'
+      x-data-type: string
+      default: ''
+output_schema: null
+schema_version: 1.0.0

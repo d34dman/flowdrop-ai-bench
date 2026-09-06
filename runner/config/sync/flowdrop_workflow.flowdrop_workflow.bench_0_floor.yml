@@ -1,0 +1,81 @@
+uuid: 901ebf69-c66a-4274-b7f0-a1a265750f7a
+langcode: en
+status: true
+dependencies:
+  config:
+    - flowdrop_node_type.flowdrop_node_type.chat_output
+id: bench_0_floor
+label: 'Bench 0 · Orchestration Floor'
+description: 'A single output node wired to the workflow input. It does no work, so its entire runtime is FlowDrop overhead: validation, pipeline creation, job generation, one dispatch and persistence. The baseline every other run is measured against.'
+nodes:
+  -
+    id: chat_output.3
+    position:
+      x: 0
+      'y': 0
+    data:
+      label: 'Chat Output'
+      config:
+        format: text
+        showTimestamp: false
+        nodeType: default
+        maxRetries: 0
+        requiresConfirmation: ''
+        ports:
+          outputs:
+            -
+              id: message
+            -
+              id: format
+            -
+              id: timestamp
+            -
+              id: metadata
+            -
+              id: trigger
+              exposed: false
+            -
+              id: error
+          inputs:
+            -
+              id: message
+              exposed: true
+            -
+              id: loop_back
+            -
+              id: trigger
+              exposed: false
+      metadata:
+        node_type_id: chat_output
+    measured:
+      width: 280
+      height: 242
+edges: {  }
+metadata:
+  orchestrator_settings:
+    type: 'flowdrop_runtime:synchronous'
+created: 1788099726
+changed: 1788099726
+uid: 0
+input_ports:
+  -
+    name: url
+    node_id: chat_output.3
+    port: message
+    title: Text
+    description: 'Passed straight through; the content is irrelevant.'
+    required: true
+output_ports: null
+parameter_schema:
+  type: object
+  required:
+    - url
+  properties:
+    url:
+      type: string
+      title: Text
+      description: 'Passed straight through; the content is irrelevant.'
+      x-data-type: string
+      default: ''
+output_schema: null
+schema_version: 1.0.0

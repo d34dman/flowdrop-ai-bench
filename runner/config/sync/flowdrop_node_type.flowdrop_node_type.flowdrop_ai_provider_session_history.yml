@@ -1,0 +1,46 @@
+uuid: 74441662-9ea9-46d8-86e2-907e532a94da
+langcode: en
+status: true
+dependencies:
+  module:
+    - flowdrop_ai_provider
+_core:
+  default_config_hash: cEJfguujucgzAI6YS9crvGiBz88c-iFladlhu5KuOtg
+id: flowdrop_ai_provider_session_history
+label: 'Session History'
+description: 'Loads the recent conversation history of a FlowDrop session for multi-turn chat'
+category: memories
+icon: 'mdi:history'
+plugin_version: 1.0.0
+enabled: true
+parameters:
+  history_context_length:
+    configurable: true
+    connectable: false
+    required: false
+    default: 4
+  message_id:
+    configurable: false
+    connectable: true
+    required: false
+  session_id:
+    configurable: false
+    connectable: true
+    required: true
+outputs:
+  count:
+    exposed: false
+  history:
+    exposed: true
+tags:
+  - memory
+  - chat
+executor_plugin: 'flowdrop_ai_provider:session_history'
+visual_type: default
+supported_visual_types:
+  - default
+unified_input_exposed: false
+unified_output_exposed: false
+tool_exposed: false
+confirmation: {  }
+reserved_port_exposure: {  }

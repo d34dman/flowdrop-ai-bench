@@ -1,0 +1,11 @@
+uuid: 674c97d9-bc67-4b1a-89fa-e7ba3d80e39a
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: '-5xm0zqD6GyAsIwpMa7ak6Mdc2mKIaGaPXBaqLl_tqE'
+id: ai
+label: AI
+description: 'General-purpose AI nodes for tasks like classification, summarization, sentiment analysis, and other intelligent operations.'
+icon: 'mdi:shimmer'
+color: '#a855f7'

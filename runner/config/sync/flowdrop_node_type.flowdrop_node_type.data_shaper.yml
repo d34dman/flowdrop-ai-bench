@@ -1,0 +1,64 @@
+uuid: f036aaa8-fb07-47cd-9926-bfc540c6ff25
+langcode: en
+status: true
+dependencies:
+  module:
+    - flowdrop_node_processor
+_core:
+  default_config_hash: kV8yDm_9DX_ntA_KcY4Tj-Z6W7ewA4xTpjt8WoWxmFg
+id: data_shaper
+label: 'Data Shaper'
+description: 'Reshape mixed input data into a clean structure using field mappings and optional JSON Schema validation'
+category: data
+icon: 'mdi:database-edit-outline'
+plugin_version: 1.1.0
+enabled: true
+parameters:
+  data:
+    configurable: false
+    connectable: true
+    required: false
+  engine:
+    configurable: true
+    connectable: true
+    exposed_by_default: false
+    required: false
+    default: property_path
+  mapping:
+    configurable: true
+    connectable: true
+    exposed_by_default: false
+    required: false
+    default: {  }
+  schema:
+    configurable: true
+    connectable: true
+    exposed_by_default: false
+    required: false
+    default: {  }
+  validationMode:
+    configurable: true
+    connectable: true
+    exposed_by_default: false
+    required: false
+    default: soft
+outputs:
+  data:
+    exposed: true
+  errors:
+    exposed: true
+  mappedFields:
+    exposed: true
+    exposed_by_default: false
+  valid:
+    exposed: true
+tags: {  }
+executor_plugin: 'flowdrop_node_processor:data_shaper'
+visual_type: default
+supported_visual_types:
+  - default
+unified_input_exposed: true
+unified_output_exposed: true
+tool_exposed: true
+confirmation: {  }
+reserved_port_exposure: {  }

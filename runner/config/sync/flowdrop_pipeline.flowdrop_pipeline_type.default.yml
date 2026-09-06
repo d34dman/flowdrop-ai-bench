@@ -1,0 +1,14 @@
+uuid: 88b97dd2-3ef7-413f-8f4b-6dea4547867e
+langcode: en
+status: true
+dependencies:
+  enforced:
+    module:
+      - flowdrop_pipeline
+_core:
+  default_config_hash: bteMGmSilllzrTzBF4uRZJepVDal-AcCNWmTGgCpRzw
+id: default
+label: Default
+description: ''
+execution_timeout: 3600
+memory_limit: 512

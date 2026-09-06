@@ -1,0 +1,50 @@
+uuid: 59e6b4c3-5647-4b77-929c-3439dfef3528
+langcode: en
+status: true
+dependencies:
+  module:
+    - flowdrop_ai_provider
+_core:
+  default_config_hash: '-W0J68pD_mxB8vCIyYBRwDVh9K9i-E3eTd15p3gctM4'
+id: flowdrop_ai_provider_moderation
+label: 'Content Moderation'
+description: 'Moderate content for inappropriate or harmful material using AI'
+category: ai
+icon: 'mdi:shield-check'
+plugin_version: 1.0.0
+enabled: true
+parameters:
+  model:
+    configurable: true
+    connectable: false
+    required: false
+    default: ''
+  text:
+    configurable: false
+    connectable: true
+    required: true
+outputs:
+  flagged:
+    exposed: true
+  information:
+    exposed: true
+  message:
+    exposed: true
+  model:
+    exposed: false
+  provider:
+    exposed: false
+tags:
+  - model
+  - ai
+  - moderation
+  - safety
+executor_plugin: 'flowdrop_ai_provider:moderation'
+visual_type: default
+supported_visual_types:
+  - default
+unified_input_exposed: false
+unified_output_exposed: false
+tool_exposed: false
+confirmation: {  }
+reserved_port_exposure: {  }

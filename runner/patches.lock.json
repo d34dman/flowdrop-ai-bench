@@ -1,0 +1,29 @@
+{
+    "_hash": "0cc5b37c0091f9b4cf45dc495915efe8645365f1158baee9ee6e34509aafca3e",
+    "patches": {
+        "drupal/flowdrop": [
+            {
+                "package": "drupal/flowdrop",
+                "description": "Make MemoryManager::MAX_VALUE_BYTES configurable (#3592436)",
+                "url": "patches/flowdrop-memory-configurable-max-value-bytes.patch",
+                "sha256": "410f7264c0c459ed8d8a24297d857cbfa15ad495c7785a6baf58a3658adab263",
+                "depth": 1,
+                "extra": {
+                    "provenance": "root"
+                }
+            }
+        ],
+        "drupal/flowdrop_ai_provider": [
+            {
+                "package": "drupal/flowdrop_ai_provider",
+                "description": "Chat/SimpleChat: drop the 4000 maxTokens cap; the benchmark needs whole-document outputs (the cap is arbitrary for current models)",
+                "url": "patches/flowdrop_ai_provider-chat-no-maxtokens-cap.patch",
+                "sha256": "99d1e6fc1a3abe3814291640750528f956b783d53e19d389783ada23014cdc0f",
+                "depth": 1,
+                "extra": {
+                    "provenance": "root"
+                }
+            }
+        ]
+    }
+}

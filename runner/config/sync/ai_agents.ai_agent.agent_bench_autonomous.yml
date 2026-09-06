@@ -1,0 +1,59 @@
+uuid: ee8aff50-1e97-42dc-8af6-16d1e3d606e1
+langcode: en
+status: true
+dependencies:
+  module:
+    - ai
+    - flowdrop_ai_bench
+id: agent_bench_autonomous
+label: 'Bench 6 · Autonomous Fetch + Markdown + Redaction'
+description: 'Given only a URL, retrieves the page itself with the http_fetch tool, converts it with html_to_markdown and redacts competitor names. The Drupal AI Agents peer of the FlowDrop ReAct agent.'
+system_prompt: |-
+  Convert the ENTIRE page to Markdown. If you are given a URL rather than the page,
+  fetch the content at that URL first.
+
+  Reproduce the full document: every heading, paragraph, list item and table, in
+  the original order and wording. Do not summarise, abridge, omit or re-word
+  anything. Redaction is the only change you may make to the text.
+
+  Redaction: the page discusses Drupal and its competing content management
+  products. Replace every mention of the CMS products Quillpress, Hexagrid, Lumen
+  CMS, Marrow and Sitewright with "████". Redact only the product: the same word
+  used in another sense (a person, a place, a unit, an ordinary word) is not a
+  product and must stay as written. Never redact Drupal.
+
+  Output the Markdown document and nothing else. No code fences, no preamble, no
+  commentary, no explanation of what you did.
+secured_system_prompt: '[ai_agent:agent_instructions]'
+tools:
+  'ai_agent:http_fetch': true
+  'ai_agent:html_to_markdown': true
+tool_settings:
+  'ai_agent:http_fetch':
+    return_directly: false
+    require_usage: false
+    use_artifacts: false
+    description_override: ''
+    progress_message: ''
+    restrict_multiple_calls: false
+    multiple_call_error_message: ''
+  'ai_agent:html_to_markdown':
+    return_directly: false
+    require_usage: false
+    use_artifacts: false
+    description_override: ''
+    progress_message: ''
+    restrict_multiple_calls: false
+    multiple_call_error_message: ''
+orchestration_agent: false
+triage_agent: false
+max_loops: 25
+max_loops_message: ''
+default_information_tools: ''
+tool_usage_limits: {  }
+exclude_users_role: false
+masquerade_roles: {  }
+structured_output_enabled: false
+structured_output_schema: ''
+hostname_filter_disabled: false
+guardrail_set: ''

@@ -1,0 +1,14 @@
+uuid: a0a12951-3680-4a7f-9468-d0110b9932d3
+langcode: en
+status: true
+dependencies:
+  enforced:
+    module:
+      - flowdrop_runtime
+_core:
+  default_config_hash: LLhiwOcrZtnyGojeSIQSTJ2MpxQimemncq4wGGqQn70
+id: in_memory
+label: In-Memory
+description: 'Synchronous in-memory execution. No DB persistence.'
+execution_timeout: 300
+memory_limit: 256

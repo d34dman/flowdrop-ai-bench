@@ -1,0 +1,237 @@
+uuid: 55a4a3d0-a2c5-4f61-ad94-110be1a4d3b5
+langcode: en
+status: true
+dependencies:
+  config:
+    - flowdrop_node_type.flowdrop_node_type.chat_output
+    - flowdrop_node_type.flowdrop_node_type.flowdrop_ai_provider_chat
+    - flowdrop_node_type.flowdrop_node_type.http_request
+id: bench_2_raw_html_llm
+label: 'Bench 2 · Raw HTML → LLM'
+description: 'Fetch, then hand the raw HTML to the model and ask it to do both jobs at once: convert to Markdown and redact. The least build effort of any variant, and the one whose input tokens scale with the size of the page rather than the size of its content.'
+nodes:
+  -
+    id: http_request.1
+    position:
+      x: 20
+      'y': 80
+    data:
+      label: 'HTTP Request'
+      config:
+        method: GET
+        headers: {  }
+        body: ''
+        timeout: 30
+        follow_redirects: true
+        maxRetries: 0
+        requiresConfirmation: waive
+        ports:
+          inputs:
+            -
+              id: url
+              exposed: true
+            -
+              id: loop_back
+            -
+              id: trigger
+              exposed: false
+          outputs:
+            -
+              id: status_code
+              exposed: false
+            -
+              id: headers
+              exposed: false
+            -
+              id: body
+            -
+              id: json
+              exposed: false
+            -
+              id: url
+              exposed: false
+            -
+              id: method
+              exposed: false
+            -
+              id: request_time
+              exposed: false
+            -
+              id: trigger
+              exposed: false
+            -
+              id: error
+        url: 'https://d34dman.github.io/flowdrop-ai-bench/corpus/v1/medium.html'
+      metadata:
+        node_type_id: http_request
+    measured:
+      width: 280
+      height: 182
+  -
+    id: flowdrop_ai_provider_chat.1
+    position:
+      x: 420
+      'y': 60
+    data:
+      label: Chat
+      config:
+        model: claude-haiku-4-5-20251001
+        operation_type: chat
+        temperature: 0
+        maxTokens: 200000
+        systemPrompt: |-
+          Convert the ENTIRE page to Markdown. If you are given a URL rather than the page,
+          fetch the content at that URL first.
+
+          Reproduce the full document: every heading, paragraph, list item and table, in
+          the original order and wording. Do not summarise, abridge, omit or re-word
+          anything. Redaction is the only change you may make to the text.
+
+          Redaction: the page discusses Drupal and its competing content management
+          products. Replace every mention of the CMS products Quillpress, Hexagrid, Lumen
+          CMS, Marrow and Sitewright with "████". Redact only the product: the same word
+          used in another sense (a person, a place, a unit, an ordinary word) is not a
+          product and must stay as written. Never redact Drupal.
+
+          Output the Markdown document and nothing else. No code fences, no preamble, no
+          commentary, no explanation of what you did.
+        maxRetries: 0
+        requiresConfirmation: ''
+        ports:
+          inputs:
+            -
+              id: message
+            -
+              id: systemPrompt
+              exposed: false
+            -
+              id: history
+              exposed: false
+            -
+              id: loop_back
+            -
+              id: trigger
+              exposed: false
+          outputs:
+            -
+              id: response
+            -
+              id: trigger
+              exposed: false
+            -
+              id: error
+      metadata:
+        node_type_id: flowdrop_ai_provider_chat
+    measured:
+      width: 280
+      height: 262
+  -
+    id: chat_output.3
+    position:
+      x: 800
+      'y': 140
+    data:
+      label: 'Chat Output'
+      config:
+        format: text
+        showTimestamp: false
+        nodeType: default
+        maxRetries: 0
+        requiresConfirmation: ''
+        ports:
+          outputs:
+            -
+              id: message
+            -
+              id: format
+            -
+              id: timestamp
+            -
+              id: metadata
+            -
+              id: trigger
+              exposed: false
+            -
+              id: error
+          inputs:
+            -
+              id: message
+            -
+              id: loop_back
+            -
+              id: trigger
+              exposed: false
+      metadata:
+        node_type_id: chat_output
+    measured:
+      width: 280
+      height: 242
+edges:
+  -
+    id: xy-edge__flowdrop_ai_provider_chat.1flowdrop_ai_provider_chat.1-output-response-chat_output.3chat_output.3-input-message
+    source: flowdrop_ai_provider_chat.1
+    target: chat_output.3
+    data:
+      targetNodeType: universalNode
+      targetCategory: processing
+      metadata:
+        edgeType: data
+        sourcePortDataType: string
+    sourceHandle: flowdrop_ai_provider_chat.1-output-response
+    targetHandle: chat_output.3-input-message
+    style: 'stroke: var(--fd-edge-data);'
+    markerEnd:
+      type: arrowclosed
+      width: 16
+      height: 16
+      color: var(--fd-edge-data)
+    class: flowdrop--edge--data
+  -
+    id: xy-edge__http_request.1http_request.1-output-body-flowdrop_ai_provider_chat.1flowdrop_ai_provider_chat.1-input-message
+    source: http_request.1
+    target: flowdrop_ai_provider_chat.1
+    data:
+      targetNodeType: universalNode
+      targetCategory: ai
+      metadata:
+        edgeType: data
+        sourcePortDataType: string
+    sourceHandle: http_request.1-output-body
+    targetHandle: flowdrop_ai_provider_chat.1-input-message
+    style: 'stroke: var(--fd-edge-data);'
+    markerEnd:
+      type: arrowclosed
+      width: 16
+      height: 16
+      color: var(--fd-edge-data)
+    class: flowdrop--edge--data
+metadata:
+  createdAt: '2026-08-27T08:03:34.948Z'
+  updatedAt: '2026-08-28T11:42:05.922Z'
+  orchestrator_settings:
+    type: 'flowdrop_runtime:synchronous'
+created: 1788088649
+changed: 1788706344
+uid: 0
+input_ports:
+  -
+    name: url
+    node_id: http_request.1
+    port: url
+    title: URL
+    description: 'The page to fetch, convert to Markdown and redact.'
+    required: true
+output_ports: null
+parameter_schema:
+  type: object
+  required:
+    - url
+  properties:
+    url:
+      type: string
+      title: URL
+      description: 'The page to fetch, convert to Markdown and redact.'
+      x-data-type: string
+      default: ''
+output_schema: null
+schema_version: 1.0.0

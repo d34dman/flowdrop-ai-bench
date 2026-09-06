@@ -1,0 +1,11 @@
+uuid: 1ccd37d6-f09d-4492-93f1-5f619f9b5da4
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: F_8fes42vL2Uc2Clvg9JOQkfxrTuYYb4X_k3uSUBs6s
+id: timing
+label: Timing
+description: 'Pause workflow execution for a duration or until a point in time, resuming automatically.'
+icon: 'mdi:timer-outline'
+color: '#0ea5e9'
