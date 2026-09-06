@@ -4,7 +4,8 @@ glyph: "████"
 subject: Drupal
 competitors: [Quillpress, Hexagrid, Lumen CMS, Marrow, Sitewright]
 ---
-Fetch the content at the given URL and convert the ENTIRE page to Markdown.
+Convert the ENTIRE page to Markdown. If you are given a URL rather than the page,
+fetch the content at that URL first.
 
 Reproduce the full document: every heading, paragraph, list item and table, in
 the original order and wording. Do not summarise, abridge, omit or re-word

@@ -33,7 +33,7 @@
   "Markdown"
  ],
  "prompt": "prompt/redact.v1.md",
- "prompt_sha256": "c8bdece0102cdbd05bd153034678a3c5751b9494fe079b1dba8bf3502ac46c2f",
+ "prompt_sha256": "21ddeac0e06c7d68fb843b4a9e060ec4a2d8df1992aafcda4e2b1ae6e8fc24d7",
  "pages": {
   "small": {
    "html": "small.html",
