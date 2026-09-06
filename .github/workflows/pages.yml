@@ -36,7 +36,7 @@ jobs:
         # A contribution adds runs; it never edits or removes one. That is what keeps
         # every PR conflict-free and every published figure reproducible.
         run: |
-          changed=$(git diff --name-status --diff-filter=MDRT "origin/${{ github.base_ref }}...HEAD" -- runs outputs traces)
+          changed=$(git diff --name-status --diff-filter=MDRT "origin/${{ github.base_ref }}...HEAD" -- runs outputs traces exclusions)
           if [ -n "$changed" ]; then
             echo "$changed" | while read -r st f rest; do echo "::error file=$f::existing run files are never modified, renamed or deleted ($st)"; done
             exit 1
@@ -64,6 +64,22 @@ jobs:
                   if k not in r: print(f'::error file=runs/{fn}::missing {k}'); bad += 1
               if r.get('pipeline_status') == 'completed' and not os.path.exists(f"outputs/{r['run_id']}.md"):
                   print(f'::error file=runs/{fn}::completed run without outputs/{r["run_id"]}.md'); bad += 1
+          sys.exit(1 if bad else 0)
+          EOF
+      - name: Exclusions name real runs and give reasons
+        run: |
+          python3 - <<'EOF'
+          import json, os, sys
+          bad = 0
+          for fn in os.listdir('exclusions') if os.path.isdir('exclusions') else []:
+              if not fn.endswith('.json'): continue
+              r = json.load(open(f'exclusions/{fn}'))
+              for k in ('run_id', 'kind', 'reason', 'by', 'ts'):
+                  if not r.get(k): print(f'::error file=exclusions/{fn}::missing {k}'); bad += 1
+              if r.get('kind') not in ('harness', 'provider', 'operator', 'duplicate'): print(f'::error file=exclusions/{fn}::unknown kind {r.get("kind")!r}'); bad += 1
+              if len(r.get('reason') or '') < 20: print(f'::error file=exclusions/{fn}::reason too short to be one'); bad += 1
+              if fn[:-5] != r.get('run_id'): print(f'::error file=exclusions/{fn}::file is not named after its run_id'); bad += 1
+              if not os.path.exists(f"runs/{r.get('run_id')}.json"): print(f'::error file=exclusions/{fn}::no such run {r.get("run_id")}'); bad += 1
           sys.exit(1 if bad else 0)
           EOF
       - name: Score

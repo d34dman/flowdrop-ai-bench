@@ -8,5 +8,5 @@ Bench.ready(({rows, all, order}) => {
   document.getElementById('stats').innerHTML =
     stat(rows.length === all.length ? rows.length : rows.length + ' / ' + all.length, 'runs') + stat(g.length, 'graded') +
     stat(models.size, 'models') + stat(cells.size, 'cells') + stat(tags.size, 'contributor tags') +
-    `<div style="align-self:center">${order.filter(o => o !== 'control' && o !== 'stale' && by[o]).map(o => Bench.pill(o, by[o])).join(' ')}</div>`;
+    `<div style="align-self:center">${order.filter(o => !Bench.UNGRADED.has(o) && by[o]).map(o => Bench.pill(o, by[o])).join(' ')}</div>`;
 });

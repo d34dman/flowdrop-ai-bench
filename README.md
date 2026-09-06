@@ -17,6 +17,7 @@ the same words used in other senses, untouched.
 | `corpus/build.py` | Regenerates the HTML, gold and manifest from `corpus/v1/src/`. Standard library only. |
 | `prompt/redact.v1.md` | The one system prompt every model-calling cell runs with. Its front-matter defines the glyph and the competitor list. `critic.v2.md` is the reviewer prompt for the Reflexion cell (v1 lacked the never-redact-the-subject rule and let the critic demand that Drupal be redacted). |
 | `runs/`, `outputs/` | The dataset: one JSON (ledger + metering) and one Markdown output per run. The unit of contribution. |
+| `exclusions/` | One JSON per run withdrawn from grading, with its kind and reason. The run itself stays in `runs/`. See [CONTRIBUTING.md](CONTRIBUTING.md#excluding-a-run). |
 | `traces/` | One gzipped JSON per run with the full FlowDrop execution: pipelines, jobs, checkpoints, sessions, metering. `python3 scoring/trace.py <run_id>` prints a timeline; the site renders one HTML page per trace. |
 | `scoring/score.py` | Deterministic scorer: recall, precision, subject, homonym, fidelity, fabrication, structure, and an outcome class per run. `--explain <run_id>` shows its reasoning. |
 | `site/` | The published site: `build.py` (orchestrator), `filters.json` (every filter, defined once), `registry.json` (the visuals in order), `lib/` (shared browser runtime, stylesheet, Python framework) and `visuals/<id>/` (one folder per page). See [Visuals](#visuals). |
@@ -43,6 +44,7 @@ https://d34dman.github.io/flowdrop-ai-bench/by-model/?model=claude-sonnet-5&page
 | `matrix/` | Variants × models, correct over graded per cell. |
 | `by-model/` | One model (single select), compared across the benchmarks B0–B9. |
 | `by-benchmark/` | One benchmark (single select), compared across the models that ran it. |
+| `exclusions/` | One JSON per run withdrawn from grading, with its kind and reason. The run itself stays in `runs/`. See [CONTRIBUTING.md](CONTRIBUTING.md#excluding-a-run). |
 | `traces/` | Index of captured traces and one page per trace. |
 | `task/` | Corpus pages, traps, protected names, prompt. |
 

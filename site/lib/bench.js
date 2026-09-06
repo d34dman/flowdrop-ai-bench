@@ -23,7 +23,7 @@
 window.Bench = (function () {
   'use strict';
   const ROOT = document.documentElement.getAttribute('data-root') || './';
-  const ORDER = ['correct', 'degraded', 'silent', 'format', 'loud', 'control', 'stale'];
+  const ORDER = ['correct', 'degraded', 'silent', 'format', 'loud', 'control', 'stale', 'excluded'];
   const subs = [];
   let data = null;         // {rows, facets}
   let state = parseQuery(location.search);
@@ -172,14 +172,15 @@ window.Bench = (function () {
 
   // ------------------------------------------------------------ helpers for visuals
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const pill = (c, n) => `<span class="pill ${esc(c)}">${esc(c)}${n == null ? '' : ' ' + n}</span>`;
+  const pill = (c, n, title) => `<span class="pill ${esc(c)}"${title ? ` title="${esc(title)}"` : ''}>${esc(c)}${n == null ? '' : ' ' + n}</span>`;
   const cell = id => (data && data.facets.labels.cell[id]) || id;
   const num = (v, d = 2) => (v === '' || v == null || Number.isNaN(+v)) ? '—' : (+v).toFixed(d);
-  const graded = rows => rows.filter(r => r.outcome !== 'control' && r.outcome !== 'stale');
+  const UNGRADED = new Set(['control', 'stale', 'excluded']);
+  const graded = rows => rows.filter(r => !UNGRADED.has(r.outcome));
   const href = path => ROOT + path;                        // path relative to the site root
 
   document.addEventListener('DOMContentLoaded', () => { load().catch(e => { const m = document.getElementById('bench-filters'); if (m) m.textContent = 'data failed to load: ' + e; }); });
   // Label for any filter value (cell names for benchmarks, the id otherwise).
   const label_ = (fid, v) => { const f = defs().find(x => x.id === fid); return f ? label(f, v) : v; };
-  return { ready, set, reset, state: () => state, query, esc, pill, cell, num, graded, href, label: label_, ORDER };
+  return { ready, set, reset, state: () => state, query, esc, pill, cell, num, graded, href, label: label_, ORDER, UNGRADED };
 })();

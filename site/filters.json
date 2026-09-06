@@ -5,7 +5,7 @@
     {"id": "benchmark", "label": "Benchmark", "column": "variant",       "multi": true, "labels": "cell"},
     {"id": "model",     "label": "Model",     "column": "model_family",  "multi": true, "split": ","},
     {"id": "page",      "label": "Page",      "column": "page",          "multi": true, "order": ["small", "medium", "large"]},
-    {"id": "outcome",   "label": "Outcome",   "column": "outcome",       "multi": true, "order": ["correct", "degraded", "silent", "format", "loud", "control", "stale"]},
+    {"id": "outcome",   "label": "Outcome",   "column": "outcome",       "multi": true, "order": ["correct", "degraded", "silent", "format", "loud", "control", "stale", "excluded"]},
     {"id": "tag",       "label": "Tag",       "column": "tag",           "multi": true},
     {"id": "corpus",    "label": "Corpus",    "column": "corpus_version","multi": true}
   ]

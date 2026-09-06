@@ -26,12 +26,14 @@ G2 scope (structure >= 0.5). Class: loud (G0 fails), format (G1 fails), silent (
 or any axis below 0.75 with all gates passed), degraded (all axes >= 0.75, not all at
 threshold), correct (recall, precision, subject, homonym, fidelity >= 0.95 and
 fabrication <= 0.05). B0 and B1 are controls: scored, classed 'control'.
+A run named in exclusions/ (see scoring/exclude.py) is classed 'excluded': kept in the
+CSVs with excluded_kind and excluded_reason, ungraded like 'stale'.
 """
 import csv, difflib, html as htmlmod, json, os, re, sys
 from collections import Counter
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-RUNS, OUT, DATA = (os.path.join(ROOT, d) for d in ('runs', 'outputs', 'data'))
+RUNS, OUT, DATA, EXCL = (os.path.join(ROOT, d) for d in ('runs', 'outputs', 'data', 'exclusions'))
 RED, HOM = 'REDACTEDTOKEN', 'HOMONYMTOKEN'
 MIN_WORDS, MATCH = 4, 0.90
 THRESH = dict(recall=0.95, precision=0.95, subject=0.95, homonym=0.95, fidelity=0.95, fabrication=0.05)
@@ -327,6 +329,15 @@ LEDGER = ['run_id', 'tag', 'workflow', 'url_key', 'corpus_version', 'page_sha256
           'total_seconds', 'ai_seconds', 'deterministic_seconds', 'wall_seconds', 'llm_calls', 'models',
           'input_tokens', 'output_tokens', 'cached_tokens', 'cost_usd', 'retries', 'output_chars']
 
+def load_exclusions():
+    """{run_id: record} from exclusions/*.json; a run withdrawn from grading, with its reason."""
+    out = {}
+    if os.path.isdir(EXCL):
+        for fn in sorted(os.listdir(EXCL)):
+            if fn.endswith('.json'):
+                r = json.load(open(os.path.join(EXCL, fn), encoding='utf-8')); out[r['run_id']] = r
+    return out
+
 def load_runs():
     rows = []
     for fn in sorted(os.listdir(RUNS)):
@@ -354,8 +365,9 @@ def task(prompt_sha):
                 _prompts[hashlib.sha256(open(os.path.join(pdir, fn), 'rb').read()).hexdigest()] = fn[:-3]
     return _prompts.get(prompt_sha or '', (prompt_sha or '')[:12] or '-')
 
-def flat(r):
+def flat(r, excl=None):
     d = {k: r.get(k, '') for k in LEDGER}
+    d['excluded_kind'] = (excl or {}).get('kind', ''); d['excluded_reason'] = (excl or {}).get('reason', '')
     d['task'] = task(r.get('prompt_sha256'))
     d['models'] = ','.join(r.get('models') or []); d['failed_nodes'] = ';'.join(r.get('failed_nodes') or [])
     d['model_family'] = ','.join(sorted({family(m) for m in (r.get('models') or [])}))
@@ -363,7 +375,9 @@ def flat(r):
     return d
 
 def main():
-    runs = load_runs()
+    runs, excluded = load_runs(), load_exclusions()
+    missing = set(excluded) - {r['run_id'] for r in runs}
+    if missing: sys.exit('exclusions/ names runs that do not exist: ' + ', '.join(sorted(missing)))
     if EXPLAIN:
         rid = sys.argv[sys.argv.index('--explain') + 1]
         r = next(x for x in runs if x['run_id'].startswith(rid))
@@ -373,10 +387,14 @@ def main():
     empty = {k: '' for k in score('placeholder', 'small', 'v1')}
     ledger, scored = [], []
     for r in runs:
-        base = flat(r); ledger.append(base)
+        base = flat(r, excluded.get(r['run_id'])); ledger.append(base)
         f = os.path.join(OUT, r['run_id'] + '.md')
         sha = corpus(r.get('corpus_version', 'v1'))['pages'].get(r['url_key'], {}).get('sha256')
-        if r.get('page_sha256') and sha and r['page_sha256'] != sha:
+        if r['run_id'] in excluded:
+            # Withdrawn after the fact (a harness fault, an outage, a wrong launch). The record
+            # stays, the reason travels with it, nothing about it is graded.
+            v = dict(empty, outcome='excluded')
+        elif r.get('page_sha256') and sha and r['page_sha256'] != sha:
             # The run saw a page that no longer matches the manifest (corpus edited in place
             # before 1.0). Its output cannot be graded against the current gold.
             v = dict(empty, outcome='stale')
@@ -390,7 +408,7 @@ def main():
         with open(os.path.join(DATA, name), 'w', newline='', encoding='utf-8') as fh:
             w = csv.DictWriter(fh, fieldnames=list(rows[0].keys()) if rows else LEDGER); w.writeheader(); w.writerows(rows)
     print(f'{len(scored)} runs scored -> data/runs.csv, data/scores.csv')
-    order = ['correct', 'degraded', 'silent', 'format', 'loud', 'control', 'stale']
+    order = ['correct', 'degraded', 'silent', 'format', 'loud', 'control', 'stale', 'excluded']
     cells = {}
     for r in scored:
         cells.setdefault((r['variant'], r['model_family'] or '-', r['page']), Counter())[r['outcome']] += 1

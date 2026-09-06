@@ -5,7 +5,8 @@ in `outputs/`. Everything else, the CSVs in `data/` and the published page, is r
 by CI from those two folders on every merge. You never edit a CSV.
 
 The dataset is append-only. A pull request adds run files and never modifies, renames or
-deletes an existing one; CI rejects it otherwise. Run ids carry a random suffix, so two
+deletes an existing one; CI rejects it otherwise. A run that should not count is not
+deleted either, it is *excluded* (see [Excluding a run](#excluding-a-run)). Run ids carry a random suffix, so two
 contributors can never produce the same filename and PRs never conflict. `traces/` is
 covered by the same append-only check, and CI also rejects a trace over 3 MB.
 
@@ -57,6 +58,27 @@ whose recorded page hash no longer matches the manifest as `stale` and leaves it
 From 1.0 on, a change to any of them is a new `prompt/redact.v2.md` or `corpus/v2/`, never
 an edit in place, so old runs stay comparable with each other. Propose such a change in an
 issue first.
+
+## Excluding a run
+
+Sometimes a run measures the harness rather than the architecture: the runner timed out,
+the provider was down, the wrong model was launched. Such a run stays in the dataset, so
+the record of what happened is kept, but it must not count. File an exclusion:
+
+```sh
+python3 scoring/exclude.py --kind harness \
+  --reason "AI module request_timeout was 60 s; large.html needs longer. Raised to 600 and rerun." \
+  bench_9_reflexion_with_tools_in_parent__large__r1__1788726822
+```
+
+That writes `exclusions/<run_id>.json` with the run id, a kind (`harness`, `provider`,
+`operator`, `duplicate`), the reason, who filed it and when. The scorer classes the run
+`excluded`: it stays in `runs.csv` and `scores.csv` with `excluded_kind` and
+`excluded_reason`, and every graded count, mean and correct rate leaves it out, exactly
+as `stale` and `control` are left out. `exclusions/` is append-only like `runs/`, so an
+exclusion is never silently revised; if one was wrong, say so in a PR that removes it.
+The reason must say what went wrong *and* what was done about it, so a reader can tell a
+withdrawn run from a hidden one. `python3 scoring/exclude.py --list` shows them all.
 
 ## Scoring
 

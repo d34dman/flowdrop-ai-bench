@@ -28,6 +28,6 @@ Bench.ready(({rows, order}) => {
       `<tr><td>${esc(cell(r.variant))} <span class="note">${esc(r.tag)}</span></td><td><code>${esc(r.models || '-')}</code></td><td>${esc(r.page)}</td>` +
       AX.map(a => `<td class="n">${esc(r[a])}</td>`).join('') +
       `<td class="n">${esc(r.glyphs)}</td><td class="n">${esc(r.leaks)}</td><td class="n">${esc(r.llm_calls)}</td><td class="n">${esc(r.total_seconds)}</td><td class="n">${esc(r.cost_usd)}</td>` +
-      `<td>${pill(r.outcome)}</td><td><a href="${Bench.href('outputs/' + encodeURIComponent(r.run_id) + '.md')}">md</a></td>` +
+      `<td>${pill(r.outcome, null, r.excluded_reason ? r.excluded_kind + ': ' + r.excluded_reason : '')}</td><td><a href="${Bench.href('outputs/' + encodeURIComponent(r.run_id) + '.md')}">md</a></td>` +
       `<td>${r.trace ? `<a href="${Bench.href('traces/' + encodeURIComponent(r.run_id) + '.html')}">trace</a>` : '-'}</td></tr>`).join('') + '</table>';
 });

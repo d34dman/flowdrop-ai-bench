@@ -4,7 +4,7 @@
  *
  * Two tables: correctness (graded runs, outcome counts as a labelled stacked bar, correct
  * rate) and means of the axes, calls, seconds and cost per group. Only graded runs count
- * toward correctness and axis means; controls and stale runs are listed in their own column
+ * toward correctness and axis means; controls, stale and excluded runs are listed in their own column
  * so nothing disappears silently.
  */
 window.Compare = (function () {
@@ -18,7 +18,7 @@ window.Compare = (function () {
       const k = String(r[o.by] || '-');
       const g = groups.get(k) || {k, n: 0, graded: 0, ungraded: 0, out: {}, ax: Object.fromEntries(AX.map(a => [a, []])), calls: [], secs: [], cost: []};
       g.n++;
-      if (r.outcome === 'control' || r.outcome === 'stale') g.ungraded++;
+      if (Bench.UNGRADED.has(r.outcome)) g.ungraded++;
       else {
         g.graded++; g.out[r.outcome] = (g.out[r.outcome] || 0) + 1;
         for (const a of AX) if (r[a] !== '' && r[a] != null) g.ax[a].push(+r[a]);
@@ -28,7 +28,7 @@ window.Compare = (function () {
     }
     const gs = [...groups.values()].sort((a, b) => a.k.localeCompare(b.k));
     if (!gs.length) { el.innerHTML = '<div class="empty">No runs match.</div>'; return; }
-    const ORDER = o.order.filter(x => x !== 'control' && x !== 'stale');
+    const ORDER = o.order.filter(x => !Bench.UNGRADED.has(x));
     const name = k => o.link ? `<a href="${o.link(k)}">${esc(o.label(k))}</a>` : esc(o.label(k));
     const stack = g => g.graded ? '<span class="stack" title="' + ORDER.filter(x => g.out[x]).map(x => x + ' ' + g.out[x]).join(', ') + '">' +
       ORDER.filter(x => g.out[x]).map(x => `<i class="${x}" style="flex:${g.out[x]}">${g.out[x]}</i>`).join('') + '</span>' : '<span class="note">no graded runs</span>';

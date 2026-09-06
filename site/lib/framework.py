@@ -34,7 +34,7 @@ LABELS = {'cell': CELL}
 # Ledger columns that stay strings even when they look numeric.
 TEXT_COLUMNS = {'run_id', 'tag', 'workflow', 'url_key', 'corpus_version', 'page_sha256', 'prompt_sha256', 'glyph',
                 'flowdrop_version', 'harness_version', 'ts', 'pipeline_status', 'failed_nodes', 'models', 'model_family',
-                'page', 'variant', 'outcome', 'task'}
+                'page', 'variant', 'outcome', 'task', 'excluded_kind', 'excluded_reason'}
 
 
 def esc(x):
@@ -124,7 +124,7 @@ class Ctx:
         return self._manifests[version]
 
     def graded(self):
-        return [r for r in self.rows if r['outcome'] not in ('control', 'stale')]
+        return [r for r in self.rows if r['outcome'] not in ('control', 'stale', 'excluded')]
 
     def write(self, rel, text):
         p = os.path.join(self.out, rel)
