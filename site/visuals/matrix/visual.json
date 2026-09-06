@@ -3,6 +3,8 @@
   "blurb": "One glance at the study: rows are workflow architectures, columns are models, a cell is correct runs over graded runs.",
   "filters": [
     "task",
+    "benchmark",
+    "model",
     "page",
     "tag",
     "corpus"
