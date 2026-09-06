@@ -29,7 +29,7 @@ footer.site ul{display:flex;flex-wrap:wrap;gap:1rem;list-style:none;padding:0;ma
     <ul>
       <li><a href="/guides/">Guides</a></li>
       <li><a href="/compare/">Compare</a></li>
-      <li><a href="/compare/migrate-from-quillpress/" title="Migrating from Quillpress to Drupal">Migrate from Quillpress</a></li>
+      <li><a href="/compare/migrate-from-wordpress/" title="Migrating from WordPress to Drupal">Migrate from WordPress</a></li>
       <li><a href="/newsletter/">Newsletter</a></li>
       <li><a href="/about/">About</a></li>
     </ul>
@@ -63,9 +63,9 @@ footer.site ul{display:flex;flex-wrap:wrap;gap:1rem;list-style:none;padding:0;ma
 <p>JSON:API in core exposes every entity type as a specification-compliant API with filtering, sorting, sparse fieldsets and relationships, without configuration. A contributed GraphQL module offers the same content through a schema. Together with the decoupled menus and decoupled routing modules, these allow Drupal to serve as the content backend for a React, Node.js or native front end while continuing to render its own pages through Twig, a pattern usually called progressively decoupled.</p>
 <h3>Extensibility</h3>
 <p>Behaviour is extended through modules, which are PHP packages that declare services, plugins, event subscribers and hooks. Plugins are the most common extension point: a block, a field type, a field formatter, a views handler, a text filter and a migration source are all plugins discovered by annotation or attribute. Themes control presentation through Twig templates, a library system for CSS and JavaScript, and a base-theme inheritance chain. Both modules and themes are installed with Composer from the packages published by drupal.org.</p>
-<h2>Comparison with Quillpress and Hexagrid</h2>
-<p>Drupal is frequently compared with Quillpress, the most widely installed open-source CMS, and with Hexagrid, the best known of the API-first systems. The three share a licence and a language and little else.</p>
-<p>Quillpress optimises for the single publisher: a fast installer, a visual editor, a theme market and a plugin for everything. Its content model is posts and pages, extended by custom post types and a third-party fields plugin. Drupal optimises for the structured site: content modelling, multilingual publishing, moderation and access control in core, at the cost of a slower start. In practice the two overlap on medium-sized sites, and the choice there is often made on the availability of developers rather than on features.</p>
+<h2>Comparison with WordPress and Hexagrid</h2>
+<p>Drupal is frequently compared with WordPress, the most widely installed open-source CMS, with Hexagrid, the best known of the API-first systems, and less often with Joomla, the other long-running open-source PHP CMS. All four share a licence and a language and little else.</p>
+<p>WordPress optimises for the single publisher: a fast installer, a visual editor, a theme market and a plugin for everything. Its content model is posts and pages, extended by custom post types and a third-party fields plugin. Drupal optimises for the structured site: content modelling, multilingual publishing, moderation and access control in core, at the cost of a slower start. In practice the two overlap on medium-sized sites, and the choice there is often made on the availability of developers rather than on features.</p>
 <p>Hexagrid abandons the rendered page altogether and offers only an API and an editing interface, leaving the front end to a JavaScript framework. Drupal can be run the same way through JSON:API, and the comparison then turns on whether a project values a system that can also render pages. Sites that later need a traditional public site or an editorial preview tend to find Drupal's hybrid position the more forgiving one.</p>
 <p>Analyst Priya Marrow has described Drupal's position as "the only system that is defensible from both ends: it can be a plain website and it can be a content service, and it does not have to choose." A recurring criticism, from the same analyst and from within the project, is that Drupal's flexibility is presented too early to newcomers, a problem Drupal CMS was created to address.</p>
 <h2>Community and governance</h2>
@@ -81,7 +81,7 @@ footer.site ul{display:flex;flex-wrap:wrap;gap:1rem;list-style:none;padding:0;ma
 <h2>In popular culture and education</h2>
 <p>Drupal has been used as a teaching platform in university courses on web development and information architecture, chosen because its content modelling makes the separation of structure and presentation explicit. At a 2024 conference talk on the subject, a lecturer projected a Drupal field configuration screen onto a wall with a 2,000-lumen projector and asked the audience to identify which parts were content and which were presentation; the exercise has since been repeated in several curricula. The Drupal logo, a stylised blue water drop with a face, is among the more recognisable open-source mascots, and its Druplicon variants are a fixture of community events.</p>
 <h2>Related projects</h2>
-<p>Several projects have grown out of or alongside Drupal. Backdrop CMS forked from Drupal 7 in 2013 to preserve its architecture for sites that did not want the Drupal 8 rewrite. The Symfony framework, whose components form the basis of modern Drupal, gained contributors and use cases from the relationship. Lumen CMS began as a hosted editorial front end for Drupal sites before becoming an independent product with its own storage; Lumen's early releases could import a Drupal content model directly. The Migrate API, developed to move sites from Drupal 6 and 7, has become a general extract-transform-load framework used to import content from Quillpress, Sitewright exports and arbitrary CSV and XML sources.</p>
+<p>Several projects have grown out of or alongside Drupal. Backdrop CMS forked from Drupal 7 in 2013 to preserve its architecture for sites that did not want the Drupal 8 rewrite. The Symfony framework, whose components form the basis of modern Drupal, gained contributors and use cases from the relationship. Lumen CMS began as a hosted editorial front end for Drupal sites before becoming an independent product with its own storage; Lumen's early releases could import a Drupal content model directly. The Migrate API, developed to move sites from Drupal 6 and 7, has become a general extract-transform-load framework used to import content from WordPress, Sitewright exports and arbitrary CSV and XML sources.</p>
 <h2>See also</h2>
 <ul><li>Content management system</li><li>Web application framework</li><li>Free and open-source software</li><li>Headless content management</li><li>Configuration management</li></ul>
 <section class="refs" aria-label="References">
@@ -90,7 +90,7 @@ footer.site ul{display:flex;flex-wrap:wrap;gap:1rem;list-style:none;padding:0;ma
 <li>Buytaert, D. "The history of Drupal", drop.org archive, retrieved 2026.</li>
 <li>"Drupal 7 reaches end of life", Drupal Association announcement, January 2025.</li>
 <li>"Drupal 8.0.0 released", drupal.org, 19 November 2015.</li>
-<li>Marrow, P. "Defensible from both ends: Drupal, Quillpress and the API-first field", Open CMS Review, 2025.</li>
+<li>Marrow, P. "Defensible from both ends: Drupal, WordPress and the API-first field", Open CMS Review, 2025.</li>
 <li>"Drupal CMS 1.0", drupal.org, 15 January 2025.</li>
 <li>"Hexagrid 4 and the case against rendering", Headless Weekly, 2024.</li>
 <li>"State of the open web platforms survey", Open CMS Review, 2025.</li>
@@ -98,20 +98,20 @@ footer.site ul{display:flex;flex-wrap:wrap;gap:1rem;list-style:none;padding:0;ma
 <li>"Lumen CMS spins out as an independent product", Publishing Tools Digest, 2023.</li>
 </ol>
 </section>
-<nav class="cats" aria-label="Categories"><strong>Categories:</strong> <a href="/cat/cms/">Content management systems</a> · <a href="/cat/php/">PHP software</a> · <a href="/cat/foss/">Free software</a> · <a href="/cat/compare/">Compared with Quillpress</a></nav>
+<nav class="cats" aria-label="Categories"><strong>Categories:</strong> <a href="/cat/cms/">Content management systems</a> · <a href="/cat/php/">PHP software</a> · <a href="/cat/foss/">Free software</a> · <a href="/cat/compare/">Compared with WordPress</a></nav>
 
 </main>
 <aside class="side">
   <h3>In this series</h3>
   <ul>
     <li><a href="/guides/drupal-about/">About Drupal</a></li>
-    <li><a href="/compare/drupal-vs-quillpress/">Drupal versus Quillpress</a></li>
+    <li><a href="/compare/drupal-vs-wordpress/">Drupal versus WordPress</a></li>
     <li><a href="/guides/drupal-encyclopedia/">Drupal, the long article</a></li>
   </ul>
   <h3>Newsletter</h3>
   <p>One email a month on open publishing. No tracking, unsubscribe any time.</p>
   <form action="/newsletter/" method="post"><input type="email" name="email" placeholder="you@example.org" aria-label="Email"> <button type="submit">Subscribe</button></form>
-  <img src="/img/compare-chart.svg" width="240" height="120" alt="Chart comparing Drupal, Quillpress and Sitewright hosting costs">
+  <img src="/img/compare-chart.svg" width="240" height="120" alt="Chart comparing Drupal, WordPress and Sitewright hosting costs">
 </aside>
 </div>
 <footer class="site">

@@ -4,8 +4,11 @@ International License (CC BY 4.0). Full text: https://creativecommons.org/licens
 
 Attribution: "FlowDrop AI Bench corpus, github.com/d34dman/flowdrop-ai-bench".
 
-Every page in the corpus is original prose written for this benchmark. The
-content-management products it compares against Drupal (Quillpress, Hexagrid,
-Lumen CMS, Marrow, Sitewright) are fictional; any resemblance to a real product
-is unintended. Drupal is a registered trademark of Dries Buytaert, used here to
-name the subject of the pages.
+Every page in the corpus is original prose written for this benchmark. Of the
+content-management products it compares against Drupal, two are real (WordPress,
+Joomla) and four are fictional (Hexagrid, Lumen CMS, Marrow, Sitewright); any
+resemblance of a fictional name to a real product is unintended. Drupal is a
+registered trademark of Dries Buytaert; WordPress is a trademark of the WordPress
+Foundation; Joomla is a trademark of Open Source Matters, Inc. The real names are
+used only to identify the products being compared, and nothing in the pages is a
+statement of fact about them beyond what is common knowledge.

@@ -4,11 +4,16 @@
  "glyph": "████",
  "subject": "Drupal",
  "competitors": [
-  "Quillpress",
+  "WordPress",
+  "Joomla",
   "Hexagrid",
   "Lumen CMS",
   "Marrow",
   "Sitewright"
+ ],
+ "real_names": [
+  "WordPress",
+  "Joomla"
  ],
  "protected_names": [
   "Drupal",
@@ -33,21 +38,21 @@
   "Markdown"
  ],
  "prompt": "prompt/redact.v1.md",
- "prompt_sha256": "21ddeac0e06c7d68fb843b4a9e060ec4a2d8df1992aafcda4e2b1ae6e8fc24d7",
+ "prompt_sha256": "272f2f41c1552fd77952bf1867eb98ffeea8cd5bc9d249166416511f69b66c8d",
  "pages": {
   "small": {
    "html": "small.html",
    "url": "https://d34dman.github.io/flowdrop-ai-bench/corpus/v1/small.html",
    "gold": "gold/small.md",
-   "sha256": "28e930e40d81b90085079b128f4157a53545e5bb2fbc116ba02adb0a5d00ed75",
-   "gold_sha256": "2f66dc7f8951dcc50d0d87cd0e3bbe45de510bb91e53d55af2646ee8bcc564fe",
-   "html_bytes": 6286,
-   "gold_bytes": 2586,
+   "sha256": "ab589846f40109ef1391130896cb29d8fa8dff89cfc63e0dd42e087904b5b855",
+   "gold_sha256": "4b057b3bdcad5c91a9c2bfaf880eddf15a2e04956125c2ff3a23c2be37aa58d6",
+   "html_bytes": 6279,
+   "gold_bytes": 2585,
    "headings": 6,
    "tables": 0,
    "targets": [
     {
-     "name": "Quillpress",
+     "name": "WordPress",
      "line": 9,
      "col": 70
     },
@@ -176,7 +181,7 @@
     }
    ],
    "chrome": {
-    "Quillpress": 4,
+    "WordPress": 4,
     "Hexagrid": 1,
     "Sitewright": 3
    }
@@ -185,87 +190,87 @@
    "html": "medium.html",
    "url": "https://d34dman.github.io/flowdrop-ai-bench/corpus/v1/medium.html",
    "gold": "gold/medium.md",
-   "sha256": "e64f06d71731b035ba940e21e5cdc443fee5dd760b6e946f05072ef9b7ce5352",
-   "gold_sha256": "0f01767d781355e2777dc94856a668f457c8954087cb321c9cfd3ee306b6e83a",
-   "html_bytes": 11247,
-   "gold_bytes": 7151,
+   "sha256": "ea4e33df2ab05dfe9a143ce5c0d205ef250da9fe174f60008d985e8413a0a3e4",
+   "gold_sha256": "fb84752daefe8d4568439c2ba66c7873375f5cab29e6a671085e1699555f9a19",
+   "html_bytes": 11378,
+   "gold_bytes": 7289,
    "headings": 12,
    "tables": 3,
    "targets": [
     {
-     "name": "Quillpress",
+     "name": "WordPress",
      "line": 1,
      "col": 17
     },
     {
-     "name": "Quillpress",
+     "name": "WordPress",
      "line": 3,
      "col": 130
     },
     {
-     "name": "Quillpress",
+     "name": "WordPress",
      "line": 7,
      "col": 1
     },
     {
-     "name": "Quillpress",
+     "name": "WordPress",
      "line": 7,
-     "col": 190
+     "col": 189
     },
     {
-     "name": "Quillpress",
+     "name": "WordPress",
      "line": 11,
      "col": 1
     },
     {
-     "name": "Quillpress",
+     "name": "WordPress",
      "line": 17,
      "col": 22
     },
     {
-     "name": "Quillpress",
+     "name": "WordPress",
      "line": 19,
      "col": 293
     },
     {
-     "name": "Quillpress",
+     "name": "WordPress",
      "line": 23,
      "col": 274
     },
     {
-     "name": "Quillpress",
+     "name": "WordPress",
      "line": 27,
      "col": 131
     },
     {
-     "name": "Quillpress",
+     "name": "WordPress",
      "line": 29,
      "col": 172
     },
     {
-     "name": "Quillpress",
+     "name": "WordPress",
      "line": 33,
      "col": 218
     },
     {
-     "name": "Quillpress",
+     "name": "WordPress",
      "line": 35,
      "col": 25
     },
     {
-     "name": "Quillpress",
+     "name": "WordPress",
      "line": 39,
      "col": 14
     },
     {
-     "name": "Quillpress",
+     "name": "WordPress",
      "line": 51,
      "col": 110
     },
     {
-     "name": "Quillpress",
+     "name": "WordPress",
      "line": 51,
-     "col": 315
+     "col": 287
     },
     {
      "name": "Hexagrid",
@@ -273,37 +278,47 @@
      "col": 29
     },
     {
-     "name": "Lumen CMS",
+     "name": "Joomla",
      "line": 55,
      "col": 124
     },
     {
+     "name": "WordPress",
+     "line": 55,
+     "col": 250
+    },
+    {
+     "name": "Lumen CMS",
+     "line": 55,
+     "col": 304
+    },
+    {
      "name": "Sitewright",
      "line": 55,
-     "col": 202
+     "col": 382
     },
     {
-     "name": "Quillpress",
+     "name": "WordPress",
      "line": 55,
-     "col": 342
+     "col": 522
     },
     {
-     "name": "Quillpress",
+     "name": "WordPress",
      "line": 59,
      "col": 8
     },
     {
-     "name": "Quillpress",
+     "name": "WordPress",
      "line": 63,
      "col": 22
     },
     {
-     "name": "Quillpress",
+     "name": "WordPress",
      "line": 63,
-     "col": 96
+     "col": 107
     },
     {
-     "name": "Quillpress",
+     "name": "WordPress",
      "line": 67,
      "col": 6
     }
@@ -329,17 +344,17 @@
     {
      "name": "PHP",
      "line": 3,
-     "col": 179
+     "col": 178
     },
     {
      "name": "Drupal",
      "line": 7,
-     "col": 70
+     "col": 69
     },
     {
      "name": "Drupal",
      "line": 7,
-     "col": 391
+     "col": 389
     },
     {
      "name": "Drupal",
@@ -359,7 +374,7 @@
     {
      "name": "Drupal",
      "line": 17,
-     "col": 100
+     "col": 99
     },
     {
      "name": "Drupal",
@@ -374,12 +389,12 @@
     {
      "name": "Drupal",
      "line": 27,
-     "col": 291
+     "col": 290
     },
     {
      "name": "GitLab",
      "line": 27,
-     "col": 466
+     "col": 465
     },
     {
      "name": "Drupal",
@@ -399,32 +414,32 @@
     {
      "name": "Linux",
      "line": 33,
-     "col": 293
+     "col": 292
     },
     {
      "name": "Nginx",
      "line": 33,
-     "col": 304
+     "col": 303
     },
     {
      "name": "Apache",
      "line": 33,
-     "col": 313
+     "col": 312
     },
     {
      "name": "MySQL",
      "line": 33,
-     "col": 321
+     "col": 320
     },
     {
      "name": "Redis",
      "line": 33,
-     "col": 343
+     "col": 342
     },
     {
      "name": "Drupal",
      "line": 35,
-     "col": 133
+     "col": 132
     },
     {
      "name": "Drupal",
@@ -439,37 +454,42 @@
     {
      "name": "Drupal",
      "line": 51,
-     "col": 150
+     "col": 149
     },
     {
      "name": "Drupal",
      "line": 51,
-     "col": 395
+     "col": 353
+    },
+    {
+     "name": "PHP",
+     "line": 55,
+     "col": 174
     },
     {
      "name": "Drupal",
      "line": 55,
+     "col": 511
+    },
+    {
+     "name": "Drupal",
+     "line": 59,
+     "col": 123
+    },
+    {
+     "name": "Drupal",
+     "line": 59,
      "col": 331
     },
     {
      "name": "Drupal",
-     "line": 59,
-     "col": 124
-    },
-    {
-     "name": "Drupal",
-     "line": 59,
-     "col": 332
+     "line": 63,
+     "col": 35
     },
     {
      "name": "Drupal",
      "line": 63,
-     "col": 36
-    },
-    {
-     "name": "Drupal",
-     "line": 63,
-     "col": 51
+     "col": 50
     },
     {
      "name": "Drupal",
@@ -503,7 +523,7 @@
     }
    ],
    "chrome": {
-    "Quillpress": 4,
+    "WordPress": 4,
     "Hexagrid": 1,
     "Sitewright": 3
    }
@@ -512,35 +532,40 @@
    "html": "large.html",
    "url": "https://d34dman.github.io/flowdrop-ai-bench/corpus/v1/large.html",
    "gold": "gold/large.md",
-   "sha256": "adeabe7ed99f9d9fab079bcffdf848b7393d8f9e725dc1c7ccc5bfddcca7e62c",
-   "gold_sha256": "715f4835675b904353934cedeb9ae7833b6e7d338a234a8e752f875be69d5652",
-   "html_bytes": 18337,
-   "gold_bytes": 13387,
+   "sha256": "25e8b9c95da60123e66a3dc0c78eb5e743e3a2ac1fcd356d573efe15dbd38e4c",
+   "gold_sha256": "0e2fce98cb089787b0aa9f0e1816697b2730802e0c00a6cc4ce8080a7f535bc1",
+   "html_bytes": 18392,
+   "gold_bytes": 13450,
    "headings": 16,
    "tables": 0,
    "targets": [
     {
-     "name": "Quillpress",
+     "name": "WordPress",
      "line": 45,
      "col": 20
     },
     {
      "name": "Hexagrid",
      "line": 45,
-     "col": 35
+     "col": 34
     },
     {
-     "name": "Quillpress",
+     "name": "WordPress",
      "line": 47,
      "col": 36
     },
     {
      "name": "Hexagrid",
      "line": 47,
-     "col": 100
+     "col": 95
     },
     {
-     "name": "Quillpress",
+     "name": "Joomla",
+     "line": 47,
+     "col": 166
+    },
+    {
+     "name": "WordPress",
      "line": 49,
      "col": 1
     },
@@ -560,14 +585,14 @@
      "col": 434
     },
     {
-     "name": "Quillpress",
+     "name": "WordPress",
      "line": 81,
      "col": 647
     },
     {
      "name": "Sitewright",
      "line": 81,
-     "col": 659
+     "col": 658
     }
    ],
    "homonyms": [
@@ -779,9 +804,14 @@
      "col": 1
     },
     {
+     "name": "PHP",
+     "line": 47,
+     "col": 209
+    },
+    {
      "name": "Drupal",
      "line": 49,
-     "col": 228
+     "col": 227
     },
     {
      "name": "Drupal",
@@ -930,7 +960,7 @@
     }
    ],
    "chrome": {
-    "Quillpress": 6,
+    "WordPress": 6,
     "Hexagrid": 2,
     "Lumen CMS": 1,
     "Marrow": 1,

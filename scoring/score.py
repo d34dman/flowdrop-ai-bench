@@ -51,6 +51,7 @@ def corpus(version):
     comp_first = [c.split()[0] for c in comps]                 # 'lumen cms' -> 'lumen'
     suffixes = {c.split()[1] for c in comps if ' ' in c}      # {'cms'}
     prot = [p.lower() for p in m['protected_names']]
+    real = [c.lower().split()[0] for c in m.get('real_names', [])]  # first word, like comp_first
     pages = {}
     for page, d in m['pages'].items():
         gtext = open(os.path.join(base, d['gold']), encoding='utf-8').read()
@@ -67,9 +68,9 @@ def corpus(version):
         cs, _ = sentences(canon(chrome, glyph_char))
         pages[page] = dict(sents=gs, heads=gh, index=Index(gs, gh, comp_first), chrome_index=Index(cs, gh, comp_first),
                            targets=len(d['targets']), homonyms=len(d['homonyms']),
-                           protected=len(d['protected']))
+                           protected=len(d['protected']), sha256=d['sha256'])
     _corpus[version] = dict(glyph=m['glyph'], glyph_char=glyph_char, comps=comp_first, suffixes=suffixes,
-                            prot=prot, pages=pages)
+                            prot=prot, real=real, pages=pages)
     return _corpus[version]
 
 def html_text(page_html):
@@ -180,6 +181,9 @@ def score(text, page, version):
     C = corpus(version); g = C['pages'][page]
     is_target = lambda w: any(w.startswith(c) for c in C['comps'])
     is_prot = lambda w: any(w.startswith(p) for p in C['prot'])
+    # real vs fictional competitor: the gap between the two recalls is how much a cell
+    # leans on model prior rather than on the prompt's list.
+    cls_of = lambda w: 'real' if any(w.startswith(c) for c in C['real']) else 'fict'
     raw = text
     text = unfence(text); fenced = text is not raw
     density = html_density(text)
@@ -188,6 +192,15 @@ def score(text, page, version):
     glyphs_total = len(re.findall(re.escape(C['glyph_char']) + r'+|▌+', raw))
     gc = Counter()   # glyph_correct, glyph_protected, glyph_homonym, glyph_other, glyph_chrome
     leaks = leaks_chrome = hom_kept = 0
+    lc = Counter()   # leaks by class: real, fict
+
+    def leak(words, n=None):
+        """Count readable target words as leaks (at most n of them), by class."""
+        nonlocal leaks
+        ws = [w for w in words if is_target(w)]
+        if n is not None: ws = ws[:n]
+        leaks += len(ws)
+        for w in ws: lc[cls_of(w)] += 1
 
     def classify_glyphs(gold_words, out_words):
         """Word-align an output sentence with its gold sentence; say what each glyph covers."""
@@ -197,14 +210,14 @@ def score(text, page, version):
             seg_g, seg_o = gold_words[i1:i2], out_words[j1:j2]
             k = seg_o.count(RED)
             if tag == 'equal':
-                leaks += sum(1 for w in seg_o if is_target(w))
+                leak(seg_o)
                 continue
             if k:
                 pool = [w for w in seg_g if w not in C['suffixes']] if tag == 'replace' else []
                 pool.sort(key=lambda w: 0 if is_target(w) else 1 if w == HOM else 2 if is_prot(w) else 3)
                 for _ in range(k):
                     w = pool.pop(0) if pool else None
-                    if w is not None and is_target(w): gc['correct'] += 1
+                    if w is not None and is_target(w): gc['correct'] += 1; gc['correct_' + cls_of(w)] += 1
                     elif w == HOM: gc['homonym'] += 1
                     elif w is not None and is_prot(w): gc['protected'] += 1
                     else: gc['other'] += 1
@@ -214,9 +227,9 @@ def score(text, page, version):
                 readable = sum(1 for w in seg_o if is_target(w))
                 hom_kept += min(seg_g.count(HOM), readable)
                 # those readable words are homonyms, not leaks; any surplus target words are leaks
-                leaks += max(0, sum(1 for w in seg_o if is_target(w)) - seg_g.count(HOM))
+                leak(seg_o[::-1], max(0, readable - seg_g.count(HOM)))
             else:
-                leaks += sum(1 for w in seg_o if is_target(w))
+                leak(seg_o)
 
     # headings
     hidx = Index(oheads, (), C['comps']) if oheads else None
@@ -276,6 +289,9 @@ def score(text, page, version):
     protected_kept = sum(1 for w in words_all if is_prot(w))
     denom = gc['correct'] + leaks
     recall = gc['correct'] / denom if denom else (1.0 if g['targets'] == 0 else 0.0)
+    def recall_cls(c):
+        d = gc['correct_' + c] + lc[c]
+        return round(gc['correct_' + c] / d, 3) if d else ''
     placed = gc['correct'] + gc['protected'] + gc['homonym'] + gc['other']
     # Glyphs in fragments too short to score (nav items, footer links) are chrome by
     # construction: the document never has a sentence under four words with a target.
@@ -296,12 +312,12 @@ def score(text, page, version):
     else: cls = 'silent'
     r3 = lambda x: round(x, 3)
     return dict(g0_delivered=int(g0), g1_format=int(g1), g2_scope=int(g2), html_density=round(density, 2), fenced=int(fenced),
-                recall=r3(recall), precision=r3(precision), subject=r3(subject), homonym=r3(homonym),
+                recall=r3(recall), recall_real=recall_cls('real'), recall_fictional=recall_cls('fict'), precision=r3(precision), subject=r3(subject), homonym=r3(homonym),
                 fidelity=r3(fidelity), fabrication=r3(fabrication), structure=r3(structure),
                 gold_sents=len(g['sents']), gold_found=found, out_sents=len(osents), out_in_gold=in_gold,
                 out_chrome=chrome, out_fabricated=fabricated, gold_targets=g['targets'], gold_homonyms=g['homonyms'],
                 glyphs=glyphs_total, glyph_correct=gc['correct'], glyph_protected=gc['protected'], glyph_homonym=gc['homonym'],
-                glyph_other=gc['other'], glyph_chrome=gc['chrome'], leaks=leaks, leaks_chrome=leaks_chrome,
+                glyph_other=gc['other'], glyph_chrome=gc['chrome'], leaks=leaks, leaks_real=lc['real'], leaks_fictional=lc['fict'], leaks_chrome=leaks_chrome,
                 homonyms_kept=hom_kept, protected_kept=protected_kept, heads_gold=len(g['heads']), heads_found=heads_found,
                 outcome=cls)
 
@@ -338,7 +354,12 @@ def main():
     for r in runs:
         base = flat(r); ledger.append(base)
         f = os.path.join(OUT, r['run_id'] + '.md')
-        if r.get('pipeline_status') != 'completed' or not os.path.exists(f):
+        sha = corpus(r.get('corpus_version', 'v1'))['pages'].get(r['url_key'], {}).get('sha256')
+        if r.get('page_sha256') and sha and r['page_sha256'] != sha:
+            # The run saw a page that no longer matches the manifest (corpus edited in place
+            # before 1.0). Its output cannot be graded against the current gold.
+            v = dict(empty, outcome='stale')
+        elif r.get('pipeline_status') != 'completed' or not os.path.exists(f):
             v = dict(empty, g0_delivered=0, g1_format=0, g2_scope=0, outcome='loud')
         else:
             v = score(open(f, encoding='utf-8', errors='replace').read(), r['url_key'], r.get('corpus_version', 'v1'))
@@ -348,7 +369,7 @@ def main():
         with open(os.path.join(DATA, name), 'w', newline='', encoding='utf-8') as fh:
             w = csv.DictWriter(fh, fieldnames=list(rows[0].keys()) if rows else LEDGER); w.writeheader(); w.writerows(rows)
     print(f'{len(scored)} runs scored -> data/runs.csv, data/scores.csv')
-    order = ['correct', 'degraded', 'silent', 'format', 'loud', 'control']
+    order = ['correct', 'degraded', 'silent', 'format', 'loud', 'control', 'stale']
     cells = {}
     for r in scored:
         cells.setdefault((r['variant'], r['models'] or '-', r['page']), Counter())[r['outcome']] += 1

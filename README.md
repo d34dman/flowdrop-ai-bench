@@ -13,7 +13,7 @@ the same words used in other senses, untouched.
 
 | Path | What |
 |---|---|
-| `corpus/v1/` | Three pages we wrote and host ourselves (`small.html`, `medium.html`, `large.html`), their gold Markdown bodies, and `manifest.json` with every target, protected name and homonym trap by position. Served at <https://d34dman.github.io/flowdrop-ai-bench/corpus/v1/>. Never edited in place; a change is `v2/`. |
+| `corpus/v1/` | Three pages we wrote and host ourselves (`small.html`, `medium.html`, `large.html`), their gold Markdown bodies, and `manifest.json` with every target, protected name and homonym trap by position. Served at <https://d34dman.github.io/flowdrop-ai-bench/corpus/v1/>. Edited in place until the 1.0 tag of the benchmark; after that a change is `v2/`. |
 | `corpus/build.py` | Regenerates the HTML, gold and manifest from `corpus/v1/src/`. Standard library only. |
 | `prompt/redact.v1.md` | The one system prompt every model-calling cell runs with. Its front-matter defines the glyph and the competitor list. `critic.v1.md` is the reviewer prompt for the Reflexion cell. |
 | `runs/`, `outputs/` | The dataset: one JSON (ledger + metering) and one Markdown output per run. The unit of contribution. |
@@ -37,16 +37,22 @@ git add runs outputs && git commit -m "runs: B3 on Sonnet 5, small" && git push 
 Open a pull request. CI scores it, merge publishes it. What is welcome and what changes
 the experiment: [CONTRIBUTING.md](CONTRIBUTING.md).
 
-## Why a fictional corpus
+## Why an owned corpus, and why the cast is mixed
 
 The first version of this benchmark fetched live third-party pages and republished their
 text in its results. We had no consent for either, so every figure from that version was
-discarded. The pages here are original prose about Drupal and five fictional competitors
-(Quillpress, Hexagrid, Lumen CMS, Marrow, Sitewright). Because we wrote them, the gold
-document is known by construction, the pages never change under a run, and we can plant
-traps on purpose: a competitor's name used as a surname or a unit, which must not be
-redacted, and competitor names in navigation, alt text and citations, which are chrome
-rather than document.
+discarded. The pages here are original prose about Drupal and six competitors: two real
+(WordPress, Joomla) and four fictional (Hexagrid, Lumen CMS, Marrow, Sitewright). Because
+we wrote them, the gold document is known by construction, the pages never change under a
+run, and we can plant traps on purpose: a competitor's name used as a surname or a unit,
+which must not be redacted, and competitor names in navigation, alt text and citations,
+which are chrome rather than document.
+
+The cast is mixed on purpose. Real names give a reader a familiar target to compare source
+and result against. Fictional names have no model prior, so a model can only redact them
+by following the prompt's list. The scorer reports recall for each class separately
+(`recall_real`, `recall_fictional`); the gap between them is how much a cell leans on what
+the model already knows rather than on the instruction it was given.
 
 ## Licence
 

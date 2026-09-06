@@ -6,7 +6,7 @@ Drupal is a free, open-source content management system written in PHP and relea
 
 Most content management systems start from the page. Drupal starts from the content model. Editors describe the kinds of content a site holds, the fields each kind carries, and the relationships between them, and the system builds the forms, listings and APIs from that description. A recipe site can define a *Recipe* with ingredients, cooking time and a reference to a *Chef* without writing code, then expose the same data to a mobile app through JSON:API.
 
-This is the reason Drupal is often chosen over lighter tools such as Quillpress when a project has many content types, many editors and many outputs. It is also the reason it has a reputation for a steeper start: the flexibility is there from the first minute, and it asks to be used.
+This is the reason Drupal is often chosen over lighter tools such as WordPress when a project has many content types, many editors and many outputs. It is also the reason it has a reputation for a steeper start: the flexibility is there from the first minute, and it asks to be used.
 
 ## Built on shared foundations
 

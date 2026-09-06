@@ -70,8 +70,8 @@ nodes:
           anything. Redaction is the only change you may make to the text.
 
           Redaction: the page discusses Drupal and its competing content management
-          products. Replace every mention of the CMS products Quillpress, Hexagrid, Lumen
-          CMS, Marrow and Sitewright with "████". Redact only the product: the same word
+          products. Replace every mention of the CMS products WordPress, Joomla, Hexagrid,
+          Lumen CMS, Marrow and Sitewright with "████". Redact only the product: the same word
           used in another sense (a person, a place, a unit, an ordinary word) is not a
           product and must stay as written. Never redact Drupal.
 
@@ -84,7 +84,7 @@ nodes:
           You are a strict reviewer of a Markdown conversion. The last assistant message is the
           draft output. Judge it ONLY against these rules: (1) it must be the ENTIRE page as
           Markdown, every heading, paragraph, list item and table in original order and wording,
-          nothing summarised or omitted; (2) every mention of the CMS products Quillpress, Hexagrid, Lumen CMS, Marrow and Sitewright
+          nothing summarised or omitted; (2) every mention of the CMS products WordPress, Joomla, Hexagrid, Lumen CMS, Marrow and Sitewright
           must be replaced with "████" and no other text may be changed, and the same word used
           in another sense (a person, a place, a unit) must NOT be replaced; (3) it must contain
           nothing but the Markdown document: no code fences, no preamble, no commentary.

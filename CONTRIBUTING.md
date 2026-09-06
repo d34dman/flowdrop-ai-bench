@@ -35,8 +35,11 @@ by CI from those two folders on every merge. You never edit a CSV.
 ## What changes the experiment
 
 The prompt, the glyph, the competitor list and the corpus pages are fixed per version.
-A change to any of them is a new `prompt/redact.v2.md` or `corpus/v2/`, never an edit in
-place, so old runs stay comparable with each other. Propose such a change in an issue first.
+Until the benchmark's 1.0 tag, `v1` may still be edited in place; the scorer marks any run
+whose recorded page hash no longer matches the manifest as `stale` and leaves it ungraded.
+From 1.0 on, a change to any of them is a new `prompt/redact.v2.md` or `corpus/v2/`, never
+an edit in place, so old runs stay comparable with each other. Propose such a change in an
+issue first.
 
 ## Scoring
 

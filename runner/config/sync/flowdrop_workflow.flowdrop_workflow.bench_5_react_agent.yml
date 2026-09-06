@@ -67,8 +67,8 @@ nodes:
           anything. Redaction is the only change you may make to the text.
 
           Redaction: the page discusses Drupal and its competing content management
-          products. Replace every mention of the CMS products Quillpress, Hexagrid, Lumen
-          CMS, Marrow and Sitewright with "████". Redact only the product: the same word
+          products. Replace every mention of the CMS products WordPress, Joomla, Hexagrid,
+          Lumen CMS, Marrow and Sitewright with "████". Redact only the product: the same word
           used in another sense (a person, a place, a unit, an ordinary word) is not a
           product and must stay as written. Never redact Drupal.
 

@@ -143,7 +143,7 @@ def main():
     pages = {p: build_page(p, meta) for p in ('small', 'medium', 'large')}
     manifest = {
         'version': VERSION, 'base_url': BASE_URL, 'glyph': meta['glyph'], 'subject': meta['subject'],
-        'competitors': meta['competitors'], 'protected_names': PROTECTED,
+        'competitors': meta['competitors'], 'real_names': meta.get('real', []), 'protected_names': PROTECTED,
         'prompt': 'prompt/redact.v1.md', 'prompt_sha256': prompt_sha,
         'pages': pages,
     }

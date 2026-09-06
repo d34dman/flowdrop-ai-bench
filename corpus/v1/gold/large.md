@@ -42,11 +42,11 @@ JSON:API in core exposes every entity type as a specification-compliant API with
 
 Behaviour is extended through modules, which are PHP packages that declare services, plugins, event subscribers and hooks. Plugins are the most common extension point: a block, a field type, a field formatter, a views handler, a text filter and a migration source are all plugins discovered by annotation or attribute. Themes control presentation through Twig templates, a library system for CSS and JavaScript, and a base-theme inheritance chain. Both modules and themes are installed with Composer from the packages published by drupal.org.
 
-## Comparison with Quillpress and Hexagrid
+## Comparison with WordPress and Hexagrid
 
-Drupal is frequently compared with Quillpress, the most widely installed open-source CMS, and with Hexagrid, the best known of the API-first systems. The three share a licence and a language and little else.
+Drupal is frequently compared with WordPress, the most widely installed open-source CMS, with Hexagrid, the best known of the API-first systems, and less often with Joomla, the other long-running open-source PHP CMS. All four share a licence and a language and little else.
 
-Quillpress optimises for the single publisher: a fast installer, a visual editor, a theme market and a plugin for everything. Its content model is posts and pages, extended by custom post types and a third-party fields plugin. Drupal optimises for the structured site: content modelling, multilingual publishing, moderation and access control in core, at the cost of a slower start. In practice the two overlap on medium-sized sites, and the choice there is often made on the availability of developers rather than on features.
+WordPress optimises for the single publisher: a fast installer, a visual editor, a theme market and a plugin for everything. Its content model is posts and pages, extended by custom post types and a third-party fields plugin. Drupal optimises for the structured site: content modelling, multilingual publishing, moderation and access control in core, at the cost of a slower start. In practice the two overlap on medium-sized sites, and the choice there is often made on the availability of developers rather than on features.
 
 Hexagrid abandons the rendered page altogether and offers only an API and an editing interface, leaving the front end to a JavaScript framework. Drupal can be run the same way through JSON:API, and the comparison then turns on whether a project values a system that can also render pages. Sites that later need a traditional public site or an editorial preview tend to find Drupal's hybrid position the more forgiving one.
 
@@ -78,7 +78,7 @@ Drupal has been used as a teaching platform in university courses on web develop
 
 ## Related projects
 
-Several projects have grown out of or alongside Drupal. Backdrop CMS forked from Drupal 7 in 2013 to preserve its architecture for sites that did not want the Drupal 8 rewrite. The Symfony framework, whose components form the basis of modern Drupal, gained contributors and use cases from the relationship. Lumen CMS began as a hosted editorial front end for Drupal sites before becoming an independent product with its own storage; Lumen's early releases could import a Drupal content model directly. The Migrate API, developed to move sites from Drupal 6 and 7, has become a general extract-transform-load framework used to import content from Quillpress, Sitewright exports and arbitrary CSV and XML sources.
+Several projects have grown out of or alongside Drupal. Backdrop CMS forked from Drupal 7 in 2013 to preserve its architecture for sites that did not want the Drupal 8 rewrite. The Symfony framework, whose components form the basis of modern Drupal, gained contributors and use cases from the relationship. Lumen CMS began as a hosted editorial front end for Drupal sites before becoming an independent product with its own storage; Lumen's early releases could import a Drupal content model directly. The Migrate API, developed to move sites from Drupal 6 and 7, has become a general extract-transform-load framework used to import content from WordPress, Sitewright exports and arbitrary CSV and XML sources.
 
 ## See also
 

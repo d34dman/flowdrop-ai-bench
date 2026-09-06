@@ -41,7 +41,7 @@ def main():
         if os.path.isdir(os.path.join(ROOT, d)): shutil.copytree(os.path.join(ROOT, d), os.path.join(SITE, d))
     open(os.path.join(SITE, '.nojekyll'), 'w').close()
 
-    graded = [r for r in rows if r['outcome'] not in ('control',)]
+    graded = [r for r in rows if r['outcome'] not in ('control', 'stale')]
     cells = defaultdict(Counter); cost = defaultdict(list)
     for r in graded:
         k = (r['variant'], r['models'] or '-', r['page']); cells[k][r['outcome']] += 1
@@ -65,11 +65,11 @@ def main():
                      f'<td>{" ".join(pill(o, c[o]) for o in ORDER if c.get(o))}</td><td class="n">—</td></tr>')
     parts.append('</table></div>')
     parts.append('<h2>Every run</h2><div class="wrap"><table><tr><th>Run</th><th>Model</th><th>Page</th>' +
-                 ''.join(f'<th class="n">{a}</th>' for a in ('recall', 'precision', 'subject', 'homonym', 'fidelity', 'fabrication')) +
+                 ''.join(f'<th class="n">{a}</th>' for a in ('recall', 'recall_real', 'recall_fictional', 'precision', 'subject', 'homonym', 'fidelity', 'fabrication')) +
                  '<th class="n">glyphs</th><th class="n">leaks</th><th class="n">calls</th><th class="n">s</th><th class="n">$</th><th>Outcome</th><th>Output</th></tr>')
     for r in sorted(rows, key=lambda r: (r['variant'], r['models'], r['page'], r['ts'])):
         parts.append(f'<tr><td>{esc(CELL.get(r["variant"], r["variant"]))} <span class="note">{esc(r["tag"])}</span></td><td><code>{esc(r["models"] or "-")}</code></td><td>{esc(r["page"])}</td>' +
-                     ''.join(f'<td class="n">{esc(r[a])}</td>' for a in ('recall', 'precision', 'subject', 'homonym', 'fidelity', 'fabrication')) +
+                     ''.join(f'<td class="n">{esc(r[a])}</td>' for a in ('recall', 'recall_real', 'recall_fictional', 'precision', 'subject', 'homonym', 'fidelity', 'fabrication')) +
                      f'<td class="n">{esc(r["glyphs"])}</td><td class="n">{esc(r["leaks"])}</td><td class="n">{esc(r["llm_calls"])}</td><td class="n">{esc(r["total_seconds"])}</td><td class="n">{esc(r["cost_usd"])}</td>'
                      f'<td>{pill(r["outcome"])}</td><td><a href="outputs/{esc(r["run_id"])}.md">md</a></td></tr>')
     parts.append('</table></div>')
