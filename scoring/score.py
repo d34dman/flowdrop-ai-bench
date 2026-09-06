@@ -340,8 +340,23 @@ def family(model_id):
     one model; the study compares models, the run file keeps the snapshot."""
     return re.sub(r'-\d{8}$', '', model_id)
 
+_prompts = None
+
+def task(prompt_sha):
+    """272f2f… -> redact.v1: the prompt file whose sha256 the run recorded names the
+    task. A hash no prompt file matches (a fork, a pre-history run) stays a hash."""
+    global _prompts
+    if _prompts is None:
+        import hashlib
+        pdir = os.path.join(ROOT, 'prompt'); _prompts = {}
+        for fn in sorted(os.listdir(pdir)):
+            if fn.endswith('.md') and fn != 'README.md':
+                _prompts[hashlib.sha256(open(os.path.join(pdir, fn), 'rb').read()).hexdigest()] = fn[:-3]
+    return _prompts.get(prompt_sha or '', (prompt_sha or '')[:12] or '-')
+
 def flat(r):
     d = {k: r.get(k, '') for k in LEDGER}
+    d['task'] = task(r.get('prompt_sha256'))
     d['models'] = ','.join(r.get('models') or []); d['failed_nodes'] = ';'.join(r.get('failed_nodes') or [])
     d['model_family'] = ','.join(sorted({family(m) for m in (r.get('models') or [])}))
     d['page'] = r.get('url_key', ''); d['variant'] = r.get('workflow', '')

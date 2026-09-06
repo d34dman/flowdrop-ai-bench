@@ -1,0 +1,4 @@
+{
+  "_comment": "Ordered list of the visuals the site publishes. Each id is a folder under site/visuals/ holding visual.json (title, blurb, filters) and build.py (def build(ctx)). The homepage index, the nav, and the CI matrix are all generated from this list: adding a visual is adding a folder and a line here.",
+  "visuals": ["scorecard", "matrix", "by-model", "by-benchmark", "traces", "task"]
+}

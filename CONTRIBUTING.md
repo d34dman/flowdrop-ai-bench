@@ -63,3 +63,34 @@ issue first.
 `python3 scoring/score.py` grades every run; `--explain <run_id-prefix>` shows why one run
 scored as it did, sentence by sentence. It is deterministic and uses only the standard
 library, so a disagreement with a score is a bug report against the scorer, and welcome.
+
+## Add a visual
+
+The site is a homepage that indexes independent pages ("visuals"), each built by its own CI
+job from the same scored data (`data/scores.csv` from `scoring/score.py`). A visual is a
+folder `site/visuals/<id>/`:
+
+- `visual.json`: `title`, `blurb`, `filters` (ids from `site/filters.json` the page honours),
+  optional `focus` (a filter id the page needs exactly one value of; it becomes a select).
+- `build.py`: `def build(ctx)` writes `ctx.out/index.html`, normally
+  `ctx.write('index.html', ctx.page(title, body_html, sub=..., scripts=(...)))`. `ctx` carries
+  the scored rows, facets, registry, corpus manifests and the set of traced run ids
+  (`site/lib/framework.py`). Use build-time rendering only for things the browser cannot do
+  (one page per trace); everything that should react to filters is rendered by `page.js`.
+- `page.js` (optional): `Bench.ready(({rows, all, facets, state, focus}) => ...)` runs once the
+  data is loaded and again after every filter change, with `rows` already filtered. Helpers:
+  `Bench.esc`, `Bench.pill`, `Bench.cell`, `Bench.label`, `Bench.graded`, `Bench.href`,
+  `Bench.query` (the current query string, to build links that keep the selection).
+  `Compare.render` (`site/lib/compare.js`, include via `scripts=('lib/compare.js',)`) draws the
+  correctness and axes tables the two focus pages use.
+
+Then add the id to `site/registry.json`; the homepage, the nav and the CI matrix are all
+generated from it. Ids are `[a-z0-9-]` and may not be `corpus`, `prompt`, `outputs`, `runs`,
+`data` or `lib`, which the data stage publishes at the site root. Check it with
+`python3 site/build.py visual <id>` and a full `python3 site/build.py`.
+
+Adding a **filter** is one line in `site/filters.json` (`id`, `label`, `column` of
+`scores.csv`, optional `labels` map, `order`, or `split` for multi-valued columns); a visual
+opts in by listing the id. Adding a **column** the filters or visuals need belongs in
+`scoring/score.py` (`flat()` for ledger-derived fields, `score()` for graded axes), never in
+the site: the CSVs stay the single source every visual reads.

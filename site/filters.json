@@ -1,0 +1,12 @@
+{
+  "_comment": "The one place a filter is defined. Python (site/build.py) reads it to build data/facets.json; the browser (site/lib/bench.js) reads it to draw the filter bar and to apply the URL state. Add a filter: add an entry here; every visual that lists its id in visual.json gets it. `column` is a data/scores.csv column; `labels` names a label map published in facets.json (see site/build.py LABELS).",
+  "filters": [
+    {"id": "task",      "label": "Task",      "column": "task",          "multi": true},
+    {"id": "benchmark", "label": "Benchmark", "column": "variant",       "multi": true, "labels": "cell"},
+    {"id": "model",     "label": "Model",     "column": "model_family",  "multi": true, "split": ","},
+    {"id": "page",      "label": "Page",      "column": "page",          "multi": true, "order": ["small", "medium", "large"]},
+    {"id": "outcome",   "label": "Outcome",   "column": "outcome",       "multi": true, "order": ["correct", "degraded", "silent", "format", "loud", "control", "stale"]},
+    {"id": "tag",       "label": "Tag",       "column": "tag",           "multi": true},
+    {"id": "corpus",    "label": "Corpus",    "column": "corpus_version","multi": true}
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "title": "Traces",
+  "blurb": "One page per run with the full FlowDrop execution: pipelines, jobs on a timeline, checkpoints, sessions, metering.",
+  "filters": [
+    "task",
+    "benchmark",
+    "model",
+    "page",
+    "outcome",
+    "tag"
+  ]
+}

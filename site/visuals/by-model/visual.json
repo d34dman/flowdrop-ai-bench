@@ -1,0 +1,6 @@
+{
+  "title": "Model focus",
+  "blurb": "Pick one model and see how each benchmark (B0-B9) performs on it: correctness, axes, cost.",
+  "focus": "model",
+  "filters": ["task", "page", "tag", "corpus"]
+}

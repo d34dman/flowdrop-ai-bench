@@ -1,5 +1,11 @@
 name: Score and publish
 
+# One workflow, several jobs. `check` guards the dataset and scores it; `visual` is a matrix
+# with one job per entry in site/registry.json, each building its own folder of the site
+# from the same scored data; `assemble` puts the folders together with the homepage and the
+# shared data and deploys. Adding a visual is adding a folder under site/visuals/ and a line
+# to the registry; the matrix picks it up without a change here.
+
 on:
   push:
     branches: [main]
@@ -16,8 +22,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  score:
+  check:
     runs-on: ubuntu-latest
+    outputs:
+      visuals: ${{ steps.registry.outputs.visuals }}
     steps:
       - uses: actions/checkout@v4
         with: { fetch-depth: 0 }
@@ -58,16 +66,54 @@ jobs:
                   print(f'::error file=runs/{fn}::completed run without outputs/{r["run_id"]}.md'); bad += 1
           sys.exit(1 if bad else 0)
           EOF
-      - name: Score and build the site
+      - name: Score
+        run: python3 scoring/score.py
+      - name: Shared data and homepage
         run: |
-          python3 scoring/score.py
-          python3 scoring/build_site.py
+          python3 site/build.py data
+          python3 site/build.py index
+      - uses: actions/upload-artifact@v4
+        with: { name: site-base, path: _site, include-hidden-files: true, retention-days: 1 }
+      - id: registry
+        run: echo "visuals=$(python3 site/build.py list)" >> "$GITHUB_OUTPUT"
+
+  visual:
+    needs: check
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        visual: ${{ fromJSON(needs.check.outputs.visuals) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: python3 scoring/score.py
+      - name: Build ${{ matrix.visual }}
+        run: python3 site/build.py visual ${{ matrix.visual }}
+      - uses: actions/upload-artifact@v4
+        with: { name: visual-${{ matrix.visual }}, path: _site/${{ matrix.visual }}, retention-days: 1 }
+
+  assemble:
+    needs: [check, visual]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with: { name: site-base, path: _site }
+      - uses: actions/download-artifact@v4
+        with: { pattern: visual-*, path: _site }
+      - name: Visual folders take their registry id
+        # download-artifact nests each artifact under its name; the site wants _site/<id>/.
+        run: |
+          cd _site
+          for d in visual-*/; do mv "$d" "${d#visual-}"; done
+          ls
       - uses: actions/upload-pages-artifact@v3
         with: { path: _site }
 
   deploy:
     if: github.event_name != 'pull_request'
-    needs: score
+    needs: assemble
     runs-on: ubuntu-latest
     environment:
       name: github-pages

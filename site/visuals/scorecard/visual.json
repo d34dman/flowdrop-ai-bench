@@ -1,0 +1,13 @@
+{
+  "title": "Scorecard",
+  "blurb": "Outcome per cell (variant × model × page) and every run with its axes, output and trace.",
+  "filters": [
+    "task",
+    "benchmark",
+    "model",
+    "page",
+    "outcome",
+    "tag",
+    "corpus"
+  ]
+}
