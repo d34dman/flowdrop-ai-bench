@@ -1,0 +1,57 @@
+{
+    "run_id": "bench_5_react_agent__large__r1__1788728412__shibindas-20260906__060c52",
+    "workflow": "bench_5_react_agent",
+    "url_key": "large",
+    "url": "https://d34dman.github.io/flowdrop-ai-bench/corpus/v1/large.html",
+    "corpus_version": "v1",
+    "page_sha256": "25e8b9c95da60123e66a3dc0c78eb5e743e3a2ac1fcd356d573efe15dbd38e4c",
+    "prompt_sha256": "272f2f41c1552fd77952bf1867eb98ffeea8cd5bc9d249166416511f69b66c8d",
+    "glyph": "████",
+    "flowdrop_version": "dev-2.x@771e7c77e1f9",
+    "harness_version": "3.3.0",
+    "model": "claude-haiku-4-5-20251001",
+    "rep": 1,
+    "pipeline_id": "338",
+    "context_uuid": "4c724a9b-1221-4dea-8175-1181e39a131b",
+    "wall_seconds": 120.8661,
+    "launch_status": "failed",
+    "launch_error": null,
+    "tag": "shibindas-20260906",
+    "ts": "2026-09-06T21:02:13+00:00",
+    "pipeline_status": "failed",
+    "failed_nodes": [
+        "chat_output:failed"
+    ],
+    "job_count": 2,
+    "payload_bytes": 31885,
+    "total_seconds": 120.463,
+    "ai_seconds": 120.463,
+    "deterministic_seconds": 0,
+    "llm_calls": 3,
+    "models": [
+        "claude-haiku-4-5-20251001"
+    ],
+    "input_tokens": 20688,
+    "output_tokens": 8206,
+    "cached_tokens": 0,
+    "cost_usd": 0.061718,
+    "retries": 0,
+    "output_chars": null,
+    "nodes": [
+        {
+            "node_type": "chat_output",
+            "status": "failed",
+            "seconds": null,
+            "is_ai": false,
+            "error": "SQLSTATE[40001]: Serialization failure: 1213 Deadlock found when trying to get lock; try restarting transaction: DELETE FROM \"cache_entity\" \nWHERE \"cid\" IN (:db_condition_placeholder_0); Array\n(\n    [:db_condition_placeholder_0] => values:flowdrop_job:3290\n)\n"
+        },
+        {
+            "node_type": "flowdrop_workflow_react_agent_with_tools",
+            "status": "completed",
+            "seconds": 120.463,
+            "is_ai": true,
+            "error": null
+        }
+    ],
+    "annotations": []
+}
