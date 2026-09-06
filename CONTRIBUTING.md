@@ -6,7 +6,8 @@ by CI from those two folders on every merge. You never edit a CSV.
 
 The dataset is append-only. A pull request adds run files and never modifies, renames or
 deletes an existing one; CI rejects it otherwise. Run ids carry a random suffix, so two
-contributors can never produce the same filename and PRs never conflict.
+contributors can never produce the same filename and PRs never conflict. `traces/` is
+covered by the same append-only check, and CI also rejects a trace over 3 MB.
 
 ## The path
 
@@ -22,9 +23,10 @@ contributors can never produce the same filename and PRs never conflict.
 3. **Look at it.** `ddev drush bench:list B3 small sonnet-5` and open `outputs/<run_id>.md`.
    To see the score CI will give it: `python3 scoring/score.py` (needs only Python 3).
 4. **Commit and open a PR.** The runner has already written `runs/<run_id>.json` and
-   `outputs/<run_id>.md` into the checkout.
+   `outputs/<run_id>.md` into the checkout, and, if the harness collected one,
+   `traces/<run_id>.json.gz`.
    ```sh
-   git checkout -b runs/yourname && git add runs outputs && git commit -m "runs: B3 on Sonnet 5, small" && git push -u origin HEAD
+   git checkout -b runs/yourname && git add runs outputs traces && git commit -m "runs: B3 on Sonnet 5, small" && git push -u origin HEAD
    ```
    CI scores your runs on the PR. Merge publishes them.
 

@@ -4,11 +4,16 @@ corpus, prompt and data folders copied in. Standard library only.
 
     python3 scoring/build_site.py        # after scoring/score.py
 """
-import csv, html, json, os, shutil
+import csv, html, json, os, shutil, importlib.util
 from collections import Counter, defaultdict
+# Loaded by path: the file is named trace.py for the CLI, which shadows the stdlib module.
+_spec = importlib.util.spec_from_file_location('bench_trace', os.path.join(os.path.dirname(os.path.abspath(__file__)), 'trace.py'))
+_trace = importlib.util.module_from_spec(_spec); _spec.loader.exec_module(_trace)
+load_trace, render_trace_html = _trace.load_trace, _trace.render_html
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE = os.path.join(ROOT, '_site')
+TRACES = os.path.join(ROOT, 'traces')
 REPO = 'https://github.com/d34dman/flowdrop-ai-bench'
 ORDER = ['correct', 'degraded', 'silent', 'format', 'loud', 'control']
 CELL = {'bench_0_floor': 'B0 floor', 'bench_1_reference': 'B1 reference', 'bench_2_raw_html_llm': 'B2 raw HTML → LLM',
@@ -32,6 +37,9 @@ th{color:var(--mut);font-weight:600}td.n,th.n{text-align:right;font-variant-nume
 def pill(c, n=None):
     return f'<span class="pill {c}">{c}{"" if n is None else " " + str(n)}</span>'
 
+def trace_link(run_id, traced):
+    return f'<a href="traces/{html.escape(run_id)}.html">trace</a>' if run_id in traced else '—'
+
 def main():
     rows = list(csv.DictReader(open(os.path.join(ROOT, 'data', 'scores.csv'), encoding='utf-8')))
     m = json.load(open(os.path.join(ROOT, 'corpus', 'v1', 'manifest.json'), encoding='utf-8'))
@@ -40,6 +48,18 @@ def main():
     for d in ('corpus', 'prompt', 'data', 'outputs', 'runs'):
         if os.path.isdir(os.path.join(ROOT, d)): shutil.copytree(os.path.join(ROOT, d), os.path.join(SITE, d))
     open(os.path.join(SITE, '.nojekyll'), 'w').close()
+
+    # One HTML page per trace, rendered from the gzipped capture; the .json.gz itself
+    # is not copied into the site (size).
+    traced = set()
+    if os.path.isdir(TRACES):
+        os.makedirs(os.path.join(SITE, 'traces'), exist_ok=True)
+        for fn in sorted(os.listdir(TRACES)):
+            if not fn.endswith('.json.gz'): continue
+            run_id = fn[:-len('.json.gz')]
+            t = load_trace(os.path.join(TRACES, fn))
+            open(os.path.join(SITE, 'traces', run_id + '.html'), 'w', encoding='utf-8').write(render_trace_html(t))
+            traced.add(run_id)
 
     graded = [r for r in rows if r['outcome'] not in ('control', 'stale')]
     cells = defaultdict(Counter); cost = defaultdict(list)
@@ -66,12 +86,13 @@ def main():
     parts.append('</table></div>')
     parts.append('<h2>Every run</h2><div class="wrap"><table><tr><th>Run</th><th>Model</th><th>Page</th>' +
                  ''.join(f'<th class="n">{a}</th>' for a in ('recall', 'recall_real', 'recall_fictional', 'precision', 'subject', 'homonym', 'fidelity', 'fabrication')) +
-                 '<th class="n">glyphs</th><th class="n">leaks</th><th class="n">calls</th><th class="n">s</th><th class="n">$</th><th>Outcome</th><th>Output</th></tr>')
+                 '<th class="n">glyphs</th><th class="n">leaks</th><th class="n">calls</th><th class="n">s</th><th class="n">$</th><th>Outcome</th><th>Output</th><th>Trace</th></tr>')
     for r in sorted(rows, key=lambda r: (r['variant'], r['models'], r['page'], r['ts'])):
         parts.append(f'<tr><td>{esc(CELL.get(r["variant"], r["variant"]))} <span class="note">{esc(r["tag"])}</span></td><td><code>{esc(r["models"] or "-")}</code></td><td>{esc(r["page"])}</td>' +
                      ''.join(f'<td class="n">{esc(r[a])}</td>' for a in ('recall', 'recall_real', 'recall_fictional', 'precision', 'subject', 'homonym', 'fidelity', 'fabrication')) +
                      f'<td class="n">{esc(r["glyphs"])}</td><td class="n">{esc(r["leaks"])}</td><td class="n">{esc(r["llm_calls"])}</td><td class="n">{esc(r["total_seconds"])}</td><td class="n">{esc(r["cost_usd"])}</td>'
-                     f'<td>{pill(r["outcome"])}</td><td><a href="outputs/{esc(r["run_id"])}.md">md</a></td></tr>')
+                     f'<td>{pill(r["outcome"])}</td><td><a href="outputs/{esc(r["run_id"])}.md">md</a></td>'
+                     f'<td>{trace_link(r["run_id"], traced)}</td></tr>')
     parts.append('</table></div>')
     parts.append('<h2>Corpus</h2><table><tr><th>Page</th><th class="n">Gold bytes</th><th class="n">Headings</th><th class="n">Targets</th><th class="n">Homonyms</th><th class="n">Protected</th><th>Chrome mentions</th></tr>')
     for p, d in m['pages'].items():

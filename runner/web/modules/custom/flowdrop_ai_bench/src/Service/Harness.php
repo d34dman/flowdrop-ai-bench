@@ -28,7 +28,7 @@ class Harness {
   /**
    * Bumped whenever the ledger record shape changes.
    */
-  public const HARNESS_VERSION = '3.1.0';
+  public const HARNESS_VERSION = '3.2.0';
 
   /**
    * Cell letter to workflow id, per the retired run_cell.sh table.
@@ -528,13 +528,13 @@ class Harness {
    *   skipped: array<int, array{run_id: string|null, pipeline_id: mixed}>,
    * }
    */
-  public function collect(string $ledgerPath, string $runsDir, string $outputsDir): array {
+  public function collect(string $ledgerPath, string $runsDir, string $outputsDir, ?string $tracesDir = NULL): array {
     $collected = [];
     $skipped = [];
     if (!is_file($ledgerPath)) {
       return ['collected' => $collected, 'skipped' => $skipped];
     }
-    foreach ([$runsDir, $outputsDir] as $dir) {
+    foreach (array_filter([$runsDir, $outputsDir, $tracesDir]) as $dir) {
       if (!is_dir($dir) && !mkdir($dir, 0777, TRUE) && !is_dir($dir)) {
         throw new \RuntimeException("cannot create output directory: $dir");
       }
@@ -677,10 +677,305 @@ class Harness {
         "$runsDir/{$run['run_id']}.json",
         json_encode($record, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) . "\n",
       );
+      if ($tracesDir !== NULL) {
+        $this->writeTrace($run, $pipeline, $tracesDir);
+      }
       $collected[] = $record;
     }
 
     return ['collected' => $collected, 'skipped' => $skipped];
+  }
+
+  /**
+   * Writes traces/<run_id>.json.gz: the whole FlowDrop execution of one run.
+   *
+   * The ledger record keeps aggregates and the final output; the trace keeps
+   * what they were derived from, so an anomaly spotted in a score months
+   * later can be inspected without the runner database: every pipeline
+   * (root and the children the tool cells spawn), every job with its input
+   * and output, the workflow snapshot the pipeline ran from, StateGraph
+   * checkpoints, Playground sessions when there are any, and the metering
+   * rows call by call. Each section is collected independently: a failure in
+   * one is recorded under "errors" and never costs the others.
+   *
+   * Schema version is trace_version; scoring/trace.py renders it.
+   */
+  private function writeTrace(array $run, object $rootPipeline, string $tracesDir): void {
+    $errors = [];
+    $trace = [
+      'trace_version' => 1,
+      'run_id' => $run['run_id'],
+      'collected_at' => gmdate('c'),
+      'harness_version' => self::HARNESS_VERSION,
+      'run' => array_intersect_key($run, array_flip([
+        'workflow', 'url_key', 'url', 'corpus_version', 'page_sha256', 'prompt_sha256', 'model', 'tag', 'context_uuid', 'ts',
+      ])),
+      'pipelines' => [],
+      'checkpoints' => [],
+      'sessions' => [],
+      'metering' => [],
+    ];
+
+    // --- pipelines, root first then children depth-first -----------------
+    $pipelineStorage = $this->entityTypeManager->getStorage('flowdrop_pipeline');
+    $pipelines = [];
+    $seen = [];
+    $stack = [$rootPipeline];
+    while ($stack) {
+      $pipeline = array_shift($stack);
+      $id = (string) $pipeline->id();
+      if (isset($seen[$id])) {
+        continue;
+      }
+      $seen[$id] = TRUE;
+      try {
+        $pipelines[] = $this->tracePipeline($pipeline);
+      }
+      catch (\Throwable $e) {
+        $errors[] = "pipeline $id: " . $e->getMessage();
+      }
+      try {
+        $childIds = $pipelineStorage->getQuery()->accessCheck(FALSE)
+          ->condition('parent_pipeline_id', $id)->sort('id')->execute();
+        // Sub-workflow nodes also record the pipeline they launched.
+        foreach ($pipeline->getJobs() as $job) {
+          $sub = $job->getOutputData()['sub_pipeline_id'] ?? NULL;
+          if (is_scalar($sub) && (string) $sub !== '') {
+            $childIds[] = (string) $sub;
+          }
+        }
+        $children = $pipelineStorage->loadMultiple(array_unique(array_map('strval', $childIds)));
+        // Depth-first: children go to the front, in id order.
+        $stack = array_merge(array_values($children), $stack);
+      }
+      catch (\Throwable $e) {
+        $errors[] = "children of $id: " . $e->getMessage();
+      }
+    }
+    $trace['pipelines'] = $pipelines;
+    $pipelineIds = array_keys($seen);
+
+    // --- StateGraph checkpoints, by every thread id the run could have used
+    try {
+      if ($this->entityTypeManager->hasDefinition('state_checkpoint')) {
+        $threadIds = [];
+        foreach ($pipelines as $p) {
+          $threadIds[] = 'pipeline_' . $p['id'];
+          if (!empty($p['snapshot']['thread_id'])) {
+            $threadIds[] = $p['snapshot']['thread_id'];
+          }
+          array_walk_recursive($p['execution_context'], static function ($v, $k) use (&$threadIds): void {
+            if (in_array($k, ['threadId', 'thread_id'], TRUE) && is_scalar($v) && (string) $v !== '') {
+              $threadIds[] = (string) $v;
+            }
+          });
+        }
+        $threadIds = array_values(array_unique($threadIds));
+        $storage = $this->entityTypeManager->getStorage('state_checkpoint');
+        $query = $storage->getQuery()->accessCheck(FALSE)
+          ->condition('thread_id', $threadIds, 'IN')->sort('created')->sort('id');
+        // A thread id derived from a session outlives one run when the session
+        // is reused; the run's own window keeps earlier runs' checkpoints out.
+        $rootStarted = $pipelines[0]['started'] ?? NULL;
+        if ($rootStarted) {
+          $query->condition('created', $rootStarted - 5, '>=');
+          if (!empty($pipelines[0]['completed'])) {
+            $query->condition('created', $pipelines[0]['completed'] + 5, '<=');
+          }
+        }
+        $ids = $threadIds ? $query->execute() : [];
+        foreach ($storage->loadMultiple($ids) as $cp) {
+          $trace['checkpoints'][] = [
+            'id' => (string) $cp->id(),
+            'checkpoint_id' => $cp->getCheckpointId(),
+            'thread_id' => $cp->getThreadId(),
+            'node_id' => $cp->getNodeId(),
+            'parent' => $cp->getParentCheckpointId(),
+            'created' => $cp->getCreatedTime(),
+            'state' => $cp->getStateData(),
+            'metadata' => $cp->getMetadata(),
+          ];
+        }
+      }
+    }
+    catch (\Throwable $e) {
+      $errors[] = 'checkpoints: ' . $e->getMessage();
+    }
+
+    // --- sessions (Playground only; drush runs normally have none) --------
+    try {
+      if ($this->entityTypeManager->hasDefinition('flowdrop_session')) {
+        $sessionIds = [];
+        foreach ($pipelines as $p) {
+          if (!empty($p['session_id'])) {
+            $sessionIds[] = (string) $p['session_id'];
+          }
+        }
+        $sessionStorage = $this->entityTypeManager->getStorage('flowdrop_session');
+        $sessionIds = array_merge($sessionIds, $sessionStorage->getQuery()->accessCheck(FALSE)
+          ->condition('current_pipeline_id', $pipelineIds, 'IN')->execute());
+        $messageStorage = $this->entityTypeManager->getStorage('flowdrop_session_message');
+        foreach ($sessionStorage->loadMultiple(array_unique($sessionIds)) as $session) {
+          $messages = [];
+          $mids = $messageStorage->getQuery()->accessCheck(FALSE)
+            ->condition('session_id', $session->id())->sort('sequence_number')->sort('id')->execute();
+          foreach ($messageStorage->loadMultiple($mids) as $m) {
+            $messages[] = [
+              'id' => (string) $m->id(),
+              'role' => $m->getRole(),
+              'content' => $m->getContent(),
+              'timestamp' => $m->getTimestamp(),
+              'node_id' => $m->getNodeId(),
+              'status' => $m->getStatus(),
+              'sequence' => $m->getSequenceNumber(),
+              'parent' => $m->getParentMessageId() !== NULL ? (string) $m->getParentMessageId() : NULL,
+              'execution_id' => $m->getExecutionId(),
+              'metadata' => $m->getMessageMetadata(),
+            ];
+          }
+          $trace['sessions'][] = [
+            'id' => (string) $session->id(),
+            'name' => $session->getName(),
+            'workflow_id' => $session->getWorkflowId(),
+            'status' => $session->getStatus(),
+            'execution_mode' => $session->getExecutionMode(),
+            'metadata' => $session->getMetadata(),
+            'messages' => $messages,
+          ];
+        }
+      }
+    }
+    catch (\Throwable $e) {
+      $errors[] = 'sessions: ' . $e->getMessage();
+    }
+
+    // --- metering, one row per model call, in call order -----------------
+    try {
+      $rows = $this->database->query(
+        'SELECT id, timestamp, provider_id, model_id, operation, input_tokens, output_tokens, cached_tokens,
+          estimated_cost_usd, status, latency_ms, caller, token_details
+          FROM {ai_metering_usage} WHERE context_id = :c ORDER BY id',
+        [':c' => $run['context_uuid'] ?? NULL],
+      )->fetchAll();
+      foreach ($rows as $row) {
+        $details = $row->token_details !== NULL ? json_decode((string) $row->token_details, TRUE) : NULL;
+        $trace['metering'][] = [
+          'id' => (int) $row->id,
+          'timestamp' => (int) $row->timestamp,
+          'provider_id' => $row->provider_id,
+          'model_id' => $row->model_id,
+          'operation' => $row->operation,
+          'input_tokens' => (int) $row->input_tokens,
+          'output_tokens' => (int) $row->output_tokens,
+          'cached_tokens' => (int) $row->cached_tokens,
+          'cost_usd' => (float) $row->estimated_cost_usd,
+          'status' => $row->status,
+          'latency_ms' => $row->latency_ms !== NULL ? (int) $row->latency_ms : NULL,
+          'caller' => $row->caller,
+          'token_details' => $details,
+        ];
+      }
+    }
+    catch (\Throwable $e) {
+      $errors[] = 'metering: ' . $e->getMessage();
+    }
+
+    if ($errors) {
+      $trace['errors'] = $errors;
+    }
+    $json = json_encode($trace, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE | JSON_PARTIAL_OUTPUT_ON_ERROR);
+    file_put_contents("$tracesDir/{$run['run_id']}.json.gz", gzencode($json . "\n", 9));
+  }
+
+  /**
+   * One pipeline with its snapshot and jobs, as the trace stores it.
+   */
+  private function tracePipeline(object $pipeline): array {
+    $started = $pipeline->getStarted();
+    $completed = $pipeline->getCompleted();
+    $snapshot = NULL;
+    try {
+      $snap = $pipeline->getSnapshot();
+      if ($snap) {
+        $snapshot = [
+          'id' => (string) $snap->id(),
+          'workflow_version' => $snap->getWorkflowVersion(),
+          'status' => $snap->getSnapshotStatus(),
+          'current_node_id' => $snap->getCurrentNodeId(),
+          'iteration_count' => $snap->getIterationCount(),
+          'node_states' => $snap->getNodeStates(),
+          'messages' => $snap->getMessages(),
+          'data' => $snap->getData(),
+          'iterator_state' => $snap->getIteratorState(),
+          'thread_id' => $snap->getThreadId(),
+          'execution_id' => $snap->getExecutionId(),
+          'error' => $snap->getError(),
+        ];
+      }
+    }
+    catch (\Throwable $e) {
+      $snapshot = ['error' => 'snapshot unavailable: ' . $e->getMessage()];
+    }
+
+    $jobs = [];
+    foreach ($pipeline->get('job_id') as $reference) {
+      $job = $reference->entity;
+      if (!$job) {
+        continue;
+      }
+      $metadata = $job->getMetadata();
+      $jStarted = $job->getStarted();
+      $jCompleted = $job->getCompleted();
+      $seconds = isset($metadata['execution_time_us'])
+        ? round(((int) $metadata['execution_time_us']) / 1e6, 3)
+        : ($jStarted && $jCompleted ? (float) ($jCompleted - $jStarted) : NULL);
+      $dependsOn = [];
+      foreach ($job->get('depends_on') as $dep) {
+        if ($dep->target_id !== NULL) {
+          $dependsOn[] = (string) $dep->target_id;
+        }
+      }
+      $jobs[] = [
+        'id' => (string) $job->id(),
+        'node_id' => $job->getNodeId(),
+        'node_type' => (string) ($job->get('node_type_id')->target_id ?? ''),
+        // FlowDropJob::getExecutorPluginId() reads a field the entity does not
+        // define (fddo 2.x); the executor, when recorded, is in the metadata.
+        'executor' => $metadata['executor_plugin_id'] ?? $metadata['executor'] ?? NULL,
+        'status' => $job->getStatus(),
+        'priority' => $job->getPriority(),
+        'started' => $jStarted ?: NULL,
+        'completed' => $jCompleted ?: NULL,
+        'seconds' => $seconds,
+        'retry_count' => $job->getRetryCount(),
+        'max_retries' => $job->getMaxRetries(),
+        'depends_on' => $dependsOn,
+        'input' => $job->getInputData(),
+        'output' => $job->getOutputData(),
+        'error' => $job->getErrorMessage(),
+        'metadata' => $metadata,
+      ];
+    }
+
+    return [
+      'id' => (string) $pipeline->id(),
+      'uuid' => $pipeline->uuid(),
+      'workflow_id' => $pipeline->getWorkflowId(),
+      'parent_id' => $pipeline->getParentPipelineId(),
+      'root_id' => $pipeline->getRootPipelineId(),
+      'session_id' => $pipeline->getSessionId(),
+      'status' => $pipeline->getStatus(),
+      'started' => $started ?: NULL,
+      'completed' => $completed ?: NULL,
+      'seconds' => $started && $completed ? (float) ($completed - $started) : NULL,
+      'input' => $pipeline->getInputData(),
+      'output' => $pipeline->getOutputData(),
+      'error' => $pipeline->getErrorMessage(),
+      'execution_context' => $pipeline->getExecutionContext(),
+      'tool_plan' => $pipeline->getToolPlan(),
+      'snapshot' => $snapshot,
+      'jobs' => $jobs,
+    ];
   }
 
 }

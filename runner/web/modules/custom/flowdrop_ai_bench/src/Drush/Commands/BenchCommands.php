@@ -163,20 +163,21 @@ final class BenchCommands extends DrushCommands {
    */
   #[CLI\Command(name: 'bench:collect')]
   #[CLI\Option(name: 'var', description: 'Runner var directory (holds the ledger). Defaults to runner/var.')]
-  #[CLI\Option(name: 'out', description: 'Repo root (holds runs/ and outputs/). Defaults to two levels above the Drupal root.')]
+  #[CLI\Option(name: 'out', description: 'Repo root (holds runs/, outputs/ and traces/). Defaults to two levels above the Drupal root.')]
   #[CLI\Usage(name: 'drush bench:collect', description: 'Recompute metrics for every run in the ledger.')]
   public function collect(array $options = ['var' => NULL, 'out' => NULL]): void {
     $varDir = $this->resolveVarDir($options['var']);
     $outDir = $this->resolveOutDir($options['out']);
 
-    $result = $this->harness->collect($varDir . '/runs.jsonl', $outDir . '/runs', $outDir . '/outputs');
+    $result = $this->harness->collect($varDir . '/runs.jsonl', $outDir . '/runs', $outDir . '/outputs', $outDir . '/traces');
 
     foreach ($result['skipped'] as $skip) {
       $this->output()->writeln(sprintf('  !! pipeline %s missing for %s', $skip['pipeline_id'] ?? '', $skip['run_id']));
     }
     $this->output()->writeln(sprintf(
-      "\ncollected %d run(s) -> %s/runs/*.json and %s/outputs/*.md",
+      "\ncollected %d run(s) -> %s/runs/*.json, %s/outputs/*.md and %s/traces/*.json.gz",
       count($result['collected']),
+      $outDir,
       $outDir,
       $outDir,
     ));
@@ -248,8 +249,8 @@ final class BenchCommands extends DrushCommands {
     );
     $runIds = array_column($records, 'run_id');
 
-    $collected = $this->harness->collect($varDir . '/runs.jsonl', $outDir . '/runs', $outDir . '/outputs');
-    $this->output()->writeln(sprintf('collect  %d run(s) in the ledger re-derived into runs/ and outputs/', count($collected['collected'])));
+    $collected = $this->harness->collect($varDir . '/runs.jsonl', $outDir . '/runs', $outDir . '/outputs', $outDir . '/traces');
+    $this->output()->writeln(sprintf('collect  %d run(s) in the ledger re-derived into runs/, outputs/ and traces/', count($collected['collected'])));
 
     $this->output()->writeln(sprintf(
       "\n%-52s %-10s %7s %6s %8s %8s %10s %7s",

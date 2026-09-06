@@ -17,8 +17,11 @@ each run used, so a run is reproducible from those alone.
 - Ledger: `runner/var/runs.jsonl` (override with `--var`).
 - Fetch cache: `runner/var/cache/`.
 - Per-run output, at the repo root two levels above `runner/web`:
-  `<repo>/runs/<run_id>.json` (pretty JSON) and
-  `<repo>/outputs/<run_id>.md` (override the repo root with `--out`).
+  `<repo>/runs/<run_id>.json` (pretty JSON), `<repo>/outputs/<run_id>.md` and
+  `<repo>/traces/<run_id>.json.gz` (the whole FlowDrop execution: every pipeline the run
+  spawned with its jobs' input and output, the workflow snapshot, StateGraph checkpoints,
+  sessions and metering rows; `trace_version` 1, rendered by `scoring/trace.py`).
+  Override the repo root with `--out`.
 
 ## Commands
 

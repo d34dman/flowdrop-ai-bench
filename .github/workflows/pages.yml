@@ -28,9 +28,16 @@ jobs:
         # A contribution adds runs; it never edits or removes one. That is what keeps
         # every PR conflict-free and every published figure reproducible.
         run: |
-          changed=$(git diff --name-status --diff-filter=MDRT "origin/${{ github.base_ref }}...HEAD" -- runs outputs)
+          changed=$(git diff --name-status --diff-filter=MDRT "origin/${{ github.base_ref }}...HEAD" -- runs outputs traces)
           if [ -n "$changed" ]; then
             echo "$changed" | while read -r st f rest; do echo "::error file=$f::existing run files are never modified, renamed or deleted ($st)"; done
+            exit 1
+          fi
+      - name: Traces are small
+        run: |
+          big=$(find traces -name '*.json.gz' -size +3M)
+          if [ -n "$big" ]; then
+            echo "$big" | while read -r f; do echo "::error file=$f::trace exceeds 3 MB"; done
             exit 1
           fi
       - name: Corpus is reproducible from src
