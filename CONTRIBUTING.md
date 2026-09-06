@@ -38,7 +38,8 @@ covered by the same append-only check, and CI also rejects a trace over 3 MB.
 
 ## What we are glad to receive
 
-- New models, including non-Anthropic ones once the runner supports the provider. Prefer
+- New models, including from other providers: any Drupal AI `ai_provider_*` module works,
+  see [Adding a provider](runner/README.md#adding-a-provider) in the runner README. Prefer
   the dated id when the provider lists one (`claude-haiku-4-5-20251001`, not
   `claude-haiku-4-5`): an undated alias can be repointed to a newer snapshot and the run
   records only the id that was requested. The scorer groups both forms under one

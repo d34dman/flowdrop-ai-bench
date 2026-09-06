@@ -36,6 +36,55 @@ Each step is also its own command: `bench:set-prompt`, `bench:set-model`, `bench
 `bench:collect`. Details and options: `runner/web/modules/custom/flowdrop_ai_bench/README.md`
 or `ddev drush help bench:run`.
 
+## Adding a provider
+
+The runner talks to models through the [Drupal AI](https://www.drupal.org/project/ai)
+module, so any provider with an `ai_provider_*` module works, and the benchmark treats it
+like Anthropic: `bench:models` lists what the key can use, `bench:run` records the model
+id and the metering rows it produced. Anthropic is the only provider shipped today. To add
+one, OpenAI as the example:
+
+1. **Install the provider module** in the runner (the DDEV composer root is `runner/`):
+   ```sh
+   ddev composer require drupal/ai_provider_openai
+   ddev drush en ai_provider_openai -y
+   ```
+2. **Give it a key through the environment.** Keys are never config: the site holds a
+   [Key](https://www.drupal.org/project/key) entity that points at an environment variable,
+   and the value lives in `.ddev/.env`, which is gitignored and loaded into the web
+   container on start.
+   ```sh
+   echo 'OPENAI_KEY=sk-...' >> .ddev/.env && ddev restart
+   ddev exec 'echo OPENAI_KEY ${OPENAI_KEY:+is set}'
+   ddev drush php:eval "\Drupal::entityTypeManager()->getStorage('key')->create(['id' => 'openai_key', 'label' => 'OPENAI_KEY', 'key_type' => 'authentication', 'key_provider' => 'env', 'key_provider_settings' => ['env_variable' => 'OPENAI_KEY', 'base64_encoded' => FALSE, 'strip_line_breaks' => FALSE], 'key_input' => 'none'])->save();"
+   ```
+   The same thing can be done in the UI at `/admin/config/system/keys/add` (provider
+   "Environment").
+3. **Point the provider at the key** at `/admin/config/ai/providers/openai`, then check:
+   ```sh
+   ddev drush bench:models --provider=openai
+   ```
+4. **Ship it with the runner** so the next contributor does not repeat steps 1 and 3.
+   Export config and open a pull request with the module and the config:
+   ```sh
+   ddev drush cex -y          # adds key.key.openai_key.yml, ai_provider_openai.settings.yml, core.extension.yml
+   git add runner/composer.json runner/composer.lock runner/config/sync
+   git commit -m "runner: OpenAI provider"
+   ```
+   `bin/setup.sh` installs from that config, so on a fresh clone the provider exists and
+   only the `OPENAI_KEY=` line in `.ddev/.env` is personal. A missing key leaves the provider
+   unusable and everything else working.
+5. **Run.** Model ids are bare; the chat and reason nodes find the provider from the id
+   through the ai module, so `--provider` matters only for the two cells built on the AI
+   Agents module (B4, B6), whose config stores `provider__model`:
+   ```sh
+   ddev drush bench:run B3 gpt-5 --pages=small --tag=yourname-openai-first
+   ddev drush bench:run B4,B6 gpt-5 --provider=openai --pages=small --tag=yourname-openai-agents
+   ```
+   Prefer a dated model id when the provider lists one (see CONTRIBUTING). If two installed
+   providers list the same bare id, the ai module's resolution decides which answers; avoid
+   that by not installing overlapping providers on one runner.
+
 ## What is in here
 
 | Path | What |

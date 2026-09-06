@@ -8,8 +8,9 @@
 # the ledger in runner/var/ and the committed runs/ and outputs/ are files and stay.
 set -eu
 cd "$(dirname "$0")/.."
-[ -f .ddev/.env ] && grep -q ANTHROPIC_KEY .ddev/.env || {
-  echo "Put your key in .ddev/.env first:  echo 'ANTHROPIC_KEY=sk-ant-...' >> .ddev/.env && ddev restart"; exit 1; }
+# Any provider key will do (ANTHROPIC_KEY, OPENAI_KEY, ...): see runner/README.md, Adding a provider.
+[ -f .ddev/.env ] && grep -Eq '^[A-Z0-9_]+_KEY=' .ddev/.env || {
+  echo "Put a provider key in .ddev/.env first:  echo 'ANTHROPIC_KEY=sk-ant-...' >> .ddev/.env && ddev restart"; exit 1; }
 ddev composer install --no-interaction
 ddev drush site:install minimal -y --existing-config --account-name=admin
 ddev drush cr
