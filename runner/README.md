@@ -10,7 +10,7 @@ Drupal docroot is `runner/web` and composer runs in `runner/`.
 git clone git@github.com:d34dman/flowdrop-ai-bench.git && cd flowdrop-ai-bench
 echo 'ANTHROPIC_KEY=sk-ant-...' >> .ddev/.env
 ddev start
-sh runner/bin/setup.sh          # composer install, site install from runner/config/sync
+sh bin/setup.sh          # composer install, site install from runner/config/sync
 ```
 
 ## Run
@@ -38,7 +38,6 @@ or `ddev drush help bench:run`.
 | `patches/` | Two composer patches: FlowDrop memory's max value size made configurable (#3592436), and the 4000 `maxTokens` cap removed from the Chat nodes so a whole document can come back in one call. Both are part of the experiment and recorded in every run's `flowdrop_version`. |
 | `config/sync/` | The site's whole configuration: the nine cell workflows, six sub-workflows and their node types, two AI Agents entities, key, metering, and the FlowDrop settings the runs were made with (including `default_orchestrator`). |
 | `web/modules/custom/flowdrop_ai_bench/` | The module: `http_fetch` tool for the autonomous agent, the metering context tag that attributes tokens to one run, and the `bench:*` Drush commands. GPL-2.0-or-later. |
-| `bin/setup.sh`, `bin/run_cell.sh` | Bootstrap, and a positional wrapper around `bench:run`. |
 | `var/` | Ledger and fetch cache, gitignored. |
 
 ## Adding a variant

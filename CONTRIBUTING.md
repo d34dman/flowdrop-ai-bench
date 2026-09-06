@@ -7,7 +7,7 @@ by CI from those two folders on every merge. You never edit a CSV.
 ## The path
 
 1. **Set up the runner** (once). Clone this repo, put `ANTHROPIC_KEY=sk-ant-...` in
-   `.ddev/.env`, `ddev start`, `sh runner/bin/setup.sh`. Needs [DDEV](https://ddev.readthedocs.io/).
+   `.ddev/.env`, `ddev start`, `sh bin/setup.sh`. Needs [DDEV](https://ddev.readthedocs.io/).
 2. **Run a cell.**
    ```sh
    ddev drush bench:run B3 claude-sonnet-5 --pages=small --tag=yourname-first-run
