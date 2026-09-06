@@ -43,6 +43,7 @@ jobs:
           import json, os, sys
           bad = 0
           for fn in os.listdir('runs'):
+              if not fn.endswith('.json'): continue
               r = json.load(open(f'runs/{fn}'))
               for k in ('run_id', 'workflow', 'url_key', 'corpus_version', 'prompt_sha256', 'pipeline_status', 'tag'):
                   if k not in r: print(f'::error file=runs/{fn}::missing {k}'); bad += 1
