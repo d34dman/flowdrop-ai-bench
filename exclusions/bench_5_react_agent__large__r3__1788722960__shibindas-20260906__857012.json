@@ -1,0 +1,7 @@
+{
+ "run_id": "bench_5_react_agent__large__r3__1788722960__shibindas-20260906__857012",
+ "kind": "harness",
+ "reason": "Anthropic call hit the AI module's default request_timeout of 60 s (cURL error 28, 0 bytes received) on large.html, a harness limit rather than a property of the workflow or model. Timeout raised to 600 s in runner config (commit f1f267a) and the large cells rerun.",
+ "by": "shibindas",
+ "ts": "2026-09-06T20:55:27+00:00"
+}
