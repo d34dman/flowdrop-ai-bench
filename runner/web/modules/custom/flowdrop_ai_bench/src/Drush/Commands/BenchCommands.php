@@ -9,6 +9,8 @@ use Drupal\flowdrop_ai_bench\Service\Harness;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
+use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Helper\TableStyle;
 
 /**
  * Drush commands for the FlowDrop AI benchmark harness.
@@ -268,35 +270,71 @@ final class BenchCommands extends DrushCommands {
     $this->output()->writeln(sprintf('collect  %d run(s) in the ledger re-derived into runs/, outputs/ and traces/', count($collected['collected'])));
     $this->reportKnownWarnings();
 
-    $this->output()->writeln(sprintf(
-      "\n%-52s %-10s %7s %6s %8s %8s %10s %7s",
-      'run_id',
-      'status',
-      'sec',
-      'calls',
-      'in',
-      'out',
-      'cost_usd',
-      'chars',
-    ));
+    $rows = [];
+    $cellOf = $this->cellLetters();
     foreach ($runIds as $runId) {
       $path = "$outDir/runs/$runId.json";
       if (!is_file($path)) {
         continue;
       }
       $data = json_decode((string) file_get_contents($path), TRUE);
-      $this->output()->writeln(sprintf(
-        "%-52s %-10s %7.1f %6d %8d %8d %10.4f %7d",
-        $runId,
+      $rows[] = [
+        $cellOf[$data['workflow'] ?? ''] ?? ($data['workflow'] ?? ''),
+        $data['url_key'] ?? '',
+        'r' . ($data['rep'] ?? ''),
         $data['pipeline_status'] ?? $data['launch_status'] ?? '',
-        $data['total_seconds'] ?? 0.0,
-        $data['llm_calls'] ?? 0,
-        $data['input_tokens'] ?? 0,
-        $data['output_tokens'] ?? 0,
-        $data['cost_usd'] ?? 0.0,
-        $data['output_chars'] ?? 0,
-      ));
+        sprintf('%.1f', $data['total_seconds'] ?? 0.0),
+        (string) ($data['llm_calls'] ?? 0),
+        number_format((int) ($data['input_tokens'] ?? 0)),
+        number_format((int) ($data['output_tokens'] ?? 0)),
+        sprintf('%.4f', $data['cost_usd'] ?? 0.0),
+        number_format((int) ($data['output_chars'] ?? 0)),
+        substr($runId, -6),
+      ];
     }
+    $this->output()->writeln('');
+    // The run id is long and mostly repeats what the other columns say; the
+    // table shows its parts and the 6-hex suffix, the full ids follow as the
+    // paths one would open.
+    $this->renderTable(['cell', 'page', 'rep', 'status', 'sec', 'calls', 'tokens in', 'out', 'usd', 'chars', 'id'], $rows, [4, 5, 6, 7, 8, 9]);
+    if ($runIds) {
+      $this->output()->writeln('files    one per run, plus runs/<id>.json and traces/<id>.json.gz:');
+      foreach ($runIds as $runId) {
+        $this->output()->writeln('         outputs/' . $runId . '.md');
+      }
+    }
+  }
+
+  /**
+   * Workflow id => cell letter, the reverse of Harness::cells().
+   *
+   * @return array<string, string>
+   */
+  private function cellLetters(): array {
+    $out = [];
+    foreach ($this->harness->cells() as $cell => $info) {
+      $out[$info['workflow']] = $cell;
+    }
+    return $out;
+  }
+
+  /**
+   * Prints a box-less table with the given columns right-aligned.
+   *
+   * @param string[] $headers
+   * @param array<int, array<int, string>> $rows
+   * @param int[] $numeric
+   *   Zero-based indexes of the columns to right-align.
+   */
+  private function renderTable(array $headers, array $rows, array $numeric): void {
+    $table = new Table($this->output());
+    $table->setStyle('symfony-style-guide');
+    $table->setHeaders($headers)->setRows($rows);
+    $right = (new TableStyle())->setPadType(STR_PAD_LEFT);
+    foreach ($numeric as $i) {
+      $table->setColumnStyle($i, $right);
+    }
+    $table->render();
   }
 
   /**
@@ -542,7 +580,8 @@ final class BenchCommands extends DrushCommands {
   private function progressPrinter(): callable {
     return function (string $event, array $info): void {
       if ($event === 'start') {
-        $this->output()->write(sprintf('run      %-40s %-7s r%-2d ... ', $info['workflow'], $info['url_key'], $info['rep']));
+        $cell = $this->cellLetters()[$info['workflow']] ?? $info['workflow'];
+        $this->output()->write(sprintf('run      %-4s %-7s r%-2d ... ', $cell, $info['url_key'], $info['rep']));
         return;
       }
       $status = $info['launch_status'];
