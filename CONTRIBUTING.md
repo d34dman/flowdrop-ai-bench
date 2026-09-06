@@ -38,7 +38,11 @@ covered by the same append-only check, and CI also rejects a trace over 3 MB.
 
 ## What we are glad to receive
 
-- New models, including non-Anthropic ones once the runner supports the provider.
+- New models, including non-Anthropic ones once the runner supports the provider. Prefer
+  the dated id when the provider lists one (`claude-haiku-4-5-20251001`, not
+  `claude-haiku-4-5`): an undated alias can be repointed to a newer snapshot and the run
+  records only the id that was requested. The scorer groups both forms under one
+  `model_family` for the published tables, so the study reads per model either way.
 - Repetitions of existing cells; most cells are a single draw today.
 - Failures, when the failure is the finding. Commit the failed run's JSON and say why in the PR.
 - A new variant: build it in the runner site, export config, add its cell letter to the

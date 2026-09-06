@@ -62,10 +62,13 @@ def main():
             traced.add(run_id)
 
     graded = [r for r in rows if r['outcome'] not in ('control', 'stale')]
-    cells = defaultdict(Counter); cost = defaultdict(list)
+    # Cells group by model family (dated snapshot suffix stripped by the scorer); the exact
+    # ids that answered are listed under the family so the snapshot detail stays visible.
+    cells = defaultdict(Counter); cost = defaultdict(list); exact = defaultdict(set)
     for r in graded:
-        k = (r['variant'], r['models'] or '-', r['page']); cells[k][r['outcome']] += 1
+        k = (r['variant'], r.get('model_family') or r['models'] or '-', r['page']); cells[k][r['outcome']] += 1
         if r['outcome'] == 'correct': cost[k].append(float(r['cost_usd'] or 0))
+        if r['models'] and r['models'] != k[1]: exact[k].add(r['models'])
     total = Counter(r['outcome'] for r in graded)
 
     def esc(x): return html.escape(str(x))
@@ -76,12 +79,13 @@ def main():
              '<p>' + ' '.join(pill(o, total.get(o, 0)) for o in ORDER if o != 'control') + '</p>',
              '<p class="note"><b>correct</b>: every axis at threshold. <b>degraded</b>: all axes ≥ 0.75. <b>silent</b>: completed and the document is wrong. '
              '<b>format</b>: HTML came back. <b>loud</b>: nothing usable delivered. Axes and thresholds: <code>scoring/score.py</code>.</p>']
-    parts.append('<h2>Outcome per cell</h2><div class="wrap"><table><tr><th>Variant</th><th>Model</th><th>Page</th><th class="n">Runs</th><th>Outcomes</th><th class="n">$ per correct run</th></tr>')
+    parts.append('<h2>Outcome per cell</h2><p class="note">Grouped by model family: a dated id such as <code>claude-haiku-4-5-20251001</code> is a snapshot of <code>claude-haiku-4-5</code>. The snapshots that answered are listed under each family; every run below keeps its exact id.</p><div class="wrap"><table><tr><th>Variant</th><th>Model</th><th>Page</th><th class="n">Runs</th><th>Outcomes</th><th class="n">$ per correct run</th></tr>')
     for k in sorted(cells):
         c = cells[k]; n = sum(c.values()); cc = cost.get(k, [])
-        parts.append(f'<tr><td>{esc(CELL.get(k[0], k[0]))}</td><td><code>{esc(k[1])}</code></td><td>{esc(k[2])}</td><td class="n">{n}</td>'
+        model_cell = f'<code>{esc(k[1])}</code>' + (f'<br><span class="note">{esc(", ".join(sorted(exact[k])))}</span>' if exact.get(k) else '')
+        parts.append(f'<tr><td>{esc(CELL.get(k[0], k[0]))}</td><td>{model_cell}</td><td>{esc(k[2])}</td><td class="n">{n}</td>'
                      f'<td>{" ".join(pill(o, c[o]) for o in ORDER if c.get(o))}</td><td class="n">{(sum(cc)/len(cc)):.4f}</td></tr>' if cc else
-                     f'<tr><td>{esc(CELL.get(k[0], k[0]))}</td><td><code>{esc(k[1])}</code></td><td>{esc(k[2])}</td><td class="n">{n}</td>'
+                     f'<tr><td>{esc(CELL.get(k[0], k[0]))}</td><td>{model_cell}</td><td>{esc(k[2])}</td><td class="n">{n}</td>'
                      f'<td>{" ".join(pill(o, c[o]) for o in ORDER if c.get(o))}</td><td class="n">—</td></tr>')
     parts.append('</table></div>')
     parts.append('<h2>Every run</h2><div class="wrap"><table><tr><th>Run</th><th>Model</th><th>Page</th>' +

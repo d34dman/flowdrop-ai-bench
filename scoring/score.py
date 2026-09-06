@@ -335,9 +335,15 @@ def load_runs():
         rows.append(r)
     return rows
 
+def family(model_id):
+    """claude-haiku-4-5-20251001 -> claude-haiku-4-5: the dated suffix names a snapshot of
+    one model; the study compares models, the run file keeps the snapshot."""
+    return re.sub(r'-\d{8}$', '', model_id)
+
 def flat(r):
     d = {k: r.get(k, '') for k in LEDGER}
     d['models'] = ','.join(r.get('models') or []); d['failed_nodes'] = ';'.join(r.get('failed_nodes') or [])
+    d['model_family'] = ','.join(sorted({family(m) for m in (r.get('models') or [])}))
     d['page'] = r.get('url_key', ''); d['variant'] = r.get('workflow', '')
     return d
 
@@ -372,7 +378,7 @@ def main():
     order = ['correct', 'degraded', 'silent', 'format', 'loud', 'control', 'stale']
     cells = {}
     for r in scored:
-        cells.setdefault((r['variant'], r['models'] or '-', r['page']), Counter())[r['outcome']] += 1
+        cells.setdefault((r['variant'], r['model_family'] or '-', r['page']), Counter())[r['outcome']] += 1
     print(f"{'variant':40} {'model':28} {'page':7} " + ' '.join(f'{o:>8}' for o in order))
     for k in sorted(cells):
         print(f"{k[0]:40} {k[1]:28} {k[2]:7} " + ' '.join(f'{cells[k].get(o, 0):>8}' for o in order))

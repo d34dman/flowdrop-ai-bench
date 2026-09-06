@@ -432,7 +432,12 @@ final class BenchCommands extends DrushCommands {
       static fn (string $id, string $name): string => $name !== $id ? "$id  ($name)" : $id,
       array_keys($models), array_values($models))) : [];
     $choices[$other] = $other;
-    $default = array_key_exists('claude-haiku-4-5-20251001', $models) ? 'claude-haiku-4-5-20251001' : array_key_first($choices);
+    // Prefer a dated id: an undated alias can be repointed to a newer snapshot by the
+    // provider, and the ledger records only the id requested. The scorer groups both
+    // forms under one model family anyway.
+    $dated = array_filter(array_keys($models), static fn (string $id): bool => (bool) preg_match('/-\d{8}$/', $id));
+    $haiku = array_values(array_filter($dated, static fn (string $id): bool => str_contains($id, 'haiku')));
+    $default = $haiku[0] ?? ($dated ? reset($dated) : array_key_first($choices));
     $model = (string) $io->choice(sprintf('Model (provider %s)', $provider), $choices, $default);
     if ($model === $other) {
       $model = (string) $io->ask('Model id', NULL, NULL, 'claude-sonnet-5', TRUE);
