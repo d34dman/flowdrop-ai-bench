@@ -17,7 +17,7 @@ def build(ctx):
                          f'<td>{esc(", ".join(f"{k} x{v}" for k, v in d["chrome"].items()))}</td></tr>')
         parts.append(f'</table></div><p class="note">Glyph <code>{esc(m["glyph"])}</code>. Subject: {esc(m.get("subject", ""))}. '
                      f'Competitors: {esc(", ".join(m["competitors"]))} (real: {esc(", ".join(m.get("real_names", [])))}). '
-                     f'Protected: {esc(", ".join(m["protected_names"]))}. Prompt: <a href="../prompt/{esc(m["prompt"])}">{esc(m["prompt"])}</a> '
+                     f'Protected: {esc(", ".join(m["protected_names"]))}. Prompt: <a href="../{esc(m["prompt"])}">{esc(m["prompt"])}</a> '
                      f'(sha256 {esc(m["prompt_sha256"][:12])}). Served from <code>{esc(m["base_url"])}</code>.</p>')
     parts.append('<h2>Why an owned corpus</h2><p>The pages are original prose about Drupal and six competitors, two real and four fictional, '
                  'so the gold document is known by construction, the pages never change under a run, and traps can be planted on purpose. '
