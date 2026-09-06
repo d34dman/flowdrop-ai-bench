@@ -1,0 +1,7 @@
+{
+ "run_id": "bench_5_react_agent__large__r1__1788728412__shibindas-20260906__060c52",
+ "kind": "harness",
+ "reason": "cache_entity deadlock in the job bookkeeping save of the final chat_output node while three bench pipelines ran in parallel drush processes (fddo #3592445); the agent sub-pipeline had completed. Rerun serially.",
+ "by": "shibindas",
+ "ts": "2026-09-06T21:24:37+00:00"
+}
