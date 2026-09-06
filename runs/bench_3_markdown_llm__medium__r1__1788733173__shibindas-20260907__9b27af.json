@@ -1,0 +1,69 @@
+{
+    "run_id": "bench_3_markdown_llm__medium__r1__1788733173__shibindas-20260907__9b27af",
+    "workflow": "bench_3_markdown_llm",
+    "url_key": "medium",
+    "url": "https://d34dman.github.io/flowdrop-ai-bench/corpus/v1/medium.html",
+    "corpus_version": "v1",
+    "page_sha256": "ea4e33df2ab05dfe9a143ce5c0d205ef250da9fe174f60008d985e8413a0a3e4",
+    "prompt_sha256": "272f2f41c1552fd77952bf1867eb98ffeea8cd5bc9d249166416511f69b66c8d",
+    "glyph": "████",
+    "flowdrop_version": "dev-2.x@771e7c77e1f9",
+    "harness_version": "3.3.0",
+    "model": "claude-opus-5",
+    "rep": 1,
+    "pipeline_id": "383",
+    "context_uuid": "2ca207f1-9798-43d6-93d9-9b3a820bc9dd",
+    "wall_seconds": 33.5696,
+    "launch_status": "completed",
+    "launch_error": null,
+    "tag": "shibindas-20260907",
+    "ts": "2026-09-06T22:20:06+00:00",
+    "pipeline_status": "completed",
+    "failed_nodes": [],
+    "job_count": 4,
+    "payload_bytes": 74962,
+    "total_seconds": 33.41,
+    "ai_seconds": 33.22,
+    "deterministic_seconds": 0.191,
+    "llm_calls": 1,
+    "models": [
+        "claude-opus-5"
+    ],
+    "input_tokens": 3125,
+    "output_tokens": 3221,
+    "cached_tokens": 0,
+    "cost_usd": 0.09615,
+    "retries": 0,
+    "output_chars": 8683,
+    "nodes": [
+        {
+            "node_type": "http_request",
+            "status": "completed",
+            "seconds": 0.188,
+            "is_ai": false,
+            "error": null
+        },
+        {
+            "node_type": "html_to_markdown",
+            "status": "completed",
+            "seconds": 0.002,
+            "is_ai": false,
+            "error": null
+        },
+        {
+            "node_type": "flowdrop_ai_provider_chat",
+            "status": "completed",
+            "seconds": 33.22,
+            "is_ai": true,
+            "error": null
+        },
+        {
+            "node_type": "chat_output",
+            "status": "completed",
+            "seconds": 0.001,
+            "is_ai": false,
+            "error": null
+        }
+    ],
+    "annotations": []
+}
