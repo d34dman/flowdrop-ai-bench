@@ -16,6 +16,7 @@ by CI from those two folders on every merge. You never edit a CSV.
    The runner fetches the corpus pages and the prompt from this repo's published site, so
    the same corpus version and prompt hash are recorded in every run.
 3. **Look at it.** `ddev drush bench:list B3 small sonnet-5` and open `outputs/<run_id>.md`.
+   To see the score CI will give it: `python3 scoring/score.py` (needs only Python 3).
 4. **Commit and open a PR.** The runner has already written `runs/<run_id>.json` and
    `outputs/<run_id>.md` into the checkout.
    ```sh
