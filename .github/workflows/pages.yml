@@ -92,7 +92,10 @@ jobs:
       - name: Build ${{ matrix.visual }}
         run: python3 site/build.py visual ${{ matrix.visual }}
       - uses: actions/upload-artifact@v4
-        with: { name: visual-${{ matrix.visual }}, path: _site/${{ matrix.visual }}, retention-days: 1 }
+        with:
+          name: visual-${{ matrix.visual }}
+          path: _site/${{ matrix.visual }}
+          retention-days: 1
 
   assemble:
     needs: [check, visual]
