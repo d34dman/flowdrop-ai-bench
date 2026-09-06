@@ -72,9 +72,33 @@ def load_filters():
     return load_json(os.path.join(SITE_SRC, 'filters.json'))['filters']
 
 
+def load_palette():
+    return load_json(os.path.join(SITE_SRC, 'palette.json'))
+
+
+def model_slots(rows, palette):
+    """model family -> colour slot number, from site/palette.json. A family the map does not pin
+    gets a slot from its name hash (stable across builds, but unchosen) and a warning on stderr:
+    pin it in palette.json so it never collides with a neighbour."""
+    import hashlib, sys
+    n = len(palette['slots'])
+    pinned = {k: int(v) for k, v in palette['models'].items()}
+    seen = set()
+    for r in rows:
+        for m in str(r.get('model_family') or '').split(','):
+            if m and m != '-': seen.add(m)
+    out = dict(pinned)
+    for m in sorted(seen - set(pinned)):
+        out[m] = int(hashlib.sha1(m.encode()).hexdigest(), 16) % n + 1
+        print(f'warning: model {m!r} has no colour in site/palette.json; using hashed slot {out[m]} — pin it', file=sys.stderr)
+    return out
+
+
 def build_facets(rows, filters):
-    """Distinct values with counts per filter, in the filter's declared order else by count."""
-    out = {'filters': filters, 'labels': LABELS, 'values': {}}
+    """Distinct values with counts per filter, in the filter's declared order else by count.
+    Also carries the model colour map (site/palette.json) so every page paints a model the same."""
+    palette = load_palette()
+    out = {'filters': filters, 'labels': LABELS, 'values': {}, 'palette': {'slots': palette['slots'], 'models': model_slots(rows, palette)}}
     for f in filters:
         c = Counter()
         for r in rows:

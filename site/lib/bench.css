@@ -99,10 +99,12 @@ tr:hover td{background:var(--soft)}
 
 @media(max-width:640px){h1{font-size:1.8rem}main{padding:1.6rem 1rem}header.site nav{margin-left:0}}
 
-/* cost and time figures. Series colours: three validated categorical slots (all-pairs, light and
-   dark surfaces); slot = position of the model in the facet, so a filter never repaints a survivor. */
-:root{--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#eda100;--s5:#e87ba4;--s6:#008300;--s7:#4a3aa7;--s8:#e34948}
-@media(prefers-color-scheme:dark){:root{--s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s5:#d55181;--s6:#008300;--s7:#9085e9;--s8:#e66767}}
+/* cost and time figures. Series colours: fixed categorical slots, one per model family, pinned in
+   site/palette.json (a model never changes colour when another is added). Validated with the dataviz
+   palette checker on both surfaces: adjacent pairs pass for all six, all pairs pass for the first four (the four models on file).
+   Nothing red or near red: red is the silent-failure outcome (--sil) and must not read as a model. */
+:root{--s1:#2a78d6;--s2:#1baf7a;--s3:#eda100;--s4:#60438d;--s5:#008300;--s6:#176490}
+@media(prefers-color-scheme:dark){:root{--s1:#3987e5;--s2:#199e70;--s3:#c98500;--s4:#6d41a9;--s5:#008300;--s6:#3a8fc0}}
 .fig{margin:.4rem 0 1rem}
 .legend.viz{text-transform:none;letter-spacing:.01em;font-size:.82rem}
 .legend.viz i{border-radius:50%}
@@ -113,8 +115,6 @@ tr:hover td{background:var(--soft)}
 .viz .s4 rect,.viz .s4 circle,.legend i.s4{fill:var(--s4);background:var(--s4)}
 .viz .s5 rect,.viz .s5 circle,.legend i.s5{fill:var(--s5);background:var(--s5)}
 .viz .s6 rect,.viz .s6 circle,.legend i.s6{fill:var(--s6);background:var(--s6)}
-.viz .s7 rect,.viz .s7 circle,.legend i.s7{fill:var(--s7);background:var(--s7)}
-.viz .s8 rect,.viz .s8 circle,.legend i.s8{fill:var(--s8);background:var(--s8)}
 .viz .none rect,.viz .none circle,.legend i.none{fill:var(--mut);background:var(--mut)}
 svg.viz{display:block;max-width:100%;height:auto;font-family:var(--sans);overflow:visible}
 svg.scatter{background:var(--bg)}
@@ -127,12 +127,12 @@ svg.scatter{background:var(--bg)}
 .viz a.mk circle:not(.hit){stroke:var(--bg);stroke-width:2}
 .viz a.mk.hollow circle:not(.hit){fill:var(--bg)!important;stroke-width:2.5}
 .viz .s1.hollow circle:not(.hit){stroke:var(--s1)}.viz .s2.hollow circle:not(.hit){stroke:var(--s2)}.viz .s3.hollow circle:not(.hit){stroke:var(--s3)}
-.viz .s4.hollow circle:not(.hit){stroke:var(--s4)}.viz .none.hollow circle:not(.hit){stroke:var(--mut)}
+.viz .s4.hollow circle:not(.hit){stroke:var(--s4)}.viz .s5.hollow circle:not(.hit){stroke:var(--s5)}.viz .s6.hollow circle:not(.hit){stroke:var(--s6)}.viz .none.hollow circle:not(.hit){stroke:var(--mut)}
 .viz a.mk text{fill:var(--ink2);font-size:10.5px;pointer-events:none}
 .viz a.mk:hover circle:not(.hit){stroke:var(--fg)}
 .viz a.mk:hover rect:not(.hit){filter:brightness(.85)}
 .viz a.mk.hollow rect:not(.hit){fill:var(--bg)!important;stroke-width:1.5}
-.viz .s1.hollow rect:not(.hit){stroke:var(--s1)}.viz .s2.hollow rect:not(.hit){stroke:var(--s2)}.viz .s3.hollow rect:not(.hit){stroke:var(--s3)}.viz .s4.hollow rect:not(.hit){stroke:var(--s4)}.viz .none.hollow rect:not(.hit){stroke:var(--mut)}
+.viz .s1.hollow rect:not(.hit){stroke:var(--s1)}.viz .s2.hollow rect:not(.hit){stroke:var(--s2)}.viz .s3.hollow rect:not(.hit){stroke:var(--s3)}.viz .s4.hollow rect:not(.hit){stroke:var(--s4)}.viz .s5.hollow rect:not(.hit){stroke:var(--s5)}.viz .s6.hollow rect:not(.hit){stroke:var(--s6)}.viz .none.hollow rect:not(.hit){stroke:var(--mut)}
 .viz a.mk.hollow rect.cap{display:none}
 svg.bars{display:block;overflow:visible}
 .costtab td{vertical-align:middle;padding:.55rem .6rem}

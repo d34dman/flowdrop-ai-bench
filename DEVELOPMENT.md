@@ -91,5 +91,7 @@ https://d34dman.github.io/flowdrop-ai-bench/by-model/?model=claude-sonnet-5&page
 - Runs are never edited or deleted; a run that should not count is excluded.
 - Corpus and prompt are versioned by folder and by hash in every run ledger.
 - Filters and visuals are declared in JSON, never hard-coded in a page.
-- Charts use text tokens for text and validated categorical colours for series; slot
-  assignment follows facet order so filtering never repaints a survivor.
+- Charts use text tokens for text and validated categorical colours for series. A model's
+  colour is pinned in `site/palette.json` and never changes: adding a model means appending
+  it there with the next free slot, so nobody else is repainted. No slot is red or near red;
+  red belongs to the silent-failure outcome.

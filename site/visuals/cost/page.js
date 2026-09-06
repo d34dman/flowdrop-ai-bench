@@ -1,6 +1,7 @@
-/* Cost and time. One mark per cell (variant x model family); colour is the model, fixed by
- * facet order so filtering never repaints a survivor. Text wears text tokens, never the series
- * colour. Values live in the tooltip and at bar tips; the scorecard has every run. */
+/* Cost and time. One mark per cell (variant x model family); colour is the model, pinned in
+ * site/palette.json (published as facets.palette) so a model keeps its colour across builds,
+ * filters, and newly added models. Text wears text tokens, never the series colour. Values
+ * live in the tooltip and at bar tips; the scorecard has every run. */
 Bench.ready(({rows, facets}) => {
   const {esc, cell} = Bench;
   const g = Bench.graded(rows);
@@ -8,8 +9,9 @@ Bench.ready(({rows, facets}) => {
   if (!g.length) { S.innerHTML = B.innerHTML = '<div class="empty">No graded runs match.</div>'; return; }
 
   // ---- cells
-  const MODELS = (facets.values.model || []).map(x => x[0]).filter(m => m !== '-').sort();   // fixed order: slot = index
-  const slot = m => { const i = MODELS.indexOf(m); return i < 0 ? 'none' : 's' + (i % 8 + 1); };
+  const PAL = (facets.palette && facets.palette.models) || {};
+  const MODELS = (facets.values.model || []).map(x => x[0]).filter(m => m !== '-').sort((a, b) => (PAL[a] || 99) - (PAL[b] || 99) || a.localeCompare(b));   // legend in slot order
+  const slot = m => PAL[m] ? 's' + PAL[m] : 'none';
   const mname = m => m === '-' ? 'no model call' : m;
   const cells = new Map();
   for (const r of g) {
