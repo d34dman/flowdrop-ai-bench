@@ -266,8 +266,10 @@ final class BenchCommands extends DrushCommands {
     );
     $runIds = array_column($records, 'run_id');
 
-    $collected = $this->harness->collect($varDir . '/runs.jsonl', $outDir . '/runs', $outDir . '/outputs', $outDir . '/traces');
-    $this->output()->writeln(sprintf('collect  %d run(s) in the ledger re-derived into runs/, outputs/ and traces/', count($collected['collected'])));
+    // Only this launch's runs: the ledger holds every run ever made here, and
+    // re-deriving those would re-stamp files that may already be committed.
+    $collected = $this->harness->collect($varDir . '/runs.jsonl', $outDir . '/runs', $outDir . '/outputs', $outDir . '/traces', $runIds);
+    $this->output()->writeln(sprintf('collect  %d run(s) from this launch written to runs/, outputs/ and traces/ (bench:collect re-derives the whole ledger)', count($collected['collected'])));
     $this->reportKnownWarnings();
 
     $rows = [];

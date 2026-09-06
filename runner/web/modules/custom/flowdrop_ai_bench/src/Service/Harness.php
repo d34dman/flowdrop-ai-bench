@@ -601,13 +601,22 @@ class Harness {
    * A ledger line whose pipeline is missing is skipped with a warning: it
    * never overwrites a previously collected run/output file for that id.
    *
+   * With $onlyRunIds, only those ledger lines are collected: bench:run passes
+   * the ids it has just launched, so a one-run session rewrites one run file,
+   * not every run the ledger has ever seen (each rewrite re-stamps
+   * collected_at, which would show as a modification of an already committed
+   * run). bench:collect passes NULL and re-derives the whole ledger on purpose.
+   *
+   * @param string[]|null $onlyRunIds
+   *
    * @return array{
    *   collected: array<int, array<string, mixed>>,
    *   skipped: array<int, array{run_id: string|null, pipeline_id: mixed}>,
    * }
    */
-  public function collect(string $ledgerPath, string $runsDir, string $outputsDir, ?string $tracesDir = NULL): array {
+  public function collect(string $ledgerPath, string $runsDir, string $outputsDir, ?string $tracesDir = NULL, ?array $onlyRunIds = NULL): array {
     $collected = [];
+    $only = $onlyRunIds === NULL ? NULL : array_fill_keys($onlyRunIds, TRUE);
     $skipped = [];
     if (!is_file($ledgerPath)) {
       return ['collected' => $collected, 'skipped' => $skipped];
@@ -644,6 +653,9 @@ class Harness {
     foreach (file($ledgerPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
       $run = json_decode($line, TRUE);
       if (!is_array($run) || empty($run['run_id'])) {
+        continue;
+      }
+      if ($only !== NULL && !isset($only[$run['run_id']])) {
         continue;
       }
       $pipeline = !empty($run['pipeline_id']) ? $pipelineStorage->load($run['pipeline_id']) : NULL;
