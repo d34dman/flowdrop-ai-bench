@@ -64,26 +64,23 @@ final class BenchCommands extends DrushCommands {
 
     $result = $this->harness->setPrompt($options['prompt'], $options['critic'], $base, $cacheDir);
 
+    $written = 0;
     foreach ($result['touched'] as $touch) {
       if (isset($touch['note'])) {
         $this->output()->writeln(sprintf('  !! missing %s %s', $touch['type'] ?? 'entity', $touch['id']));
         continue;
       }
-      $this->output()->writeln(sprintf(
-        '  %-40s %-30s %s',
-        $touch['id'],
-        $touch['node'] ?? '',
-        $touch['field'],
-      ));
+      $written++;
+      $this->verbose(sprintf('  %-40s %-30s %s', $touch['id'], $touch['node'] ?? '', $touch['field']));
     }
     $this->output()->writeln(sprintf(
-      "\nprompt %s (%d chars, sha256 %s); critic %s (sha256 %s); glyph %s",
+      'prompt   %s (sha256 %s, glyph %s) written to %d places; critic %s (sha256 %s)',
       $result['prompt_rel'],
-      $result['prompt_chars'],
       substr($result['prompt_sha256'], 0, 12),
+      $result['glyph'] ?? '',
+      $written,
       $result['critic_rel'],
       substr($result['critic_sha256'], 0, 12),
-      $result['glyph'] ?? '',
     ));
   }
 
@@ -102,19 +99,14 @@ final class BenchCommands extends DrushCommands {
         $this->output()->writeln(sprintf('  !! missing %s', $touch['id']));
         continue;
       }
-      $this->output()->writeln(sprintf(
-        '  %-28s %-42s %-10s = %s',
-        $touch['id'],
-        $touch['node'],
-        $touch['field'],
-        $touch['value'],
-      ));
+      $this->verbose(sprintf('  %-28s %-42s %-10s = %s', $touch['id'], $touch['node'], $touch['field'], $touch['value']));
     }
     $this->output()->writeln(sprintf(
-      "\nupdated %d workflows -> %s:%s",
-      $result['updated_workflows'],
+      'model    %s:%s (%d workflow%s changed)',
       $result['provider'],
       $result['model'],
+      $result['updated_workflows'],
+      $result['updated_workflows'] === 1 ? '' : 's',
     ));
   }
 
@@ -160,21 +152,9 @@ final class BenchCommands extends DrushCommands {
       $base,
       $varDir . '/cache',
       $varDir . '/runs.jsonl',
+      $this->progressPrinter(),
     );
-
-    foreach ($records as $record) {
-      $this->output()->writeln(sprintf(
-        '  %-28s %-7s r%-3d %-10s wall=%7.2fs pipeline=%s%s',
-        $record['workflow'],
-        $record['url_key'] ?? '',
-        $record['rep'] ?? 0,
-        $record['launch_status'],
-        $record['wall_seconds'] ?? 0.0,
-        $record['pipeline_id'] ?? '',
-        !empty($record['launch_error']) ? "  ERR: {$record['launch_error']}" : '',
-      ));
-    }
-    $this->output()->writeln(sprintf("\nappended %d run(s) to %s/runs.jsonl", count($records), $varDir));
+    $this->output()->writeln(sprintf('ledger   %d run(s) appended to %s/runs.jsonl', count($records), $varDir));
   }
 
   /**
@@ -236,7 +216,16 @@ final class BenchCommands extends DrushCommands {
     $varDir = $this->resolveVarDir($options['var']);
     $outDir = $this->resolveOutDir($options['out']);
 
-    $this->output()->writeln("=== bench:run cells=$cells model=$model tag=$tag ===");
+    $this->output()->writeln(sprintf(
+      'bench:run %s on %s, pages %s, %d rep%s, tag %s, corpus %s',
+      $cells,
+      $model,
+      $options['pages'],
+      (int) $options['reps'],
+      (int) $options['reps'] === 1 ? '' : 's',
+      $tag,
+      $corpus,
+    ));
 
     $this->setPrompt(['prompt' => $options['prompt'], 'critic' => $options['critic'], 'base' => $base, 'var' => $varDir]);
     $this->setModel($model, ['provider' => $options['provider']]);
@@ -252,21 +241,12 @@ final class BenchCommands extends DrushCommands {
       $base,
       $varDir . '/cache',
       $varDir . '/runs.jsonl',
+      $this->progressPrinter(),
     );
-    foreach ($records as $record) {
-      if ($record['launch_status'] !== 'completed' && $record['launch_status'] !== 'success') {
-        $this->output()->writeln(sprintf(
-          '  !! %s %s r%s: %s',
-          $record['workflow'],
-          $record['url_key'] ?? '',
-          $record['rep'] ?? '',
-          $record['launch_error'] ?? $record['launch_status'],
-        ));
-      }
-    }
     $runIds = array_column($records, 'run_id');
 
-    $this->harness->collect($varDir . '/runs.jsonl', $outDir . '/runs', $outDir . '/outputs');
+    $collected = $this->harness->collect($varDir . '/runs.jsonl', $outDir . '/runs', $outDir . '/outputs');
+    $this->output()->writeln(sprintf('collect  %d run(s) in the ledger re-derived into runs/ and outputs/', count($collected['collected'])));
 
     $this->output()->writeln(sprintf(
       "\n%-52s %-10s %7s %6s %8s %8s %10s %7s",
@@ -389,6 +369,36 @@ final class BenchCommands extends DrushCommands {
    *
    * @return string[]
    */
+  /**
+   * Prints a line only at -v or above.
+   */
+  private function verbose(string $line): void {
+    if ($this->output()->isVerbose()) {
+      $this->output()->writeln($line);
+    }
+  }
+
+  /**
+   * Returns the launch progress callback: one line per run, opened when the
+   * run starts and closed when it ends, so a long agent cell shows it is alive.
+   */
+  private function progressPrinter(): callable {
+    return function (string $event, array $info): void {
+      if ($event === 'start') {
+        $this->output()->write(sprintf('run      %-40s %-7s r%-2d ... ', $info['workflow'], $info['url_key'], $info['rep']));
+        return;
+      }
+      $status = $info['launch_status'];
+      $ok = in_array($status, ['completed', 'success'], TRUE);
+      $this->output()->writeln(sprintf(
+        '%s %.1fs%s',
+        $ok ? 'completed' : strtoupper((string) $status),
+        $info['wall_seconds'] ?? 0.0,
+        !empty($info['launch_error']) ? '  ' . $info['launch_error'] : '',
+      ));
+    };
+  }
+
   private function splitList(string $value): array {
     return array_values(array_filter(array_map('trim', explode(',', $value))));
   }

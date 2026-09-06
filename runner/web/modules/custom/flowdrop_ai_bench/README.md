@@ -94,3 +94,9 @@ drush bench:list
 
 - `BENCH_BASE` — overrides the default bench site base URL.
 - `BENCH_CORPUS` — overrides the default corpus version (`v1`).
+
+## Output
+
+By default every command prints one line per phase and one line per run, opened when the
+run starts and closed when it finishes. Add `-v` to see which node and entity each prompt
+and model write touched.

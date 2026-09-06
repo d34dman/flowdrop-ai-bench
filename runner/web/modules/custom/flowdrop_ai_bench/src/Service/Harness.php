@@ -376,6 +376,7 @@ class Harness {
     string $base,
     string $cacheDir,
     string $ledgerPath,
+    ?callable $progress = NULL,
   ): array {
     $manifest = $this->manifest($corpusVersion, $base, $cacheDir);
     $urls = array_map(static fn (array $page): string => $page['url'], $manifest['pages']);
@@ -421,6 +422,9 @@ class Harness {
               }
 
               $runId = sprintf('%s__%s__r%d__%d', $workflowId, $urlKey, $rep, time());
+              if ($progress) {
+                $progress('start', ['run_id' => $runId, 'workflow' => $workflowId, 'url_key' => $urlKey, 'rep' => $rep]);
+              }
               $runUuid = $this->uuid->generate();
               $this->runContext->set($runUuid);
 
@@ -467,6 +471,9 @@ class Harness {
               fwrite($handle, json_encode($record, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "\n");
               fflush($handle);
               $records[] = $record;
+              if ($progress) {
+                $progress('done', $record);
+              }
             }
           }
         }
