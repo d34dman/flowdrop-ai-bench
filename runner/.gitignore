@@ -25,3 +25,4 @@
 /drush/Commands/contrib/
 /var/*
 !/var/.gitkeep
+/config/sync/.htaccess

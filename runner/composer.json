@@ -43,7 +43,7 @@
             "php-http/discovery": true,
             "phpstan/extension-installer": true,
             "tbachert/spi": true,
-            "symfony/runtime": false
+            "symfony/runtime": true
         },
         "sort-packages": true
     },
