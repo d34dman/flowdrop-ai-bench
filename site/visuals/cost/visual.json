@@ -1,0 +1,5 @@
+{
+  "title": "Cost and time",
+  "blurb": "What each architecture costs on each model, in dollars and seconds per run and in dollars per correct run, as figures rather than tables.",
+  "filters": ["task", "benchmark", "model", "page", "tag", "corpus"]
+}
