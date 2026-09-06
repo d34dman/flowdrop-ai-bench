@@ -22,12 +22,12 @@ Bench.ready(({rows, order}) => {
 
   const re = document.getElementById('runs');
   if (!rows.length) re.innerHTML = '<div class="empty">No runs match.</div>';
-  else re.innerHTML = '<table><tr><th>Run</th><th>Model</th><th>Page</th>' + AX.map(a => `<th class="n">${a}</th>`).join('') +
+  else Bench.pager(re, [...rows].sort((a, b) => (a.variant + a.models + a.page + a.ts).localeCompare(b.variant + b.models + b.page + b.ts)), page => '<table><tr><th>Run</th><th>Model</th><th>Page</th>' + AX.map(a => `<th class="n">${a}</th>`).join('') +
     '<th class="n">glyphs</th><th class="n">leaks</th><th class="n">calls</th><th class="n">s</th><th class="n">$</th><th>Outcome</th><th>Output</th><th>Trace</th></tr>' +
-    [...rows].sort((a, b) => (a.variant + a.models + a.page + a.ts).localeCompare(b.variant + b.models + b.page + b.ts)).map(r =>
+    page.map(r =>
       `<tr><td>${esc(cell(r.variant))} <span class="note">${esc(r.tag)}</span></td><td><code>${esc(r.models || '-')}</code></td><td>${esc(r.page)}</td>` +
       AX.map(a => `<td class="n">${esc(r[a])}</td>`).join('') +
       `<td class="n">${esc(r.glyphs)}</td><td class="n">${esc(r.leaks)}</td><td class="n">${esc(r.llm_calls)}</td><td class="n">${esc(r.total_seconds)}</td><td class="n">${esc(r.cost_usd)}</td>` +
       `<td>${pill(r.outcome, null, r.excluded_reason ? r.excluded_kind + ': ' + r.excluded_reason : '')}</td><td><a href="${Bench.href('outputs/' + encodeURIComponent(r.run_id) + '.md')}">md</a></td>` +
-      `<td>${r.trace ? `<a href="${Bench.href('traces/' + encodeURIComponent(r.run_id) + '.html')}">trace</a>` : '-'}</td></tr>`).join('') + '</table>';
+      `<td>${r.trace ? `<a href="${Bench.href('traces/' + encodeURIComponent(r.run_id) + '.html')}">trace</a>` : '-'}</td></tr>`).join('') + '</table>');
 });

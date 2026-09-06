@@ -140,3 +140,10 @@ svg.bars{display:block;overflow:visible}
 .costtab td:first-child{white-space:nowrap;font-size:.86rem}
 #viz-tip{position:fixed;z-index:20;pointer-events:none;background:var(--fg);color:var(--bg);font-size:.78rem;line-height:1.45;padding:.4rem .6rem;border-radius:3px;max-width:22rem;font-variant-numeric:tabular-nums;box-shadow:0 6px 20px rgba(0,0,0,.18)}
 #viz-tip b{font-weight:600}
+
+/* pager under long lists */
+.pager{display:flex;flex-wrap:wrap;gap:.5rem .9rem;align-items:center;padding:.7rem 0;font-size:.82rem;color:var(--mut);font-variant-numeric:tabular-nums}
+.pager button{border:1px solid var(--line);border-radius:3px;background:var(--bg);color:var(--ink2);font:inherit;font-size:.8rem;letter-spacing:.03em;padding:.2rem .7rem;cursor:pointer}
+.pager button:hover:not(:disabled){border-color:var(--fg);color:var(--fg)}
+.pager button:disabled{opacity:.4;cursor:default}
+.pager select{font:inherit;font-size:.8rem;color:var(--ink2);background:var(--bg);border:1px solid var(--line);border-radius:3px;padding:.15rem .4rem;margin-left:auto}

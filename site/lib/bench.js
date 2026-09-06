@@ -170,6 +170,35 @@ window.Bench = (function () {
   }
   function ready(fn) { subs.push(fn); if (data) fn({ rows: filtered(), all: data.rows, facets: data.facets, state, order: ORDER, focus: focus() }); }
 
+
+  // ------------------------------------------------------------ pager
+  // Bench.pager(el, items, rows => html, {size: 25}): renders one page of `items` into `el` with
+  // prev/next and a page-size control. Page position is in memory only (never the URL: filters are
+  // shared by link, a page number is not) and goes back to the first page whenever the list changes.
+  const pagers = new WeakMap();
+  const PAGE_SIZES = [25, 50, 100, 0];   // 0 = all
+  function pager(el, items, render, o = {}) {
+    let st = pagers.get(el);
+    const sig = items.length + ':' + (items[0] && items[0].run_id) + ':' + (items[items.length - 1] && items[items.length - 1].run_id);
+    if (!st) { st = {page: 0, size: o.size || 25, sig}; pagers.set(el, st); }
+    if (st.sig !== sig) { st.page = 0; st.sig = sig; }
+    const size = st.size || items.length || 1, pages = Math.max(1, Math.ceil(items.length / size));
+    st.page = Math.min(st.page, pages - 1);
+    const from = st.page * size, to = Math.min(items.length, from + size);
+    el.innerHTML = render(items.slice(from, to));
+    if (items.length <= PAGE_SIZES[0]) return;
+    const nav = document.createElement('div'); nav.className = 'pager';
+    const b = (t, d, dis) => { const x = document.createElement('button'); x.type = 'button'; x.textContent = t; x.disabled = dis; x.addEventListener('click', () => { st.page += d; pager(el, items, render, o); }); return x; };
+    nav.appendChild(b('\u2190 previous', -1, st.page === 0));
+    nav.appendChild(Object.assign(document.createElement('span'), {className: 'pos', textContent: (from + 1) + '\u2013' + to + ' of ' + items.length}));
+    nav.appendChild(b('next \u2192', 1, st.page >= pages - 1));
+    const sel = document.createElement('select');
+    for (const n of PAGE_SIZES) { const op = document.createElement('option'); op.value = n; op.textContent = n ? n + ' per page' : 'all'; op.selected = n === st.size; sel.appendChild(op); }
+    sel.addEventListener('change', () => { st.size = +sel.value; st.page = 0; pager(el, items, render, o); });
+    nav.appendChild(sel);
+    el.appendChild(nav);
+  }
+
   // ------------------------------------------------------------ helpers for visuals
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const pill = (c, n, title) => `<span class="pill ${esc(c)}"${title ? ` title="${esc(title)}"` : ''}>${esc(c)}${n == null ? '' : ' ' + n}</span>`;
@@ -182,5 +211,5 @@ window.Bench = (function () {
   document.addEventListener('DOMContentLoaded', () => { load().catch(e => { const m = document.getElementById('bench-filters'); if (m) m.textContent = 'data failed to load: ' + e; }); });
   // Label for any filter value (cell names for benchmarks, the id otherwise).
   const label_ = (fid, v) => { const f = defs().find(x => x.id === fid); return f ? label(f, v) : v; };
-  return { ready, set, reset, state: () => state, query, esc, pill, cell, num, graded, href, label: label_, ORDER, UNGRADED };
+  return { ready, set, reset, state: () => state, query, esc, pill, cell, num, graded, href, label: label_, pager, ORDER, UNGRADED };
 })();
