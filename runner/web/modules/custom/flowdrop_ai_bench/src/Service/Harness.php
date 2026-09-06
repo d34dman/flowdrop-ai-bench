@@ -779,6 +779,11 @@ class Harness {
    * Schema version is trace_version; scoring/trace.py renders it.
    */
   private function writeTrace(array $run, object $rootPipeline, string $tracesDir): void {
+    // A trace is a capture, written once: re-collection must not change bytes
+    // that may already be committed (the dataset is append-only in CI).
+    if (is_file("$tracesDir/{$run['run_id']}.json.gz")) {
+      return;
+    }
     $errors = [];
     $trace = [
       'trace_version' => 1,
