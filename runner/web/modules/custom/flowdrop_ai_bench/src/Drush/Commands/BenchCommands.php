@@ -153,6 +153,7 @@ final class BenchCommands extends DrushCommands {
       $varDir . '/cache',
       $varDir . '/runs.jsonl',
       $this->progressPrinter(),
+      $options['tag'],
     );
     $this->output()->writeln(sprintf('ledger   %d run(s) appended to %s/runs.jsonl', count($records), $varDir));
   }
@@ -242,6 +243,8 @@ final class BenchCommands extends DrushCommands {
       $varDir . '/cache',
       $varDir . '/runs.jsonl',
       $this->progressPrinter(),
+      // NULL when the tag was defaulted: the id already names cell and model.
+      $options['tag'] ?: NULL,
     );
     $runIds = array_column($records, 'run_id');
 

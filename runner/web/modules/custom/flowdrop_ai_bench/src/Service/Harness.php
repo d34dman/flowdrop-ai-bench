@@ -28,7 +28,7 @@ class Harness {
   /**
    * Bumped whenever the ledger record shape changes.
    */
-  public const HARNESS_VERSION = '3.0.0';
+  public const HARNESS_VERSION = '3.1.0';
 
   /**
    * Cell letter to workflow id, per the retired run_cell.sh table.
@@ -366,6 +366,22 @@ class Harness {
    * @return array<int, array<string, mixed>>
    *   One ledger record per run, in launch order.
    */
+  /**
+   * Returns the tag segment of a run id: "__<tag>" or "" when there is none.
+   *
+   * Lower-cased, anything but [a-z0-9] collapsed to "-", at most 24 characters.
+   * Callers pass NULL for a defaulted tag so the id is not padded with the cell
+   * and model it already names.
+   */
+  public static function runIdTag(?string $tag): string {
+    if ($tag === NULL || $tag === '') {
+      return '';
+    }
+    $clean = trim(preg_replace('/[^a-z0-9]+/', '-', strtolower($tag)) ?? '', '-');
+    $clean = rtrim(substr($clean, 0, 24), '-');
+    return $clean === '' ? '' : '__' . $clean;
+  }
+
   public function launch(
     array $workflowIds,
     array $pageKeys,
@@ -377,8 +393,10 @@ class Harness {
     string $cacheDir,
     string $ledgerPath,
     ?callable $progress = NULL,
+    ?string $idTag = NULL,
   ): array {
     $manifest = $this->manifest($corpusVersion, $base, $cacheDir);
+    $idTagPart = self::runIdTag($idTag);
     $urls = array_map(static fn (array $page): string => $page['url'], $manifest['pages']);
     [$promptMeta, , $promptSha] = $this->promptFile($manifest['prompt'] ?? 'prompt/redact.v1.md', $base, $cacheDir);
     $flowdropVersion = $this->flowdropVersion(dirname(DRUPAL_ROOT) . '/composer.lock');
@@ -421,7 +439,11 @@ class Harness {
                 continue;
               }
 
-              $runId = sprintf('%s__%s__r%d__%d', $workflowId, $urlKey, $rep, time());
+              // The id must never collide across contributors, who add runs to the
+              // same dataset by pull request: a random suffix guarantees that, the
+              // tag (when the user gave one) is only there for a human reading the
+              // directory. See runIdTag().
+              $runId = sprintf('%s__%s__r%d__%d%s__%s', $workflowId, $urlKey, $rep, time(), $idTagPart, bin2hex(random_bytes(3)));
               if ($progress) {
                 $progress('start', ['run_id' => $runId, 'workflow' => $workflowId, 'url_key' => $urlKey, 'rep' => $rep]);
               }

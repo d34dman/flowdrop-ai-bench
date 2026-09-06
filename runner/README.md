@@ -26,6 +26,10 @@ recorded), sets the model, launches the cells against the corpus pages, and coll
 one `runs/<run_id>.json` and one `outputs/<run_id>.md` per run. The ledger is
 `runner/var/runs.jsonl` (not committed). Then `git add runs outputs` and open a PR.
 
+A run id is `<workflow>__<page>__r<rep>__<unix seconds>[__<tag>]__<6 hex>`. The random
+suffix is what makes ids unique across contributors; the tag segment is only there for a
+human reading the directory, and is left out when `--tag` was not given.
+
 Each step is also its own command: `bench:set-prompt`, `bench:set-model`, `bench:launch`,
 `bench:collect`. Details and options: `runner/web/modules/custom/flowdrop_ai_bench/README.md`
 or `ddev drush help bench:run`.

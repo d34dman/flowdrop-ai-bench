@@ -20,8 +20,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
       - uses: actions/setup-python@v5
         with: { python-version: '3.12' }
+      - name: Dataset is append-only
+        if: github.event_name == 'pull_request'
+        # A contribution adds runs; it never edits or removes one. That is what keeps
+        # every PR conflict-free and every published figure reproducible.
+        run: |
+          changed=$(git diff --name-status --diff-filter=MDRT "origin/${{ github.base_ref }}...HEAD" -- runs outputs)
+          if [ -n "$changed" ]; then
+            echo "$changed" | while read -r st f rest; do echo "::error file=$f::existing run files are never modified, renamed or deleted ($st)"; done
+            exit 1
+          fi
       - name: Corpus is reproducible from src
         run: |
           python3 corpus/build.py > /dev/null

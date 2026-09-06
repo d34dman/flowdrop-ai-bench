@@ -4,6 +4,10 @@ The dataset is built from one JSON file per run in `runs/` and one Markdown outp
 in `outputs/`. Everything else, the CSVs in `data/` and the published page, is regenerated
 by CI from those two folders on every merge. You never edit a CSV.
 
+The dataset is append-only. A pull request adds run files and never modifies, renames or
+deletes an existing one; CI rejects it otherwise. Run ids carry a random suffix, so two
+contributors can never produce the same filename and PRs never conflict.
+
 ## The path
 
 1. **Set up the runner** (once). Clone this repo, put `ANTHROPIC_KEY=sk-ant-...` in
