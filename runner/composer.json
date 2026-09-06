@@ -84,9 +84,7 @@
         },
         "patches": {
             "drupal/flowdrop": {
-                "Make MemoryManager::MAX_VALUE_BYTES configurable (#3592436)": "patches/flowdrop-memory-configurable-max-value-bytes.patch",
-                "ToolInvoke: a tool with one text answer replies in plain text, not a JSON literal (fddo 1834221c, unreleased)": "patches/flowdrop-tool-invoke-single-text-answer.patch",
-                "StateGraph: a loop-free workflow no longer warns that its loop extent could not be restored (fddo 5f451c49, unreleased)": "patches/flowdrop-stategraph-loop-extent-empty-snapshot-silent.patch"
+                "Make MemoryManager::MAX_VALUE_BYTES configurable (#3592436)": "patches/flowdrop-memory-configurable-max-value-bytes.patch"
             },
             "drupal/flowdrop_ai_provider": {
                 "Chat/SimpleChat: drop the 4000 maxTokens cap; the benchmark needs whole-document outputs (the cap is arbitrary for current models)": "patches/flowdrop_ai_provider-chat-no-maxtokens-cap.patch"
