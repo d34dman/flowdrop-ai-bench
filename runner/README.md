@@ -103,6 +103,16 @@ cell letter to the map in `Harness.php`, and describe the architecture in your P
 
 ## Warnings a run prints, and what they mean
 
+`bench:run` and `bench:launch` do not print the first three rows below. FlowDrop logs them at
+warning level because in a workflow under construction they can point at a mistake; in the
+benchmark cells they are the documented, intended shape of the workflow, and at several per
+loop iteration they buried the one line worth reading. The harness drops exactly these
+message templates while a command runs (the list, with the reason for each entry, is
+`src/Logger/KnownWarnings.php` in the module) and ends with one `quiet` line giving the
+counts, so nothing disappears silently. Everything else still prints: an unlisted warning,
+the sync/async orchestrators' `on job` variant of the fan-in message, or any of these texts
+at error level. `--all-warnings` turns the filter off.
+
 | Warning | Cells | Meaning |
 |---|---|---|
 | `Removed disallowed Markdown link with URL: https://github.com/...` / `Removed disallowed AI output URL` | every model cell | The AI module's hostname filter strips links to hosts outside `ai.settings:allowed_hosts` from model output. It only ever hit the footer link to this repo, which is page chrome and not scored; `github.com` is now allowed so the model cells keep the link like B1 does. |

@@ -8,6 +8,11 @@ services:
     tags:
       - { name: event_subscriber }
 
+  # Warnings a bench run is known to print and that mean nothing is wrong;
+  # FlowdropAiBenchServiceProvider wires it into Drush's console log bridge.
+  flowdrop_ai_bench.known_warnings:
+    class: Drupal\flowdrop_ai_bench\Logger\KnownWarnings
+
   flowdrop_ai_bench.harness:
     class: Drupal\flowdrop_ai_bench\Service\Harness
     arguments:
@@ -26,3 +31,4 @@ services:
   # registers a same-name alias for them.
   Drupal\flowdrop_ai_bench\Service\Harness: '@flowdrop_ai_bench.harness'
   Drupal\flowdrop_ai_bench\BenchRunContext: '@flowdrop_ai_bench.run_context'
+  Drupal\flowdrop_ai_bench\Logger\KnownWarnings: '@flowdrop_ai_bench.known_warnings'

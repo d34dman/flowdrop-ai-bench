@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\flowdrop_ai_bench\Drush\Commands;
 
+use Drupal\flowdrop_ai_bench\Logger\KnownWarnings;
 use Drupal\flowdrop_ai_bench\Service\Harness;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
@@ -39,6 +40,7 @@ final class BenchCommands extends DrushCommands {
 
   public function __construct(
     private readonly Harness $harness,
+    private readonly KnownWarnings $knownWarnings,
   ) {
     parent::__construct();
   }
@@ -122,6 +124,7 @@ final class BenchCommands extends DrushCommands {
   #[CLI\Option(name: 'base', description: 'Bench site base URL. Env BENCH_BASE overrides the built-in default.')]
   #[CLI\Option(name: 'corpus', description: 'Corpus version. Env BENCH_CORPUS overrides the built-in default.')]
   #[CLI\Option(name: 'var', description: 'Runner var directory (holds the ledger and fetch cache). Defaults to runner/var.')]
+  #[CLI\Option(name: 'all-warnings', description: 'Also print the warnings a run is known to emit by design (see runner/README.md).')]
   #[CLI\Usage(name: 'drush bench:launch B5,B8 --tag=b5-b8-sonnet5', description: 'Launch the react-agent and react-with-tools cells against every page, once each.')]
   public function launch(string $cells, array $options = [
     'pages' => self::DEFAULT_PAGES,
@@ -131,10 +134,12 @@ final class BenchCommands extends DrushCommands {
     'base' => NULL,
     'corpus' => NULL,
     'var' => NULL,
+    'all-warnings' => FALSE,
   ]): void {
     if (empty($options['tag'])) {
       throw new \RuntimeException('bench:launch requires --tag: it is how runs are found later.');
     }
+    $this->quietKnownWarnings((bool) $options['all-warnings']);
 
     $workflowIds = $this->harness->resolveWorkflowIds($this->splitList($cells));
     $pageKeys = $this->splitList($options['pages']);
@@ -156,6 +161,7 @@ final class BenchCommands extends DrushCommands {
       $options['tag'],
     );
     $this->output()->writeln(sprintf('ledger   %d run(s) appended to %s/runs.jsonl', count($records), $varDir));
+    $this->reportKnownWarnings();
   }
 
   /**
@@ -198,6 +204,7 @@ final class BenchCommands extends DrushCommands {
   #[CLI\Option(name: 'base', description: 'Bench site base URL. Env BENCH_BASE overrides the built-in default.')]
   #[CLI\Option(name: 'corpus', description: 'Corpus version. Env BENCH_CORPUS overrides the built-in default.')]
   #[CLI\Option(name: 'var', description: 'Runner var directory. Defaults to runner/var.')]
+  #[CLI\Option(name: 'all-warnings', description: 'Also print the warnings a run is known to emit by design (see runner/README.md).')]
   #[CLI\Option(name: 'out', description: 'Repo root. Defaults to two levels above the Drupal root.')]
   #[CLI\Option(name: 'force', description: 'Run even if the provider does not list the model (a model newer than the catalogue, or a control-only run).')]
   #[CLI\Usage(name: 'drush bench:run B5,B8 claude-sonnet-5', description: 'Set the prompt and model, launch B5 and B8 against every page, then collect metrics.')]
@@ -214,10 +221,12 @@ final class BenchCommands extends DrushCommands {
     'var' => NULL,
     'out' => NULL,
     'force' => FALSE,
+    'all-warnings' => FALSE,
   ]): void {
     if (!$options['force']) {
       $this->assertKnownModel($model, $options['provider']);
     }
+    $this->quietKnownWarnings((bool) $options['all-warnings']);
     $tag = $options['tag'] ?: sprintf('%s-%s', $cells, $model ?: 'unknown');
     $base = $this->resolveBase($options['base']);
     $corpus = $this->resolveCorpus($options['corpus']);
@@ -257,6 +266,7 @@ final class BenchCommands extends DrushCommands {
 
     $collected = $this->harness->collect($varDir . '/runs.jsonl', $outDir . '/runs', $outDir . '/outputs', $outDir . '/traces');
     $this->output()->writeln(sprintf('collect  %d run(s) in the ledger re-derived into runs/, outputs/ and traces/', count($collected['collected'])));
+    $this->reportKnownWarnings();
 
     $this->output()->writeln(sprintf(
       "\n%-52s %-10s %7s %6s %8s %8s %10s %7s",
@@ -582,6 +592,34 @@ final class BenchCommands extends DrushCommands {
    */
   private function resolveOutDir(?string $out): string {
     return $out ?: dirname(DRUPAL_ROOT, 2);
+  }
+
+
+  /**
+   * Starts dropping the warnings a run is known to print, unless asked not to.
+   *
+   * The list, and why each entry is benign, is KnownWarnings and the
+   * "Warnings a run prints" table in runner/README.md. Everything not on the
+   * list still prints, so a real warning stands out instead of scrolling past
+   * between a dozen expected ones.
+   */
+  private function quietKnownWarnings(bool $showAll): void {
+    if ($showAll) {
+      $this->knownWarnings->deactivate();
+      return;
+    }
+    $this->knownWarnings->activate();
+  }
+
+  /**
+   * Prints one line saying what was dropped, so nothing disappears silently.
+   */
+  private function reportKnownWarnings(): void {
+    $summary = $this->knownWarnings->summary();
+    if ($summary !== NULL) {
+      $this->output()->writeln($summary);
+    }
+    $this->knownWarnings->deactivate();
   }
 
 }
