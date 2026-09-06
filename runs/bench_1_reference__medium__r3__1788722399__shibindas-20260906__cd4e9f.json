@@ -1,0 +1,60 @@
+{
+    "run_id": "bench_1_reference__medium__r3__1788722399__shibindas-20260906__cd4e9f",
+    "workflow": "bench_1_reference",
+    "url_key": "medium",
+    "url": "https://d34dman.github.io/flowdrop-ai-bench/corpus/v1/medium.html",
+    "corpus_version": "v1",
+    "page_sha256": "ea4e33df2ab05dfe9a143ce5c0d205ef250da9fe174f60008d985e8413a0a3e4",
+    "prompt_sha256": "272f2f41c1552fd77952bf1867eb98ffeea8cd5bc9d249166416511f69b66c8d",
+    "glyph": "████",
+    "flowdrop_version": "dev-2.x@771e7c77e1f9",
+    "harness_version": "3.3.0",
+    "model": "claude-haiku-4-5-20251001",
+    "rep": 3,
+    "pipeline_id": "202",
+    "context_uuid": "31859cac-2397-4650-90a1-1eec59c82696",
+    "wall_seconds": 0.7816,
+    "launch_status": "completed",
+    "launch_error": null,
+    "tag": "shibindas-20260906",
+    "ts": "2026-09-06T19:20:00+00:00",
+    "pipeline_status": "completed",
+    "failed_nodes": [],
+    "job_count": 3,
+    "payload_bytes": 55593,
+    "total_seconds": 0.356,
+    "ai_seconds": 0,
+    "deterministic_seconds": 0.356,
+    "llm_calls": 0,
+    "models": [],
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_tokens": 0,
+    "cost_usd": 0,
+    "retries": 0,
+    "output_chars": 8476,
+    "nodes": [
+        {
+            "node_type": "http_request",
+            "status": "completed",
+            "seconds": 0.12,
+            "is_ai": false,
+            "error": null
+        },
+        {
+            "node_type": "html_to_markdown",
+            "status": "completed",
+            "seconds": 0.235,
+            "is_ai": false,
+            "error": null
+        },
+        {
+            "node_type": "chat_output",
+            "status": "completed",
+            "seconds": 0.001,
+            "is_ai": false,
+            "error": null
+        }
+    ],
+    "annotations": []
+}

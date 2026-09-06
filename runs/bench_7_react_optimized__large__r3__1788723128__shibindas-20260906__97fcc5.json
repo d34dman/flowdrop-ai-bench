@@ -1,0 +1,58 @@
+{
+    "run_id": "bench_7_react_optimized__large__r3__1788723128__shibindas-20260906__97fcc5",
+    "workflow": "bench_7_react_optimized",
+    "url_key": "large",
+    "url": "https://d34dman.github.io/flowdrop-ai-bench/corpus/v1/large.html",
+    "corpus_version": "v1",
+    "page_sha256": "25e8b9c95da60123e66a3dc0c78eb5e743e3a2ac1fcd356d573efe15dbd38e4c",
+    "prompt_sha256": "272f2f41c1552fd77952bf1867eb98ffeea8cd5bc9d249166416511f69b66c8d",
+    "glyph": "████",
+    "flowdrop_version": "dev-2.x@771e7c77e1f9",
+    "harness_version": "3.3.0",
+    "model": "claude-haiku-4-5-20251001",
+    "rep": 3,
+    "pipeline_id": "224",
+    "context_uuid": "5a2b436d-6c69-45c6-b96a-9a1e3f9adf26",
+    "wall_seconds": 63.0234,
+    "launch_status": "failed",
+    "launch_error": null,
+    "tag": "shibindas-20260906",
+    "ts": "2026-09-06T19:33:11+00:00",
+    "pipeline_status": "failed",
+    "failed_nodes": [
+        "chat_output:idle",
+        "flowdrop_workflow_react_agent_with_optimized_tools:failed"
+    ],
+    "job_count": 2,
+    "payload_bytes": 8,
+    "total_seconds": 0,
+    "ai_seconds": 0,
+    "deterministic_seconds": 0,
+    "llm_calls": 1,
+    "models": [
+        "claude-haiku-4-5-20251001"
+    ],
+    "input_tokens": 1013,
+    "output_tokens": 102,
+    "cached_tokens": 0,
+    "cost_usd": 0.001523,
+    "retries": 0,
+    "output_chars": null,
+    "nodes": [
+        {
+            "node_type": "chat_output",
+            "status": "idle",
+            "seconds": null,
+            "is_ai": false,
+            "error": null
+        },
+        {
+            "node_type": "flowdrop_workflow_react_agent_with_optimized_tools",
+            "status": "failed",
+            "seconds": null,
+            "is_ai": true,
+            "error": "Sub-workflow react_agent_with_optimized_tools failed: StateGraph orchestration failed: Node execution failed for flowdrop_node_processor_reason.1: cURL error 28: Operation timed out after 60011 milliseconds with 0 bytes received (see https://curl.se/libcurl/c/libcurl-errors.html) for https://api.anthropic.com/v1/chat/completions"
+        }
+    ],
+    "annotations": []
+}

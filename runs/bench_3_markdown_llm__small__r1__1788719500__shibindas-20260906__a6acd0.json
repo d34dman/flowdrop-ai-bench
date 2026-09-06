@@ -1,0 +1,69 @@
+{
+    "run_id": "bench_3_markdown_llm__small__r1__1788719500__shibindas-20260906__a6acd0",
+    "workflow": "bench_3_markdown_llm",
+    "url_key": "small",
+    "url": "https://d34dman.github.io/flowdrop-ai-bench/corpus/v1/small.html",
+    "corpus_version": "v1",
+    "page_sha256": "ab589846f40109ef1391130896cb29d8fa8dff89cfc63e0dd42e087904b5b855",
+    "prompt_sha256": "272f2f41c1552fd77952bf1867eb98ffeea8cd5bc9d249166416511f69b66c8d",
+    "glyph": "████",
+    "flowdrop_version": "dev-2.x@771e7c77e1f9",
+    "harness_version": "3.3.0",
+    "model": "claude-haiku-4-5-20251001",
+    "rep": 1,
+    "pipeline_id": "90",
+    "context_uuid": "7dbddd20-a8d2-40d8-b93c-6b2ed4ad196f",
+    "wall_seconds": 6.7321,
+    "launch_status": "completed",
+    "launch_error": null,
+    "tag": "shibindas-20260906",
+    "ts": "2026-09-06T18:31:46+00:00",
+    "pipeline_status": "completed",
+    "failed_nodes": [],
+    "job_count": 4,
+    "payload_bytes": 35551,
+    "total_seconds": 6.414,
+    "ai_seconds": 6.368,
+    "deterministic_seconds": 0.046,
+    "llm_calls": 1,
+    "models": [
+        "claude-haiku-4-5-20251001"
+    ],
+    "input_tokens": 1171,
+    "output_tokens": 821,
+    "cached_tokens": 0,
+    "cost_usd": 0.005276,
+    "retries": 0,
+    "output_chars": 3421,
+    "nodes": [
+        {
+            "node_type": "http_request",
+            "status": "completed",
+            "seconds": 0.034,
+            "is_ai": false,
+            "error": null
+        },
+        {
+            "node_type": "html_to_markdown",
+            "status": "completed",
+            "seconds": 0.011,
+            "is_ai": false,
+            "error": null
+        },
+        {
+            "node_type": "flowdrop_ai_provider_chat",
+            "status": "completed",
+            "seconds": 6.368,
+            "is_ai": true,
+            "error": null
+        },
+        {
+            "node_type": "chat_output",
+            "status": "completed",
+            "seconds": 0.001,
+            "is_ai": false,
+            "error": null
+        }
+    ],
+    "annotations": []
+}
