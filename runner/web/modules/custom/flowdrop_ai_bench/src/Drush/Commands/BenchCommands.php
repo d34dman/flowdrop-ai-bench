@@ -139,7 +139,7 @@ final class BenchCommands extends DrushCommands {
     if (empty($options['tag'])) {
       throw new \RuntimeException('bench:launch requires --tag: it is how runs are found later.');
     }
-    $this->quietKnownWarnings((bool) $options['all-warnings']);
+    $this->quietKnownWarnings((bool) ($options['all-warnings'] ?? FALSE));
 
     $workflowIds = $this->harness->resolveWorkflowIds($this->splitList($cells));
     $pageKeys = $this->splitList($options['pages']);
@@ -226,7 +226,7 @@ final class BenchCommands extends DrushCommands {
     if (!$options['force']) {
       $this->assertKnownModel($model, $options['provider']);
     }
-    $this->quietKnownWarnings((bool) $options['all-warnings']);
+    $this->quietKnownWarnings((bool) ($options['all-warnings'] ?? FALSE));
     $tag = $options['tag'] ?: sprintf('%s-%s', $cells, $model ?: 'unknown');
     $base = $this->resolveBase($options['base']);
     $corpus = $this->resolveCorpus($options['corpus']);
@@ -424,8 +424,9 @@ final class BenchCommands extends DrushCommands {
   #[CLI\Option(name: 'provider', description: 'AI provider plugin id. Defaults to anthropic.')]
   #[CLI\Option(name: 'var', description: 'Runner var directory. Defaults to runner/var.')]
   #[CLI\Option(name: 'out', description: 'Repo root. Defaults to two levels above the Drupal root.')]
+  #[CLI\Option(name: 'all-warnings', description: 'Also print the warnings a run is known to emit by design (see runner/README.md).')]
   #[CLI\Usage(name: 'drush bench:wizard', description: 'Answer a few questions, see the equivalent bench:run command, confirm, run.')]
-  public function wizard(array $options = ['provider' => self::DEFAULT_PROVIDER, 'var' => NULL, 'out' => NULL]): void {
+  public function wizard(array $options = ['provider' => self::DEFAULT_PROVIDER, 'var' => NULL, 'out' => NULL, 'all-warnings' => FALSE]): void {
     $io = $this->io();
     $provider = $options['provider'];
 
@@ -500,6 +501,7 @@ final class BenchCommands extends DrushCommands {
       'out' => $options['out'],
       // The wizard offered the provider's own list; a typed id is the user's call.
       'force' => TRUE,
+      'all-warnings' => (bool) ($options['all-warnings'] ?? FALSE),
     ]);
   }
 
