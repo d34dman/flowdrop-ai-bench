@@ -1,0 +1,7 @@
+{
+ "run_id": "bench_2_raw_html_llm__small__r1__1788747356__shibindas-20260907-n3__3cea12",
+ "kind": "provider",
+ "reason": "cURL error 56 (send failure, broken pipe) from api.anthropic.com after 326 s on the single ai_provider_chat call; transport failure, no model answer. Rerun (298451 completed).",
+ "by": "shibindas",
+ "ts": "2026-09-07T02:47:28+00:00"
+}

@@ -1,0 +1,7 @@
+{
+ "run_id": "bench_5_react_agent__medium__r1__1788749015__shibindas-20260907-n3__af0fac",
+ "kind": "harness",
+ "reason": "Same as 141fd3: launch returned after 25 s with pipeline 672 'running'; child pipeline 673 completed, parent workflow job never finalized. Rerun.",
+ "by": "shibindas",
+ "ts": "2026-09-07T02:47:28+00:00"
+}

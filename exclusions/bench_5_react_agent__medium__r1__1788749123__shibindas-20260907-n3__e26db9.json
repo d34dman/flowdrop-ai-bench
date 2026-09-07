@@ -1,0 +1,7 @@
+{
+ "run_id": "bench_5_react_agent__medium__r1__1788749123__shibindas-20260907-n3__e26db9",
+ "kind": "harness",
+ "reason": "Third occurrence for this cell today (141fd3, af0fac, e26db9): parent pipeline stuck 'running' after the child ReAct pipeline completed. fddo parent-child handoff bug; no further reruns until it is fixed.",
+ "by": "shibindas",
+ "ts": "2026-09-07T02:47:28+00:00"
+}

@@ -1,0 +1,7 @@
+{
+ "run_id": "bench_5_react_agent__medium__r1__1788739561__shibindas-20260907-n3__141fd3",
+ "kind": "harness",
+ "reason": "Synchronous launch returned after 24 s with pipeline 434 still 'running'; the child ReAct pipeline completed but the parent flowdrop_workflow_react_agent_with_tools job never finalized (no output). fddo parent-child handoff bug. Rerun.",
+ "by": "shibindas",
+ "ts": "2026-09-07T02:47:28+00:00"
+}
