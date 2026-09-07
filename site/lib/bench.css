@@ -153,29 +153,48 @@ svg.bars{display:block;overflow:visible}
 .pager button:disabled{opacity:.4;cursor:default}
 .pager select{font:inherit;font-size:.8rem;color:var(--ink2);background:var(--bg);border:1px solid var(--line);border-radius:3px;padding:.15rem .4rem;margin-left:auto}
 
-/* architecture diagrams (site/lib/archviz.py). One vocabulary for the ten cells; colour is spent
-   only on the model call, everything else is ink so the figures read on both themes. */
+/* architecture diagrams (site/lib/archviz.py). One vocabulary for the ten cells; each role has a
+   colour that holds in both themes: model call on the accent gradient, tools teal, agent frames violet,
+   the parent workflow amber, deterministic nodes slate, data flow ink. */
+:root{--ar-step:#4b5768;--ar-step-bg:#f4f3ee;--ar-llm0:#1f3a5f;--ar-llm1:#2f6199;--ar-llm-fg:#ffffff;--ar-llm-sub:#c8d8ee;
+  --ar-tool:#0f766e;--ar-tool-bg:#e8f5f2;--ar-agent:#6a4fb3;--ar-agent-bg:rgba(106,79,179,.045);--ar-parent:#a8710a;--ar-parent-bg:rgba(168,113,10,.045)}
+@media(prefers-color-scheme:dark){:root{--ar-step:#b4bcc9;--ar-step-bg:#22262d;--ar-llm0:#7ea3d6;--ar-llm1:#a9c4e8;--ar-llm-fg:#0f1419;--ar-llm-sub:#2b4260;
+  --ar-tool:#4fd1c5;--ar-tool-bg:rgba(79,209,197,.1);--ar-agent:#b9a4e6;--ar-agent-bg:rgba(185,164,230,.06);--ar-parent:#dcae4a;--ar-parent-bg:rgba(220,174,74,.06)}}
 svg.arch{display:block;width:100%;max-width:100%;height:auto;color:var(--ink2);font-family:var(--sans);overflow:visible}
-.arch text{fill:var(--fg);font-size:12.5px;font-weight:500}
-.arch text.subl{fill:var(--mut);font-size:10.5px;font-weight:400}
-.arch text.lbl{fill:var(--mut);font-size:11px;font-weight:400}
-.arch .st rect{fill:var(--soft);stroke:var(--ink2);stroke-width:1.2}
-.arch .llm rect{fill:var(--acc);fill-opacity:.1;stroke:var(--acc);stroke-width:1.6}
-.arch .llm text{fill:var(--fg)}
-.arch .llm text.subl{fill:var(--acc)}
-.arch .tool rect{fill:var(--bg);stroke:var(--mut);stroke-width:1.1}
-.arch .tool text{fill:var(--ink2);font-weight:500}
-.arch .tool.hi rect{stroke:var(--acc);stroke-width:1.8;fill:var(--acc);fill-opacity:.08}
-.arch .tool.hi text{fill:var(--acc)}
-.arch .frame rect{fill:none;stroke:var(--mut);stroke-width:1.1;stroke-dasharray:6 4}
-.arch .frame text.ttl{fill:var(--ink2);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:600}
-.arch .frame.parent rect{stroke:var(--line);stroke-width:1.4;stroke-dasharray:2 3}
-.arch .frame.parent text.ttl{fill:var(--mut)}
-.arch .flow{fill:none;stroke:currentColor;stroke-width:1.4}
-.arch .tl{fill:none;stroke:var(--mut);stroke-width:1.2;stroke-dasharray:2 3}
-.arch .io circle{stroke:currentColor;stroke-width:1.6;fill:var(--bg)}
-.arch .io.out circle{fill:currentColor}
-.arch .port{fill:var(--bg);stroke:var(--mut);stroke-width:1.4}
+.arch text{fill:var(--fg);font-size:13px;font-weight:600;letter-spacing:-.005em}
+.arch text.subl{fill:var(--mut);font-size:11px;font-weight:400;letter-spacing:0}
+.arch text.lbl{fill:var(--mut);font-size:11px;font-weight:500;letter-spacing:0}
+.arch .lblbg{fill:var(--bg)}
+.arch .g0{stop-color:var(--ar-llm0)}.arch .g1{stop-color:var(--ar-llm1)}
+.arch .mk-flow{fill:var(--ink2)}.arch .mk-tool{fill:var(--ar-tool)}.arch .mk-loop{fill:var(--ar-agent)}
+.arch .st rect{fill:var(--ar-step-bg);stroke:var(--ar-step);stroke-width:1.2;filter:url(#arch-shadow)}
+.arch .st .ic{fill:none;stroke:var(--ar-step);stroke-width:1.4;stroke-linejoin:round}
+.arch .llm rect{fill:url(#arch-llm-grad);stroke:none;filter:url(#arch-shadow)}
+.arch .llm text{fill:var(--ar-llm-fg)}
+.arch .llm text.subl{fill:var(--ar-llm-sub)}
+.arch .llm .ic{fill:var(--ar-llm-fg)}
+.arch .tool rect{fill:var(--ar-tool-bg);stroke:var(--ar-tool);stroke-width:1.2}
+.arch .tool text{fill:var(--fg);font-weight:600}
+.arch .tool .ic{fill:var(--ar-tool)}.arch .tool .ic-hole{fill:var(--ar-tool-bg)}
+.arch .tool.hi rect{fill:var(--ar-tool);stroke:var(--ar-tool)}
+.arch .tool.hi text{fill:var(--bg)}
+.arch .tool.hi .ic{fill:var(--bg)}.arch .tool.hi .ic-hole{fill:var(--ar-tool)}
+.arch .tool .badge{fill:var(--acc);stroke:var(--bg);stroke-width:1.6}
+.arch .tool .badge-t{fill:var(--bg);font-size:11px;font-weight:700}
+.arch .frame rect{fill:var(--ar-agent-bg);stroke:var(--ar-agent);stroke-width:1.2;stroke-dasharray:7 5}
+.arch .frame rect.tab{fill:var(--bg);stroke:var(--ar-agent);stroke-dasharray:none;stroke-width:1.2}
+.arch .frame text.ttl{fill:var(--ar-agent);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700}
+.arch .frame text.lbl{fill:var(--ar-agent);opacity:.85}
+.arch .frame.parent rect{fill:var(--ar-parent-bg);stroke:var(--ar-parent);stroke-width:1.3;stroke-dasharray:2 4}
+.arch .frame.parent rect.tab{fill:var(--bg);stroke:var(--ar-parent);stroke-dasharray:none}
+.arch .frame.parent text.ttl,.arch .frame.parent text.lbl{fill:var(--ar-parent)}
+.arch .flow{fill:none;stroke:var(--ink2);stroke-width:1.6;stroke-linecap:round}
+.arch .tl{fill:none;stroke:var(--ar-tool);stroke-width:1.4;stroke-dasharray:4 4;stroke-linecap:round}
+.arch .loopg path{fill:none;stroke:var(--ar-agent);stroke-width:2;stroke-linecap:round}
+.arch .io circle{stroke:var(--fg);stroke-width:1.8;fill:var(--bg)}
+.arch .io.in .dot{fill:var(--fg);stroke:none}
+.arch .io.out circle{fill:var(--fg)}
+.arch .port{fill:var(--bg);stroke:var(--ar-tool);stroke-width:1.8}
 .ladder{display:grid;grid-template-columns:repeat(auto-fit,minmax(14rem,1fr));gap:0;border-top:1px solid var(--line);border-left:1px solid var(--line);margin:1rem 0}
 .ladder .fam{padding:1rem 1.1rem 1.1rem;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
 .ladder .fam h3{font-size:1rem}
