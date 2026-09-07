@@ -370,7 +370,11 @@ def flat(r, excl=None):
     d['excluded_kind'] = (excl or {}).get('kind', ''); d['excluded_reason'] = (excl or {}).get('reason', '')
     d['task'] = task(r.get('prompt_sha256'))
     d['models'] = ','.join(r.get('models') or []); d['failed_nodes'] = ';'.join(r.get('failed_nodes') or [])
-    d['model_family'] = ','.join(sorted({family(m) for m in (r.get('models') or [])}))
+    # The cell is variant x configured model x page, so a run that never reached the model (a loud
+    # failure with zero calls) still belongs to the model it was launched with; the ledger's
+    # `model` field is that configuration, `models` is what actually answered.
+    called = r.get('models') or ([r['model']] if r.get('model') and r.get('model') != 'none' and r.get('workflow') not in CONTROLS else [])
+    d['model_family'] = ','.join(sorted({family(m) for m in called}))
     d['page'] = r.get('url_key', ''); d['variant'] = r.get('workflow', '')
     return d
 
