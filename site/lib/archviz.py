@@ -8,7 +8,7 @@ ten. Every role has a shape, an icon and a colour, and keeps them on every page:
     model call          filled pill on the accent gradient, sparkle icon; the only strongly filled shape
     agent               dashed violet frame on a violet wash: the model decides what runs inside it
     tool                teal chip, hexagon icon; a tool the model may call
-    tool call           dashed teal line between the model and the chip; no arrowhead, the exchange runs both ways
+    tool call           dashed teal curve from the model's tool port (a small ring) to the chip; no arrowhead
     data flow           solid ink arrow, the payload named in a pill on the line
     the agent loop      one open circle with an arrowhead, read as "repeat until done"
     parent workflow     dotted amber frame on an amber wash: the graph that owns the tools
@@ -118,9 +118,10 @@ def arrow(x1, y1, x2, y2, label=None, above=True):
 
 
 def toolcall(x1, y1, x2, y2):
-    """A tool call from a model: dashed teal curve, no arrowhead (the exchange runs both ways)."""
-    c = (y2 - y1) * .55
-    return f'<path class="tl" d="M{x1:.1f} {y1:.1f} C{x1:.1f} {y1 + c:.1f} {x2:.1f} {y2 - c:.1f} {x2:.1f} {y2:.1f}"/>'
+    """A tool call from the model's tool port: dashed teal curve, no arrowhead (the exchange runs both ways).
+    The first control point leans toward the target so curves from one port part at once."""
+    c = (y2 - y1) * .6
+    return (f'<path class="tl" d="M{x1:.1f} {y1:.1f} C{x1 + (x2 - x1) * .38:.1f} {y1 + c:.1f} {x2:.1f} {y2 - c:.1f} {x2:.1f} {y2:.1f}"/>')
 
 
 def ortho(pts, r=8):
@@ -242,15 +243,15 @@ def _agent(x, y, w, h, title, sub, llm_label, llm_sub, tools, hi=None, loop_labe
         widths = [chip_w(t) for t in tools]
         gap = (w - 2 * 34 - sum(widths)) / max(len(tools) - 1, 1) if len(tools) > 1 else 0
         cx0 = x + (w - sum(widths) - gap * (len(tools) - 1)) / 2
-        n = len(tools)
-        for i, (t, cw) in enumerate(zip(tools, widths)):
+        px, py = lx + lw / 2, ly + NODE_H                 # one tool port on the model call
+        for t, cw in zip(tools, widths):
             cx = cx0 + cw / 2
-            sx = lx + lw / 2 + (i - (n - 1) / 2) * 26      # fanned start: no two curves share a stretch
-            out.append(toolcall(sx, ly + NODE_H, cx, cy - CHIP_H / 2))
+            out.append(toolcall(px, py + 5, cx, cy - CHIP_H / 2))
             out.append(chip(cx, cy - CHIP_H / 2, t, hi=(t == hi)))
             lbl = (tool_labels or {}).get(t)
             if lbl: out.append(_t(cx, cy + CHIP_H / 2 + 16, lbl, 'lbl'))
             cx0 += cw + gap
+        out.append(port(px, py))
     return ''.join(out)
 
 
