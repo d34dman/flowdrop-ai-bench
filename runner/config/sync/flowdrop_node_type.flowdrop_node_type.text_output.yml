@@ -23,7 +23,7 @@ parameters:
     configurable: true
     connectable: false
     required: false
-    default: 10000
+    default: 1000000
   text:
     configurable: true
     connectable: true

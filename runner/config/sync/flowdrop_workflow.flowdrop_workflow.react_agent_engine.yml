@@ -415,7 +415,7 @@ nodes:
     data:
       label: 'Text Output'
       config:
-        maxLength: 10000
+        maxLength: 1000000
         format: plain
         nodeType: default
         maxRetries: 0

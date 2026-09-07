@@ -533,7 +533,7 @@ nodes:
     data:
       label: 'Text Output'
       config:
-        maxLength: 1000
+        maxLength: 1000000
         format: plain
         nodeType: default
         maxRetries: 0
