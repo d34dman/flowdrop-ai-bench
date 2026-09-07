@@ -1,0 +1,63 @@
+{
+    "run_id": "bench_2_raw_html_llm__small__r1__1788747356__shibindas-20260907-n3__3cea12",
+    "workflow": "bench_2_raw_html_llm",
+    "url_key": "small",
+    "url": "https://d34dman.github.io/flowdrop-ai-bench/corpus/v1/small.html",
+    "corpus_version": "v1",
+    "page_sha256": "ab589846f40109ef1391130896cb29d8fa8dff89cfc63e0dd42e087904b5b855",
+    "prompt_sha256": "272f2f41c1552fd77952bf1867eb98ffeea8cd5bc9d249166416511f69b66c8d",
+    "glyph": "████",
+    "flowdrop_version": "dev-2.x@771e7c77e1f9",
+    "harness_version": "3.3.0",
+    "model": "claude-opus-5",
+    "rep": 1,
+    "pipeline_id": "627",
+    "context_uuid": "ecdb5022-979f-4289-ac2d-0c4da17becd9",
+    "wall_seconds": 326.3894,
+    "launch_status": "failed",
+    "launch_error": null,
+    "tag": "shibindas-20260907-n3",
+    "ts": "2026-09-07T02:21:23+00:00",
+    "pipeline_status": "failed",
+    "failed_nodes": [
+        "flowdrop_ai_provider_chat:failed",
+        "chat_output:idle"
+    ],
+    "job_count": 3,
+    "payload_bytes": 16784,
+    "total_seconds": 0.193,
+    "ai_seconds": 0,
+    "deterministic_seconds": 0.193,
+    "llm_calls": 0,
+    "models": [],
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_tokens": 0,
+    "cost_usd": 0,
+    "retries": 0,
+    "output_chars": null,
+    "nodes": [
+        {
+            "node_type": "http_request",
+            "status": "completed",
+            "seconds": 0.193,
+            "is_ai": false,
+            "error": null
+        },
+        {
+            "node_type": "flowdrop_ai_provider_chat",
+            "status": "failed",
+            "seconds": null,
+            "is_ai": true,
+            "error": "Node execution failed for flowdrop_ai_provider_chat.1: cURL error 56: Send failure: Broken pipe (see https://curl.se/libcurl/c/libcurl-errors.html) for https://api.anthropic.com/v1/chat/completions"
+        },
+        {
+            "node_type": "chat_output",
+            "status": "idle",
+            "seconds": null,
+            "is_ai": false,
+            "error": null
+        }
+    ],
+    "annotations": []
+}
