@@ -8,7 +8,7 @@ ten. Every role has a shape, an icon and a colour, and keeps them on every page:
     model call          filled pill on the accent gradient, sparkle icon; the only strongly filled shape
     agent               dashed violet frame on a violet wash: the model decides what runs inside it
     tool                teal chip, hexagon icon; a tool the model may call
-    tool call           dashed teal curve from the model to the chip, arrowhead at the chip
+    tool call           dashed teal line between the model and the chip; no arrowhead, the exchange runs both ways
     data flow           solid ink arrow, the payload named in a pill on the line
     the agent loop      one open circle with an arrowhead, read as "repeat until done"
     parent workflow     dotted amber frame on an amber wash: the graph that owns the tools
@@ -118,10 +118,9 @@ def arrow(x1, y1, x2, y2, label=None, above=True):
 
 
 def toolcall(x1, y1, x2, y2):
-    """A tool call from a model: dashed teal curve, arrowhead at the tool."""
+    """A tool call from a model: dashed teal curve, no arrowhead (the exchange runs both ways)."""
     c = (y2 - y1) * .55
-    return (f'<path class="tl" d="M{x1:.1f} {y1:.1f} C{x1:.1f} {y1 + c:.1f} {x2:.1f} {y2 - c:.1f} {x2:.1f} {y2:.1f}" '
-            f'marker-end="url(#arch-arrow-tool)"/>')
+    return f'<path class="tl" d="M{x1:.1f} {y1:.1f} C{x1:.1f} {y1 + c:.1f} {x2:.1f} {y2 - c:.1f} {x2:.1f} {y2:.1f}"/>'
 
 
 def ortho(pts, r=8):
@@ -165,8 +164,6 @@ def svg(h, body, aria):
             f'<defs>'
             f'<marker id="arch-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">'
             f'<path d="M0 1 L10 5 L0 9 z" class="mk-flow"/></marker>'
-            f'<marker id="arch-arrow-tool" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">'
-            f'<path d="M0 1 L10 5 L0 9 z" class="mk-tool"/></marker>'
             f'<marker id="arch-arrow-loop" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">'
             f'<path d="M0 1 L10 5 L0 9 z" class="mk-loop"/></marker>'
             f'<linearGradient id="arch-llm-grad" x1="0" y1="0" x2="1" y2="1">'
@@ -247,7 +244,7 @@ def _agent(x, y, w, h, title, sub, llm_label, llm_sub, tools, hi=None, loop_labe
         cx0 = x + (w - sum(widths) - gap * (len(tools) - 1)) / 2
         for t, cw in zip(tools, widths):
             cx = cx0 + cw / 2
-            out.append(toolcall(lx + lw / 2, ly + NODE_H, cx, cy - CHIP_H / 2 - 1))
+            out.append(toolcall(lx + lw / 2, ly + NODE_H, cx, cy - CHIP_H / 2))
             out.append(chip(cx, cy - CHIP_H / 2, t, hi=(t == hi)))
             lbl = (tool_labels or {}).get(t)
             if lbl: out.append(_t(cx, cy + CHIP_H / 2 + 16, lbl, 'lbl'))
@@ -319,8 +316,7 @@ def _parent(engine_title, engine_sub, engine_body_fn, aria, ew=380):
     for cw in widths:
         centres.append(cx0 + cw / 2); cx0 += cw + gap
     for cx in centres:
-        body += f'<path class="tl bus" d="{ortho([(cx, ty), (cx, bus_y), (port_x, bus_y), (port_x, port_y + 8)])}"/>'
-    body += f'<path class="tl bus" d="M{port_x} {bus_y} L{port_x} {port_y + 8}" marker-end="url(#arch-arrow-tool)"/>'
+        body += f'<path class="tl bus" d="{ortho([(cx, ty), (cx, bus_y), (port_x, bus_y), (port_x, port_y + 5)])}"/>'
     for t, cx in zip(tools, centres):
         body += chip(cx, ty, t)
         body += _t(cx, ty + CHIP_H + 16, labels[t], 'lbl')
@@ -376,8 +372,8 @@ def legend():
     fx = lx + lw + 26
     body += frame(fx, y1 - 30, W - fx - 8, 62, 'Agent', 'agent', 'model chooses what runs')
     body += chip(74, y2 - CHIP_H / 2, 'Tool') + _t(74, y2 + 34, 'a tool the model may call', 'lbl')
-    body += f'<path class="tl" d="M150 {y2} L232 {y2}" marker-end="url(#arch-arrow-tool)"/>' + _t(191, y2 + 24, 'tool call', 'lbl')
+    body += f'<path class="tl" d="M150 {y2} L232 {y2}"/>' + _t(191, y2 + 24, 'tool call', 'lbl')
     body += f'<path class="flow" d="M266 {y2} L366 {y2}" marker-end="url(#arch-arrow)"/>' + pill(316, y2 - 13, 'HTML') + _t(316, y2 + 24, 'data, named by its payload', 'lbl')
     body += loop(412, y2, 'the agent loop, until done')
     body += frame(586, y2 - 27, 166, 50, 'parent workflow', 'parent') + _t(669, y2 + 40, 'the graph that owns the tools', 'lbl')
-    return svg(180, body, 'Legend: hollow ring input, filled dot output, square card deterministic node, filled pill model call, dashed violet frame agent, teal chip tool, dashed teal curve tool call, solid arrow data flow labelled with its payload, open circle with arrowhead the agent loop, dotted amber frame parent workflow.')
+    return svg(180, body, 'Legend: hollow ring input, filled dot output, square card deterministic node, filled pill model call, dashed violet frame agent, teal chip tool, dashed teal line tool call, solid arrow data flow labelled with its payload, open circle with arrowhead the agent loop, dotted amber frame parent workflow.')
