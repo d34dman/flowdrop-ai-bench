@@ -1,0 +1,85 @@
+{
+  "_comment": "The one place a benchmark cell (B0..B9) is described. `label` is what every page prints for the cell (filter menus, tables, headings): input the model sees → who does the work → tools it holds. `name` is the human title on the Architectures page, `shape` one sentence of mechanism, `tests` the question the cell answers, `peers` the cells it is designed to be read against, `family` groups the ladder. The diagrams themselves are drawn in site/lib/archviz.py, one function per id.",
+  "cells": [
+    {
+      "id": "bench_0_floor", "code": "B0", "family": "control",
+      "label": "B0 URL → output, nothing runs",
+      "name": "Orchestration floor",
+      "shape": "The URL goes straight to the output node. No fetch, no conversion, no model.",
+      "tests": "How much of every run is FlowDrop overhead: validation, pipeline creation, one dispatch, persistence. Every other cell's time is read against this floor.",
+      "peers": []
+    },
+    {
+      "id": "bench_1_reference", "code": "B1", "family": "control",
+      "label": "B1 URL → fetch → to-Markdown, no model",
+      "name": "Deterministic reference",
+      "shape": "Fetch the page, convert the HTML to Markdown with a node. Nothing is redacted.",
+      "tests": "The structure the model cells are scored against, byte-identical every time and free. Because it redacts nothing, it shows what the redaction step adds.",
+      "peers": []
+    },
+    {
+      "id": "bench_2_raw_html_llm", "code": "B2", "family": "one-call",
+      "label": "B2 HTML → LLM",
+      "name": "Raw HTML to one model call",
+      "shape": "Fetch the page, then hand the raw HTML to one model call that converts and redacts at once.",
+      "tests": "The least build effort of any cell. Its input tokens scale with the size of the page markup, not the size of the article.",
+      "peers": ["bench_3_markdown_llm"]
+    },
+    {
+      "id": "bench_3_markdown_llm", "code": "B3", "family": "one-call",
+      "label": "B3 Markdown → LLM",
+      "name": "Markdown to one model call",
+      "shape": "Fetch, convert to Markdown with a node, then spend one model call on the redaction only.",
+      "tests": "The hybrid: the graph does the mechanical half, the tokens buy judgement instead of transcription. Compare with B2 for the price of conversion in the model, with B4 for who decides the order.",
+      "peers": ["bench_2_raw_html_llm", "bench_4_ai_agent_tool"]
+    },
+    {
+      "id": "bench_4_ai_agent_tool", "code": "B4", "family": "agent",
+      "label": "B4 HTML → AI Agent + to-Markdown tool",
+      "name": "Drupal AI Agent given the HTML",
+      "shape": "Fetch in the graph, then pass the HTML to a Drupal AI Agent that owns an HTML-to-Markdown tool and decides for itself whether to call it.",
+      "tests": "Same two jobs as B3, but the sequencing is the model's call rather than the graph's. The gap between B3 and B4 is the price of letting the model decide.",
+      "peers": ["bench_3_markdown_llm"]
+    },
+    {
+      "id": "bench_5_react_agent", "code": "B5", "family": "agent",
+      "label": "B5 URL → ReAct agent + fetch, to-Markdown tools",
+      "name": "FlowDrop ReAct agent given the URL",
+      "shape": "Only a URL goes in. A FlowDrop ReAct agent holds a fetch tool and a to-Markdown tool and reasons its way to the answer; the page text returns to the model after the fetch and leaves it again for the converter.",
+      "tests": "The fully autonomous end of the ladder with nothing about the order of work in the graph. B6 is the same shape on Drupal AI Agents; B7 and B8 change one thing each.",
+      "peers": ["bench_6_agent_autonomous", "bench_7_react_optimized", "bench_8_react_with_tools_in_parent"]
+    },
+    {
+      "id": "bench_6_agent_autonomous", "code": "B6", "family": "agent",
+      "label": "B6 URL → AI Agent + fetch, to-Markdown tools",
+      "name": "Drupal AI Agent given the URL",
+      "shape": "Only a URL goes in. A Drupal AI Agent retrieves the page with its own http_fetch tool, converts with html_to_markdown and redacts. No FlowDrop HTTP node is involved.",
+      "tests": "The Drupal AI Agents peer of B5: same autonomy, a different agent runtime, so the pair separates the architecture from the implementation.",
+      "peers": ["bench_5_react_agent"]
+    },
+    {
+      "id": "bench_7_react_optimized", "code": "B7", "family": "agent",
+      "label": "B7 URL → ReAct agent + fetch-and-convert tool",
+      "name": "ReAct agent with a fused fetch-and-convert tool",
+      "shape": "B5 plus one more tool, URL-to-Markdown, which fetches and converts in a single call. The agent can take the URL to Markdown without the page text ever passing through the model.",
+      "tests": "What a better-shaped tool is worth: same agent, same prompt, one tool that removes a round trip of the whole page through the context window.",
+      "peers": ["bench_5_react_agent", "bench_8_react_with_tools_in_parent"]
+    },
+    {
+      "id": "bench_8_react_with_tools_in_parent", "code": "B8", "family": "agent",
+      "label": "B8 URL → ReAct engine, tools in parent graph",
+      "name": "ReAct engine, tools owned by the parent workflow",
+      "shape": "The same three tools as B7, but they are nodes of the parent workflow, handed to a bare ReAct engine as an execution argument. The engine's own toolbox is empty.",
+      "tests": "Who owns the tools: the agent or the graph around it. Same reasoning loop as B7; the change is where tools live, run and are observed.",
+      "peers": ["bench_7_react_optimized", "bench_9_reflexion_with_tools_in_parent"]
+    },
+    {
+      "id": "bench_9_reflexion_with_tools_in_parent", "code": "B9", "family": "agent",
+      "label": "B9 URL → Reflexion + critic, tools in parent graph",
+      "name": "Reflexion engine with a critic, tools in the parent",
+      "shape": "B8 with the Reflexion engine: a second model call reviews the draft Markdown against the fidelity and redaction rules and sends it back for revision, up to three times, before it is emitted.",
+      "tests": "What a critic buys. Same tools and prompt as B8; the only addition is the review loop, so its cost and its effect on silent failures are read directly against B8.",
+      "peers": ["bench_8_react_with_tools_in_parent"]
+    }
+  ]
+}

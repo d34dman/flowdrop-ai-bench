@@ -56,6 +56,8 @@ def stage_index():
         f'<div class="f">{"filters: " + ", ".join(v["filters"]) if v["filters"] else "no filters"}</div></a>'
         for v in ctx.registry)
     body = ('<div class="stats" id="stats"></div>'
+            '<p class="note">New here? <a data-nav href="./architectures/">Architectures</a> draws what each of the ten cells does and which pairs differ by one decision; '
+            'every cell label on this site reads <b>input the model sees → who does the work → tools</b>.</p>'
             '<p class="note"><b>correct</b>: every axis at threshold. <b>degraded</b>: all axes ≥ 0.75. <b>silent</b>: completed and the document is wrong. '
             '<b>format</b>: HTML came back. <b>loud</b>: nothing usable delivered. <b>stale</b>: the page changed after the run; ungraded. '
             'Axes and thresholds: <code>scoring/score.py</code>.</p>'

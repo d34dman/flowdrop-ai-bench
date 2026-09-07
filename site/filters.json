@@ -2,7 +2,8 @@
   "_comment": "The one place a filter is defined. Python (site/build.py) reads it to build data/facets.json; the browser (site/lib/bench.js) reads it to draw the filter bar and to apply the URL state. Add a filter: add an entry here; every visual that lists its id in visual.json gets it. `column` is a data/scores.csv column; `labels` names a label map published in facets.json (see site/build.py LABELS).",
   "filters": [
     {"id": "task",      "label": "Task",      "column": "task",          "multi": true},
-    {"id": "benchmark", "label": "Benchmark", "column": "variant",       "multi": true, "labels": "cell"},
+    {"id": "benchmark", "label": "Benchmark", "column": "variant",       "multi": true, "labels": "cell",
+     "order": ["bench_0_floor", "bench_1_reference", "bench_2_raw_html_llm", "bench_3_markdown_llm", "bench_4_ai_agent_tool", "bench_5_react_agent", "bench_6_agent_autonomous", "bench_7_react_optimized", "bench_8_react_with_tools_in_parent", "bench_9_reflexion_with_tools_in_parent"]},
     {"id": "model",     "label": "Model",     "column": "model_family",  "multi": true, "split": ","},
     {"id": "page",      "label": "Page",      "column": "page",          "multi": true, "order": ["small", "medium", "large"]},
     {"id": "outcome",   "label": "Outcome",   "column": "outcome",       "multi": true, "order": ["correct", "degraded", "silent", "format", "loud", "control", "stale", "excluded"]},

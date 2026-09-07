@@ -14,18 +14,23 @@ words used in other senses.
 
 ## The architectures
 
+The label of a cell reads **input the model sees → who does the work → tools it holds**.
+
 | | Cell | Shape |
 |---|---|---|
-| B0 | floor | Fetch only, no conversion, no model. Control. |
-| B1 | reference | Fixed pipeline, HTML to Markdown, no model. Control. |
-| B2 | raw HTML → LLM | Raw HTML to one LLM call. |
-| B3 | Markdown → LLM | Markdown to one LLM call. |
-| B4 | AI Agent + tool | Drupal AI Agent given the HTML, owns the Markdown tool. Peer of B3. |
-| B5 | ReAct agent | FlowDrop ReAct agent given a URL, owns fetch and Markdown tools. |
-| B6 | autonomous agent | Drupal AI Agent given a URL, owns fetch and Markdown tools. Peer of B5. |
-| B7 | ReAct, URL tool | ReAct agent with optimized tools. |
-| B8 | ReAct, tools in parent | Tools run in the parent pipeline. |
-| B9 | Reflexion, tools in parent | Reflexion agent with a critic, tools in the parent. |
+| B0 | URL → output, nothing runs | Control. The floor: pure FlowDrop overhead. |
+| B1 | URL → fetch → to-Markdown, no model | Control. Fixed pipeline, HTML to Markdown, nothing redacted. |
+| B2 | HTML → LLM | Raw HTML to one model call that converts and redacts. |
+| B3 | Markdown → LLM | Convert in a node, one model call redacts. |
+| B4 | HTML → AI Agent + to-Markdown tool | Drupal AI Agent given the HTML, owns the converter. Peer of B3. |
+| B5 | URL → ReAct agent + fetch, to-Markdown tools | FlowDrop ReAct agent given only a URL, owns both tools. |
+| B6 | URL → AI Agent + fetch, to-Markdown tools | Drupal AI Agent given only a URL, owns both tools. Peer of B5. |
+| B7 | URL → ReAct agent + fetch-and-convert tool | B5 plus a fused URL-to-Markdown tool. |
+| B8 | URL → ReAct engine, tools in parent graph | Same tools as B7, owned by the parent workflow, passed in as an argument. |
+| B9 | URL → Reflexion + critic, tools in parent graph | B8 with a critic that can send the draft back, up to three times. |
+
+Each cell is drawn and explained, with the pairs that differ by one decision, on the
+[Architectures page](https://d34dman.github.io/flowdrop-ai-bench/architectures/).
 
 Every cell runs the same prompt on the same three pages, on any model your provider key
 offers. A run is graded on recall, precision, subject, homonym, fidelity, fabrication and

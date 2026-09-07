@@ -203,6 +203,7 @@ window.Bench = (function () {
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const pill = (c, n, title) => `<span class="pill ${esc(c)}"${title ? ` title="${esc(title)}"` : ''}>${esc(c)}${n == null ? '' : ' ' + n}</span>`;
   const cell = id => (data && data.facets.labels.cell[id]) || id;
+  const cellCode = id => cell(id).split(' ')[0];   // 'B4' from 'B4 HTML → …'; the anchor on the architectures page
   const num = (v, d = 2) => (v === '' || v == null || Number.isNaN(+v)) ? '—' : (+v).toFixed(d);
   const UNGRADED = new Set(['control', 'stale', 'excluded']);
   const graded = rows => rows.filter(r => !UNGRADED.has(r.outcome));
@@ -211,5 +212,5 @@ window.Bench = (function () {
   document.addEventListener('DOMContentLoaded', () => { load().catch(e => { const m = document.getElementById('bench-filters'); if (m) m.textContent = 'data failed to load: ' + e; }); });
   // Label for any filter value (cell names for benchmarks, the id otherwise).
   const label_ = (fid, v) => { const f = defs().find(x => x.id === fid); return f ? label(f, v) : v; };
-  return { ready, set, reset, state: () => state, query, esc, pill, cell, num, graded, href, label: label_, pager, ORDER, UNGRADED };
+  return { ready, set, reset, state: () => state, query, esc, pill, cell, cellCode, num, graded, href, label: label_, pager, ORDER, UNGRADED };
 })();

@@ -25,11 +25,13 @@ DATA = os.path.join(ROOT, 'data')
 REPO = 'https://github.com/d34dman/flowdrop-ai-bench'
 SITE_NAME = 'FlowDrop AI Bench'
 ORDER = ['correct', 'degraded', 'silent', 'format', 'loud', 'control', 'stale']
-CELL = {'bench_0_floor': 'B0 floor', 'bench_1_reference': 'B1 reference', 'bench_2_raw_html_llm': 'B2 raw HTML → LLM',
-        'bench_3_markdown_llm': 'B3 Markdown → LLM', 'bench_4_ai_agent_tool': 'B4 AI Agent + tool',
-        'bench_5_react_agent': 'B5 ReAct agent', 'bench_6_agent_autonomous': 'B6 autonomous agent',
-        'bench_7_react_optimized': 'B7 ReAct, URL tool', 'bench_8_react_with_tools_in_parent': 'B8 ReAct, tools in parent',
-        'bench_9_reflexion_with_tools_in_parent': 'B9 Reflexion, tools in parent'}
+def load_cells():
+    """site/cells.json: the ten benchmark cells in ladder order, each with label, name, shape, tests, peers, family."""
+    return json.load(open(os.path.join(os.path.dirname(HERE), 'cells.json'), encoding='utf-8'))['cells']
+
+
+CELLS = load_cells()
+CELL = {c['id']: c['label'] for c in CELLS}          # cell id -> the label every page prints
 LABELS = {'cell': CELL}
 # Factorial wordmark (site/lib/factorial.svg, fill=currentColor so it wears the footer ink). Factorial GmbH
 # sponsors the development of this benchmark and pays for the model API usage behind every run.
@@ -146,7 +148,7 @@ class Ctx:
         self.traced = traced_ids()
         self.visual = next((v for v in self.registry if v['id'] == visual_id), None)
         self.out = os.path.join(OUT, visual_id) if visual_id else OUT
-        self.CELL, self.ORDER = CELL, ORDER
+        self.CELL, self.CELLS, self.ORDER = CELL, CELLS, ORDER
         self._manifests = {}
 
     def manifest(self, version='v1'):

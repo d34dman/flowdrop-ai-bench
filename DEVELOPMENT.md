@@ -71,6 +71,7 @@ line; the CI matrix picks it up. The step by step is in
 
 | Visual | Shows |
 |---|---|
+| `architectures/` | The ten cells drawn with one SVG vocabulary (`site/lib/archviz.py`), the ladder, and the pairs that differ by one decision. Static; text from `site/cells.json`. |
 | `scorecard/` | Outcome per cell (variant × model × page) and every run with axes, output and trace. |
 | `matrix/` | Variants × models, correct over graded per cell. |
 | `cost/` | Cost against time per cell, and bar figures for $ per run, seconds per run, $ per correct run. |
