@@ -74,11 +74,12 @@ one, OpenAI as the example:
    `bin/setup.sh` installs from that config, so on a fresh clone the provider exists and
    only the `OPENAI_KEY=` line in `.ddev/.env` is personal. A missing key leaves the provider
    unusable and everything else working.
-5. **Run.** Model ids are bare; the chat and reason nodes find the provider from the id
-   through the ai module, so `--provider` matters only for the two cells built on the AI
-   Agents module (B4, B6), whose config stores `provider__model`:
+5. **Run.** Pass `--provider=openai` on every run. `bench:run` checks the model id against
+   the named provider's catalogue before it starts (default `anthropic`), and the two cells
+   built on the AI Agents module (B4, B6) store `provider__model` in their config. The chat
+   and reason nodes themselves take the bare id and find the provider through the ai module.
    ```sh
-   ddev drush bench:run B3 gpt-5 --pages=small --tag=yourname-openai-first
+   ddev drush bench:run B3 gpt-5 --provider=openai --pages=small --tag=yourname-openai-first
    ddev drush bench:run B4,B6 gpt-5 --provider=openai --pages=small --tag=yourname-openai-agents
    ```
    Prefer a dated model id when the provider lists one (see CONTRIBUTING). If two installed
