@@ -242,9 +242,11 @@ def _agent(x, y, w, h, title, sub, llm_label, llm_sub, tools, hi=None, loop_labe
         widths = [chip_w(t) for t in tools]
         gap = (w - 2 * 34 - sum(widths)) / max(len(tools) - 1, 1) if len(tools) > 1 else 0
         cx0 = x + (w - sum(widths) - gap * (len(tools) - 1)) / 2
-        for t, cw in zip(tools, widths):
+        n = len(tools)
+        for i, (t, cw) in enumerate(zip(tools, widths)):
             cx = cx0 + cw / 2
-            out.append(toolcall(lx + lw / 2, ly + NODE_H, cx, cy - CHIP_H / 2))
+            sx = lx + lw / 2 + (i - (n - 1) / 2) * 26      # fanned start: no two curves share a stretch
+            out.append(toolcall(sx, ly + NODE_H, cx, cy - CHIP_H / 2))
             out.append(chip(cx, cy - CHIP_H / 2, t, hi=(t == hi)))
             lbl = (tool_labels or {}).get(t)
             if lbl: out.append(_t(cx, cy + CHIP_H / 2 + 16, lbl, 'lbl'))
@@ -315,8 +317,10 @@ def _parent(engine_title, engine_sub, engine_body_fn, aria, ew=380):
     centres = []
     for cw in widths:
         centres.append(cx0 + cw / 2); cx0 += cw + gap
-    for cx in centres:
-        body += f'<path class="tl bus" d="{ortho([(cx, ty), (cx, bus_y), (port_x, bus_y), (port_x, port_y + 5)])}"/>'
+    body += f'<path class="tl bus" d="M{port_x} {port_y + 5} L{port_x} {bus_y}"/>'
+    body += f'<path class="tl bus" d="{ortho([(centres[0], ty), (centres[0], bus_y), (centres[-1], bus_y), (centres[-1], ty)])}"/>'
+    for cx in centres[1:-1]:
+        body += f'<path class="tl bus" d="M{cx} {bus_y} L{cx} {ty}"/>'
     for t, cx in zip(tools, centres):
         body += chip(cx, ty, t)
         body += _t(cx, ty + CHIP_H + 16, labels[t], 'lbl')
