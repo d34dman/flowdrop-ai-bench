@@ -39,6 +39,14 @@ every pull request; see [What CI checks](#what-ci-checks). Run the same gate loc
    ```
    CI scores your runs on the PR. Merge publishes them.
 
+## Credit
+
+Contributors are listed in the README under the [all-contributors](https://allcontributors.org)
+convention, from `.all-contributorsrc`. When your first runs merge, the maintainer adds you
+with the `data` type (and `code` if you changed the runner or the site), or you ask for it in
+the PR. Adding yourself in the same PR as your runs would trip the data-only gate, so leave
+that to the maintainer.
+
 ## What we are glad to receive
 
 - New models, including from other providers: any Drupal AI `ai_provider_*` module works,

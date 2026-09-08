@@ -71,6 +71,29 @@ model already knows rather than on the instruction.
 - [DEVELOPMENT.md](DEVELOPMENT.md), repository layout, the site framework, building locally.
 - [runner/README.md](runner/README.md), the Drupal site that runs the cells.
 
+## Contributors
+
+Every run on the site was contributed by someone who set up the runner, paid for the model
+calls and opened a pull request. Credit follows the [all-contributors](https://allcontributors.org)
+convention: 🔣 data is contributed runs, 💻 code is the runner or the site.
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/d34dman"><img src="https://avatars.githubusercontent.com/u/1006481?v=4?s=80" width="80px;" alt="Shibin Das"/><br /><sub><b>Shibin Das</b></sub></a><br /><a href="https://github.com/d34dman/flowdrop-ai-bench/commits?author=d34dman" title="Code">💻</a> <a href="#data-d34dman" title="Data">🔣</a> <a href="https://github.com/d34dman/flowdrop-ai-bench/commits?author=d34dman" title="Documentation">📖</a> <a href="#infra-d34dman" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#ideas-d34dman" title="Ideas, Planning, & Feedback">🤔</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/gkastanis"><img src="https://avatars.githubusercontent.com/u/15897286?v=4?s=80" width="80px;" alt="George Kastanis"/><br /><sub><b>George Kastanis</b></sub></a><br /><a href="#data-gkastanis" title="Data">🔣</a> <a href="https://github.com/d34dman/flowdrop-ai-bench/commits?author=gkastanis" title="Code">💻</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
 ## Sponsor
 
 Development of this benchmark and the model API usage behind every run are generously

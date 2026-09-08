@@ -1,0 +1,29 @@
+{
+  "projectName": "flowdrop-ai-bench",
+  "projectOwner": "d34dman",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": ["README.md"],
+  "imageSize": 80,
+  "commit": false,
+  "commitConvention": "none",
+  "contributorsPerLine": 7,
+  "linkToUsage": false,
+  "skipCi": true,
+  "contributors": [
+    {
+      "login": "d34dman",
+      "name": "Shibin Das",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1006481?v=4",
+      "profile": "https://github.com/d34dman",
+      "contributions": ["code", "data", "doc", "infra", "ideas"]
+    },
+    {
+      "login": "gkastanis",
+      "name": "George Kastanis",
+      "avatar_url": "https://avatars.githubusercontent.com/u/15897286?v=4",
+      "profile": "https://github.com/gkastanis",
+      "contributions": ["data", "code"]
+    }
+  ]
+}
