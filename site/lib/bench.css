@@ -58,7 +58,17 @@ details.flt .menu label span{flex:1}
 details.flt .menu label small{color:var(--mut);font-variant-numeric:tabular-nums}
 details.flt .menu input{accent-color:var(--fg)}
 details.flt .menu button,.flt-reset{border:0;background:none;color:var(--acc);cursor:pointer;font:inherit;font-size:.8rem;letter-spacing:.03em;padding:.2rem .4rem}
+details.flt .menu label.out{color:var(--mut)}
+details.flt .menu label.out small{color:var(--deg)}
+details.flt .menu hr{border:0;border-top:1px solid var(--hair);margin:.3rem 0}
 .flt-sum{color:var(--mut);font-size:.82rem;margin-left:.4rem;font-variant-numeric:tabular-nums}
+/* study row: the named scope every filter works inside; a full-width line above the menus */
+.study-row{flex-basis:100%;display:flex;flex-wrap:wrap;gap:.3rem 1rem;align-items:baseline;padding-bottom:.6rem;border-bottom:1px solid var(--hair)}
+.study-row .k{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);font-weight:500}
+.study-row select{font:inherit;font-family:var(--serif);font-weight:600;font-size:1.02rem;letter-spacing:-.01em;color:var(--fg);background:var(--bg);border:0;border-bottom:2px solid var(--fg);border-radius:0;padding:0 0 .05rem;cursor:pointer;max-width:100%}
+.study-row .blurb{color:var(--ink2);font-size:.86rem;line-height:1.45;flex:1 1 20rem;max-width:60rem}
+.flt-note{flex-basis:100%;font-size:.84rem;line-height:1.45;color:var(--ink2);border-left:3px solid var(--deg);padding:.3rem .7rem;background:var(--soft)}
+.flt-note b{color:var(--fg);font-weight:600}
 label.flt.focus select{font:inherit;font-size:.86rem;color:var(--fg);background:var(--bg);border:0;max-width:22rem;cursor:pointer}
 
 /* tables: report figures */

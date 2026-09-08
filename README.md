@@ -67,7 +67,7 @@ model already knows rather than on the instruction.
 
 ## More
 
-- [CONTRIBUTING.md](CONTRIBUTING.md), contributing runs, exclusions, adding a visual.
+- [CONTRIBUTING.md](CONTRIBUTING.md), contributing runs, studies, exclusions, adding a visual.
 - [DEVELOPMENT.md](DEVELOPMENT.md), repository layout, the site framework, building locally.
 - [runner/README.md](runner/README.md), the Drupal site that runs the cells.
 

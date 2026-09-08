@@ -99,11 +99,38 @@ def model_slots(rows, palette):
     return out
 
 
+def load_studies(filters=None):
+    """studies/<id>.json, oldest first: named, frozen scopes the site applies before the on-page
+    filters (?study=<id>). Each is {id, title, blurb, scope: {filter id: [values]}, by, ts}.
+    Contributed by pull request like runs; scoring/check.py validates them, this only reads."""
+    d = os.path.join(ROOT, 'studies')
+    if not os.path.isdir(d): return []
+    ids = {f['id'] for f in (filters or load_filters())}
+    out = []
+    for fn in sorted(os.listdir(d)):
+        if not fn.endswith('.json') or fn.startswith('.'): continue
+        s = load_json(os.path.join(d, fn))
+        scope = {k: list(v) for k, v in (s.get('scope') or {}).items() if k in ids and isinstance(v, list) and v}
+        if s.get('id') != fn[:-5] or not scope: continue          # the gate reports these; the site skips them
+        out.append({'id': s['id'], 'title': s.get('title', s['id']), 'blurb': s.get('blurb', ''), 'scope': scope, 'by': s.get('by', ''), 'ts': s.get('ts', '')})
+    out.sort(key=lambda s: (s['ts'], s['id']))
+    return out
+
+
+def default_study(studies):
+    """registry.json `default_study`, if it names a study on disk; else None (every run)."""
+    want = load_json(os.path.join(SITE_SRC, 'registry.json')).get('default_study')
+    return want if want and any(s['id'] == want for s in studies) else None
+
+
 def build_facets(rows, filters):
     """Distinct values with counts per filter, in the filter's declared order else by count.
-    Also carries the model colour map (site/palette.json) so every page paints a model the same."""
+    Also carries the model colour map (site/palette.json) so every page paints a model the same,
+    and the studies with the default one, so the browser can scope before it filters."""
     palette = load_palette()
-    out = {'filters': filters, 'labels': LABELS, 'values': {}, 'palette': {'slots': palette['slots'], 'models': model_slots(rows, palette)}}
+    studies = load_studies(filters)
+    out = {'filters': filters, 'labels': LABELS, 'values': {}, 'palette': {'slots': palette['slots'], 'models': model_slots(rows, palette)},
+           'studies': studies, 'default_study': default_study(studies)}
     for f in filters:
         c = Counter()
         for r in rows:
@@ -119,7 +146,7 @@ def build_facets(rows, filters):
 
 
 # Folders the data stage publishes at the site root; a visual cannot take one of these ids.
-RESERVED = {'corpus', 'prompt', 'outputs', 'runs', 'data', 'lib'}
+RESERVED = {'corpus', 'prompt', 'outputs', 'runs', 'studies', 'data', 'lib'}
 
 
 def sponsor_mark():
@@ -185,7 +212,7 @@ class Ctx:
                 f'<main><h1>{esc(heading or title)}</h1>' + (f'<p class="sub">{sub}</p>' if sub else '') +
                 f'<div id="bench-filters" data-filters="{",".join(flt)}"{foc}></div>{body}</main>'
                 f'<footer class="site"><p>Source, corpus and every run: <a href="{REPO}">{REPO.split("//")[1]}</a>. '
-                f'Rebuilt by CI on every merge. Filters live in the address bar; copy it to share the view.</p>'
+                f'Rebuilt by CI on every merge. The study and the filters live in the address bar; copy it to share the view.</p>'
                 f'<p class="sponsor"><a href="{SPONSOR_URL}" rel="noopener" aria-label="Factorial GmbH">{sponsor_mark()}</a>'
                 f'<span>Development of this benchmark and the API usage behind every run are generously sponsored by '
                 f'<a href="{SPONSOR_URL}" rel="noopener">Factorial GmbH</a>, the company behind FlowDrop.</span></p></footer>'

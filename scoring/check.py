@@ -10,15 +10,17 @@ Exit 0 when clean, 1 when anything fails. Warnings never fail the run. When run 
 GitHub Actions every finding is emitted as a workflow annotation and a summary is appended
 to the job summary.
 
-The dataset is four folders of plain data files and nothing else:
+The dataset is five folders of plain data files and nothing else:
 
     runs/<run_id>.json   outputs/<run_id>.md   traces/<run_id>.json.gz   exclusions/<run_id>.json
+    studies/<study_id>.json
 
 Full scan, every file in those folders, every time:
 
-  shape      the name is <run_id> plus exactly that extension, <run_id> matches RUN_ID, no
-             sub-folders, no dotfiles (.gitkeep excepted), regular file, mode 100644 in git
-             (no symlink, no executable bit), size under the per-folder cap
+  shape      the name is the id plus exactly that extension, the id matches RUN_ID (or
+             STUDY_ID under studies/), no sub-folders, no dotfiles (.gitkeep excepted),
+             regular file, mode 100644 in git (no symlink, no executable bit), size under
+             the per-folder cap
   text       UTF-8, no NUL byte, no secret-looking string (API keys, tokens, private keys,
              KEY=value assignments); outputs additionally carry no active content
              (<script, <iframe, <object, <embed, javascript:, on*= handlers; page chrome such as <form> is data)
@@ -33,11 +35,15 @@ Full scan, every file in those folders, every time:
   outputs    its run exists; a completed run that recorded output_chars > 0 has an output;
              a completed run without an output recorded no output (output_chars null/0)
   exclusions its run exists, kind is known, reason is a sentence, by and ts are present
+  studies    id is the filename and not the reserved `all`; title, blurb, by, ts present;
+             scope is a non-empty object whose keys are filter ids from site/filters.json
+             and whose values are lists of distinct strings, each one a value some run in
+             the dataset actually has (a study cannot name a model nobody has run)
 
 Pull-request rules (with --base):
 
-  append-only  no file in the four folders is modified, renamed, deleted or type-changed
-  scope        every changed path is inside the four folders; anything else (runner/,
+  append-only  no file in the five folders is modified, renamed, deleted or type-changed
+  scope        every changed path is inside the five folders; anything else (runner/,
                scoring/, site/, .github/, ...) fails unless --allow-code, which CI grants to
                the `code-change` label or a repository owner/member. Data PRs from anyone
                are then reviewed by machine; code PRs are reviewed by a person.
@@ -46,12 +52,31 @@ import argparse, io, json, os, re, subprocess, sys, zlib
 
 RUN_ID = re.compile(r'^bench_\d+_[a-z0-9_]+__(small|medium|large)__r\d+__\d{10}__[A-Za-z0-9._-]{1,80}__[0-9a-f]{6}$')
 HEX64 = re.compile(r'^[0-9a-f]{64}$')
-DATA_DIRS = {                      # folder: (extension, max bytes per file)
-    'runs': ('.json', 256 * 1024),
-    'outputs': ('.md', 4 * 1024 * 1024),
-    'traces': ('.json.gz', 3 * 1024 * 1024),
-    'exclusions': ('.json', 64 * 1024),
+# A study id is a URL-safe slug; `all` is reserved (it means "no study" in the site's ?study= parameter).
+STUDY_ID = re.compile(r'^[a-z][a-z0-9-]{2,60}$')
+DATA_DIRS = {                      # folder: (extension, max bytes per file, id pattern)
+    'runs': ('.json', 256 * 1024, RUN_ID),
+    'outputs': ('.md', 4 * 1024 * 1024, RUN_ID),
+    'traces': ('.json.gz', 3 * 1024 * 1024, RUN_ID),
+    'exclusions': ('.json', 64 * 1024, RUN_ID),
+    'studies': ('.json', 64 * 1024, STUDY_ID),
 }
+STUDY_RESERVED = {'all'}
+# Study scope keys are filter ids (site/filters.json); each maps to how a run's value is read
+# for the existence check. `task` is derived from the prompt hash and `outcome` from scoring,
+# so a study cannot scope on them at the gate; they are still filters on the page.
+STUDY_SCOPE_COLUMNS = {
+    'model': lambda r: [family(m) for m in (r.get('models') or ([r['model']] if r.get('model') and r.get('model') != 'none' else []))],
+    'benchmark': lambda r: [r.get('workflow', '')],
+    'page': lambda r: [r.get('url_key', '')],
+    'tag': lambda r: [r.get('tag', '')],
+    'corpus': lambda r: [r.get('corpus_version', '')],
+}
+
+
+def family(model_id):
+    """Same rule as scoring/score.py: the dated suffix names a snapshot, the study compares models."""
+    return re.sub(r'-\d{8}$', '', model_id)
 TRACE_INFLATED_MAX = 48 * 1024 * 1024
 KEEP = {'.gitkeep'}
 STATUSES = ('completed', 'failed', 'running')
@@ -251,6 +276,38 @@ def check_exclusion(rep, path, run_id, r, run_ids):
     if run_id not in run_ids: rep.error(path, f'no such run runs/{run_id}.json')
 
 
+def load_filter_ids(root):
+    """Filter ids from site/filters.json, or None when the site is not part of this checkout."""
+    p = os.path.join(root, 'site', 'filters.json')
+    if not os.path.isfile(p): return None
+    try: return [f['id'] for f in json.load(open(p, encoding='utf-8'))['filters']]
+    except Exception: return None
+
+
+def check_study(rep, path, sid, s, filter_ids, runs):
+    for k in ('id', 'title', 'blurb', 'by', 'ts'):
+        if not isinstance(s.get(k), str) or not s[k].strip(): rep.error(path, f'missing or empty {k!r}')
+    if not isinstance(s.get('scope'), dict) or not s['scope']: rep.error(path, "'scope' must be a non-empty object of filter id -> list of values (an empty scope would be every run, which needs no study)")
+    if rep.errors and rep.errors[-1][0] == path: return
+    if s['id'] != sid: rep.error(path, 'file is not named after its id')
+    if sid in STUDY_RESERVED: rep.error(path, f'{sid!r} is reserved')
+    if len(s['title']) > 80: rep.error(path, 'title is longer than 80 characters')
+    if len(s['blurb']) < 20: rep.error(path, 'blurb too short to say what the study compares and why')
+    if not re.match(r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}', s['ts']): rep.error(path, f"ts {s['ts']!r} is not ISO 8601")
+    for k in s:
+        if k not in ('id', 'title', 'blurb', 'scope', 'by', 'ts'): rep.warn(path, f'unknown key {k!r} is ignored')
+    for k, vals in s['scope'].items():
+        if filter_ids is not None and k not in filter_ids: rep.error(path, f'scope key {k!r} is not a filter id in site/filters.json ({", ".join(filter_ids)})'); continue
+        if not isinstance(vals, list) or not vals or not all(isinstance(v, str) and v.strip() for v in vals):
+            rep.error(path, f'scope.{k} must be a non-empty list of strings'); continue
+        if len(set(vals)) != len(vals): rep.error(path, f'scope.{k} lists a value twice')
+        read = STUDY_SCOPE_COLUMNS.get(k)
+        if read is None: rep.warn(path, f'scope.{k} cannot be verified against the runs at the gate; the site applies it as a filter'); continue
+        have = {v for r in runs.values() for v in read(r) if v}
+        for v in vals:
+            if v not in have: rep.error(path, f'scope.{k} names {v!r} but no run in the dataset has it (add the runs first, or in the same pull request)')
+
+
 # ------------------------------------------------------------------ full scan
 
 def load_corpora(rep, root):
@@ -274,7 +331,7 @@ def full_scan(rep, root):
     for rel, kind in walk(root):
         seen.add(rel)
         d, _, rest = rel.partition(os.sep)
-        ext, cap = DATA_DIRS[d]
+        ext, cap, id_rx = DATA_DIRS[d]
         if kind == 'dir': rep.error(rel, 'sub-folders are not allowed in the dataset'); continue
         if os.sep in rest: continue                       # reported through its folder
         if rest in KEEP: continue
@@ -288,7 +345,7 @@ def full_scan(rep, root):
             elif mode != '100644': rep.error(rel, f'git mode {mode}; data files must be 100644 (no executable bit, no symlink)')
         if not rest.endswith(ext): rep.error(rel, f'only {ext} files belong in {d}/'); continue
         run_id = rest[:-len(ext)]
-        if not RUN_ID.match(run_id): rep.error(rel, 'filename is not <run_id>' + ext + ' with a well-formed run id'); continue
+        if not id_rx.match(run_id): rep.error(rel, 'filename is not <id>' + ext + (' with a well-formed run id' if id_rx is RUN_ID else ' with a slug id [a-z][a-z0-9-]{2,60}')); continue
         size = os.path.getsize(full)
         if size > cap: rep.error(rel, f'{size} bytes exceeds the {cap} byte cap for {d}/'); continue
         if size == 0: rep.error(rel, 'empty file'); continue
@@ -333,6 +390,12 @@ def full_scan(rep, root):
         scan_bytes(rep, rel, data, active=False)
         r = load_json_object(rep, rel, data)
         if r is not None: check_exclusion(rep, rel, run_id, r, runs)
+    filter_ids = load_filter_ids(root)
+    for sid, rel in sorted(files['studies'].items()):
+        data = open(os.path.join(root, rel), 'rb').read()
+        scan_bytes(rep, rel, data, active=False)
+        s = load_json_object(rep, rel, data)
+        if s is not None: check_study(rep, rel, sid, s, filter_ids, runs)
     rep.counts.update({f'{d}/': len(v) for d, v in files.items()})
 
 
@@ -361,7 +424,7 @@ def pr_rules(rep, root, base, allow_code):
         msg = f'{len(outside)} changed path(s) outside the dataset folders'
         if allow_code: rep.warn('', msg + '; allowed for this pull request, a person reviews them')
         else:
-            rep.error('', msg + '; a data pull request touches only runs/, outputs/, traces/ and exclusions/. A maintainer adds the `code-change` label after reviewing the code.')
+            rep.error('', msg + '; a data pull request touches only runs/, outputs/, traces/, exclusions/ and studies/. A maintainer adds the `code-change` label after reviewing the code.')
             for p, st in outside[:100]: rep.error(p, f'outside the dataset ({st})')
     rep.counts['added dataset files'] = added
     rep.counts['changed paths outside the dataset'] = len(outside)

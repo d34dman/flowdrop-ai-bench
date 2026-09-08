@@ -1,5 +1,6 @@
 {
-  "_comment": "Ordered list of the visuals the site publishes. Each id is a folder under site/visuals/ holding visual.json (title, blurb, filters) and build.py (def build(ctx)). The homepage index, the nav, and the CI matrix are all generated from this list: adding a visual is adding a folder and a line here.",
+  "_comment": "Ordered list of the visuals the site publishes. Each id is a folder under site/visuals/ holding visual.json (title, blurb, filters) and build.py (def build(ctx)). The homepage index, the nav and the CI matrix are all generated from this list: adding a visual is adding a folder and a line here. `default_study` is the study (studies/<id>.json) every page opens in when the address names none; `all` or a missing key opens on every run. A maintainer's choice, kept here so a study pull request cannot change it.",
+  "default_study": "claude-2026-09",
   "visuals": [
     "architectures",
     "scorecard",

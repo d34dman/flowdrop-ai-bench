@@ -2,7 +2,7 @@
 """Builds the published site into _site/. Standard library only. Run scoring/score.py first.
 
     python3 site/build.py                 # everything: data, assets, every visual, homepage
-    python3 site/build.py data            # _site/data (scores.json, facets.json, csvs), lib/, corpus, prompt, runs, outputs
+    python3 site/build.py data            # _site/data (scores.json, facets.json, csvs), lib/, corpus, prompt, runs, outputs, studies
     python3 site/build.py visual <id>     # _site/<id>/ only (one CI matrix job per visual)
     python3 site/build.py index           # _site/index.html (the homepage that indexes the visuals)
     python3 site/build.py list            # the registry as a JSON list, for the CI matrix
@@ -19,7 +19,7 @@ import framework as fw
 def stage_data():
     ctx = fw.Ctx()
     os.makedirs(os.path.join(fw.OUT, 'data'), exist_ok=True)
-    for d in ('corpus', 'prompt', 'outputs', 'runs'):
+    for d in ('corpus', 'prompt', 'outputs', 'runs', 'studies'):
         src = os.path.join(fw.ROOT, d)
         if os.path.isdir(src):
             if os.path.isdir(os.path.join(fw.OUT, d)): shutil.rmtree(os.path.join(fw.OUT, d))
@@ -32,7 +32,7 @@ def stage_data():
     for fn in os.listdir(fw.HERE):
         if fn.endswith(('.js', '.css')): shutil.copy(os.path.join(fw.HERE, fn), os.path.join(lib, fn))
     open(os.path.join(fw.OUT, '.nojekyll'), 'w').close()
-    print(f'data -> _site/data ({len(ctx.rows)} runs, {len(ctx.facets["values"])} facets)')
+    print(f'data -> _site/data ({len(ctx.rows)} runs, {len(ctx.facets["values"])} facets, {len(ctx.facets["studies"])} studies, default {ctx.facets["default_study"] or "all"})')
 
 
 def stage_visual(vid):
@@ -66,7 +66,7 @@ def stage_index():
             f'The steps are in the <a href="{fw.REPO}#contribute-your-runs">README</a>. '
             f'Data: <a href="data/runs.csv">runs.csv</a>, <a href="data/scores.csv">scores.csv</a>, <a href="data/scores.json">scores.json</a>.</p>')
     sub = ('One task, one prompt, one owned corpus, ten workflow architectures from a fixed pipeline to an autonomous agent, '
-           'compared on cost, speed and failure modes. Pick filters once; every visual keeps them.')
+           'compared on cost, speed and failure modes. Pick a study and filters once; every visual keeps them.')
     os.makedirs(fw.OUT, exist_ok=True)
     open(os.path.join(fw.OUT, 'index.html'), 'w', encoding='utf-8').write(
         ctx.page(fw.SITE_NAME, body, depth=0, filters=[f['id'] for f in ctx.filters], sub=sub, scripts=('lib/home.js',), heading='Overview'))

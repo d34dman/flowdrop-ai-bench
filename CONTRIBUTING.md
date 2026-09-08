@@ -64,6 +64,37 @@ that to the maintainer.
 - A new variant: build it in the runner site, export config, add its cell letter to the
   map in the module, and describe the architecture in the PR (see `runner/README.md`).
 
+## Contributing a study
+
+A study is a named, frozen scope: the set of models (or benchmarks, pages, tags, corpus
+versions) every page of the site applies before its own filters. It gives a comparison a
+short, stable address, `?study=<id>`, instead of a query string that lists every model, and
+a sentence of context that a bare filter never has. A study is one JSON file in `studies/`:
+
+```json
+{
+ "id": "open-weights-2026-09",
+ "title": "Open-weight models via OpenRouter",
+ "blurb": "DeepSeek V4 Flash, Gemma 4 31B and Qwen 3.8 27B on corpus v1: which architectures survive a smaller model, and at what price per correct run?",
+ "scope": {"model": ["deepseek/deepseek-v4-flash-0731", "google/gemma-4-31b-it", "qwen/qwen3.8-27b"], "corpus": ["v1"]},
+ "by": "yourname",
+ "ts": "2026-09-08T11:00:00+00:00"
+}
+```
+
+`python3 scoring/study.py --id ... --title ... --blurb ... --model a --model b --corpus v1`
+writes it for you; `--list` shows the studies that exist. Scope keys are filter ids from
+`site/filters.json` (`model`, `benchmark`, `page`, `tag`, `corpus`) and every value must be
+one some run in the dataset has, so file the runs first or in the same pull request. A
+study PR is a data PR: add the file, open the PR, the gate checks it, merge publishes it in
+the study selector on every page. Studies are append-only like runs: once merged a study
+is frozen, because links to it are meant to keep their meaning. A revised scope is a new
+dated id. Which study the site opens in is a maintainer's choice, `default_study` in
+`site/registry.json`, so a study PR never changes the front page.
+
+A contributor who runs a new model can open two PRs: the runs, and a study that frames
+them, and has a shareable link to their own result the moment it merges.
+
 ## What changes the experiment
 
 The prompt, the glyph, the competitor list and the corpus pages are fixed per version.
@@ -77,11 +108,12 @@ issue first.
 
 The gate is `scoring/check.py`, standard library only, and CI runs the copy on the base
 branch, so a pull request cannot change the rules it is judged by. It scans every file in
-`runs/`, `outputs/`, `traces/` and `exclusions/`, not only the ones a PR adds:
+`runs/`, `outputs/`, `traces/`, `exclusions/` and `studies/`, not only the ones a PR adds:
 
-- **Shape.** Only `<run_id>.json`, `<run_id>.md`, `<run_id>.json.gz` and `<run_id>.json`
-  in their folder, with a well-formed run id. No sub-folders, dotfiles, symlinks or
-  executable bits. Size caps: 256 KB per run, 4 MB per output, 3 MB per trace.
+- **Shape.** Only `<run_id>.json`, `<run_id>.md`, `<run_id>.json.gz`, `<run_id>.json` and
+  `<study_id>.json` in their folder, with a well-formed id. No sub-folders, dotfiles,
+  symlinks or executable bits. Size caps: 256 KB per run, 4 MB per output, 3 MB per trace,
+  64 KB per exclusion or study.
 - **Content.** UTF-8 text with no NUL bytes. Nothing that looks like a credential (API
   keys, tokens, private keys, `KEY=value`). Outputs carry no active content (`<script>`,
   `<iframe>`, `javascript:`, inline event handlers); page chrome such as `<form>` is data.
@@ -92,8 +124,11 @@ branch, so a pull request cannot change the rules it is judged by. It scans ever
 - **Traces.** Valid gzip inflating to at most 48 MB (a zip-bomb guard), one JSON object
   whose `run_id` is the filename, with a run to belong to.
 - **Exclusions.** A real run, a known kind, a reason that is a sentence, `by` and `ts`.
+- **Studies.** `id` is the filename and not the reserved `all`; a title under 80
+  characters, a blurb that is a sentence, `by` and `ts`; a non-empty `scope` whose keys are
+  filter ids and whose values are distinct strings some run in the dataset actually has.
 - **Pull requests only.** Append-only, and *data-only*: a PR that touches anything outside
-  the four folders (`runner/`, `scoring/`, `site/`, `.github/`, ...) fails until a
+  the five folders (`runner/`, `scoring/`, `site/`, `.github/`, ...) fails until a
   maintainer has read the code and added the `code-change` label. A data PR from anyone is
   reviewed by machine; a code PR is reviewed by a person. If your contribution needs a
   runner change (a new provider, say), open it as its own PR and say so, then the runs.
@@ -141,8 +176,10 @@ folder `site/visuals/<id>/`:
   the scored rows, facets, registry, corpus manifests and the set of traced run ids
   (`site/lib/framework.py`). Use build-time rendering only for things the browser cannot do
   (one page per trace); everything that should react to filters is rendered by `page.js`.
-- `page.js` (optional): `Bench.ready(({rows, all, facets, state, focus}) => ...)` runs once the
-  data is loaded and again after every filter change, with `rows` already filtered. Helpers:
+- `page.js` (optional): `Bench.ready(({rows, all, everything, facets, state, study, focus}) => ...)`
+  runs once the data is loaded and again after every change, with `rows` already scoped to
+  the study and filtered, `all` scoped to the study only, `everything` the whole dataset, and
+  `facets.values` recounted within the study. Helpers:
   `Bench.esc`, `Bench.pill`, `Bench.cell`, `Bench.label`, `Bench.graded`, `Bench.href`,
   `Bench.query` (the current query string, to build links that keep the selection).
   `Compare.render` (`site/lib/compare.js`, include via `scripts=('lib/compare.js',)`) draws the
