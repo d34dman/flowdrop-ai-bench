@@ -8,7 +8,9 @@ The dataset is append-only. A pull request adds run files and never modifies, re
 deletes an existing one; CI rejects it otherwise. A run that should not count is not
 deleted either, it is *excluded* (see [Excluding a run](#excluding-a-run)). Run ids carry a random suffix, so two
 contributors can never produce the same filename and PRs never conflict. `traces/` is
-covered by the same append-only check, and CI also rejects a trace over 3 MB.
+covered by the same append-only check. Every file in the four data folders is scanned on
+every pull request; see [What CI checks](#what-ci-checks). Run the same gate locally with
+`python3 scoring/check.py --base origin/main` before you push.
 
 ## The path
 
@@ -58,6 +60,34 @@ whose recorded page hash no longer matches the manifest as `stale` and leaves it
 From 1.0 on, a change to any of them is a new `prompt/redact.v2.md` or `corpus/v2/`, never
 an edit in place, so old runs stay comparable with each other. Propose such a change in an
 issue first.
+
+## What CI checks
+
+The gate is `scoring/check.py`, standard library only, and CI runs the copy on the base
+branch, so a pull request cannot change the rules it is judged by. It scans every file in
+`runs/`, `outputs/`, `traces/` and `exclusions/`, not only the ones a PR adds:
+
+- **Shape.** Only `<run_id>.json`, `<run_id>.md`, `<run_id>.json.gz` and `<run_id>.json`
+  in their folder, with a well-formed run id. No sub-folders, dotfiles, symlinks or
+  executable bits. Size caps: 256 KB per run, 4 MB per output, 3 MB per trace.
+- **Content.** UTF-8 text with no NUL bytes. Nothing that looks like a credential (API
+  keys, tokens, private keys, `KEY=value`). Outputs carry no active content (`<script>`,
+  `<iframe>`, `javascript:`, inline event handlers); page chrome such as `<form>` is data.
+- **Runs.** One JSON object with the ledger keys and types; `run_id`, `workflow`,
+  `url_key` and `rep` agree with the filename; `url` is the published corpus page for that
+  `corpus_version`; counts are not negative. A completed run that recorded output must
+  have its `outputs/` file; a completed run with no output is allowed and scores `loud`.
+- **Traces.** Valid gzip inflating to at most 48 MB (a zip-bomb guard), one JSON object
+  whose `run_id` is the filename, with a run to belong to.
+- **Exclusions.** A real run, a known kind, a reason that is a sentence, `by` and `ts`.
+- **Pull requests only.** Append-only, and *data-only*: a PR that touches anything outside
+  the four folders (`runner/`, `scoring/`, `site/`, `.github/`, ...) fails until a
+  maintainer has read the code and added the `code-change` label. A data PR from anyone is
+  reviewed by machine; a code PR is reviewed by a person. If your contribution needs a
+  runner change (a new provider, say), open it as its own PR and say so, then the runs.
+
+The job summary of every PR shows the gate's result and, from `scoring/report.py`, the
+outcome per model of the runs it adds.
 
 ## Excluding a run
 

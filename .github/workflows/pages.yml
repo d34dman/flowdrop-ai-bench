@@ -10,15 +10,21 @@ on:
   push:
     branches: [main]
   pull_request:
+    # labeled/unlabeled: adding the `code-change` label re-runs the gate with code allowed.
+    types: [opened, synchronize, reopened, labeled, unlabeled]
   workflow_dispatch:
 
+# The pull_request event (never pull_request_target) runs fork code with a read-only token
+# and no secrets. Deploy needs more, and only the push job reaches it.
 permissions:
   contents: read
   pages: write
   id-token: write
 
+# One deploy at a time on main; pull requests each get their own group so a PR run never
+# cancels a deploy and a deploy never cancels a PR check.
 concurrency:
-  group: pages
+  group: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || 'pages' }}
   cancel-in-progress: true
 
 jobs:
@@ -31,59 +37,30 @@ jobs:
         with: { fetch-depth: 0 }
       - uses: actions/setup-python@v5
         with: { python-version: '3.12' }
-      - name: Dataset is append-only
+      - name: Dataset gate (pull request)
         if: github.event_name == 'pull_request'
-        # A contribution adds runs; it never edits or removes one. That is what keeps
-        # every PR conflict-free and every published figure reproducible.
+        # Full scan of every data file plus the pull-request rules (append-only, data-only
+        # scope), see scoring/check.py. The gate is taken from the BASE branch, not from the
+        # PR, so a pull request cannot edit the rules it is judged by. Code changes are let
+        # through only for the `code-change` label (a maintainer adds it after reading the
+        # code) or for a repository owner/member.
+        env:
+          ALLOW_CODE: ${{ (contains(github.event.pull_request.labels.*.name, 'code-change') || contains(fromJSON('["OWNER","MEMBER"]'), github.event.pull_request.author_association)) && '--allow-code' || '' }}
         run: |
-          changed=$(git diff --name-status --diff-filter=MDRT "origin/${{ github.base_ref }}...HEAD" -- runs outputs traces exclusions)
-          if [ -n "$changed" ]; then
-            echo "$changed" | while read -r st f rest; do echo "::error file=$f::existing run files are never modified, renamed or deleted ($st)"; done
-            exit 1
-          fi
-      - name: Traces are small
-        run: |
-          big=$(find traces -name '*.json.gz' -size +3M)
-          if [ -n "$big" ]; then
-            echo "$big" | while read -r f; do echo "::error file=$f::trace exceeds 3 MB"; done
-            exit 1
-          fi
+          git show "origin/${{ github.base_ref }}:scoring/check.py" > "$RUNNER_TEMP/check.py"
+          python3 "$RUNNER_TEMP/check.py" --root . --base "origin/${{ github.base_ref }}" $ALLOW_CODE
+      - name: Dataset gate (main)
+        if: github.event_name != 'pull_request'
+        run: python3 scoring/check.py
       - name: Corpus is reproducible from src
         run: |
           python3 corpus/build.py > /dev/null
           git diff --exit-code -- corpus/ || { echo "::error::corpus/ differs from what corpus/build.py generates; run it and commit"; exit 1; }
-      - name: Every run has its output
-        run: |
-          python3 - <<'EOF'
-          import json, os, sys
-          bad = 0
-          for fn in os.listdir('runs'):
-              if not fn.endswith('.json'): continue
-              r = json.load(open(f'runs/{fn}'))
-              for k in ('run_id', 'workflow', 'url_key', 'corpus_version', 'prompt_sha256', 'pipeline_status', 'tag'):
-                  if k not in r: print(f'::error file=runs/{fn}::missing {k}'); bad += 1
-              if r.get('pipeline_status') == 'completed' and not os.path.exists(f"outputs/{r['run_id']}.md"):
-                  print(f'::error file=runs/{fn}::completed run without outputs/{r["run_id"]}.md'); bad += 1
-          sys.exit(1 if bad else 0)
-          EOF
-      - name: Exclusions name real runs and give reasons
-        run: |
-          python3 - <<'EOF'
-          import json, os, sys
-          bad = 0
-          for fn in os.listdir('exclusions') if os.path.isdir('exclusions') else []:
-              if not fn.endswith('.json'): continue
-              r = json.load(open(f'exclusions/{fn}'))
-              for k in ('run_id', 'kind', 'reason', 'by', 'ts'):
-                  if not r.get(k): print(f'::error file=exclusions/{fn}::missing {k}'); bad += 1
-              if r.get('kind') not in ('harness', 'provider', 'operator', 'duplicate'): print(f'::error file=exclusions/{fn}::unknown kind {r.get("kind")!r}'); bad += 1
-              if len(r.get('reason') or '') < 20: print(f'::error file=exclusions/{fn}::reason too short to be one'); bad += 1
-              if fn[:-5] != r.get('run_id'): print(f'::error file=exclusions/{fn}::file is not named after its run_id'); bad += 1
-              if not os.path.exists(f"runs/{r.get('run_id')}.json"): print(f'::error file=exclusions/{fn}::no such run {r.get("run_id")}'); bad += 1
-          sys.exit(1 if bad else 0)
-          EOF
       - name: Score
         run: python3 scoring/score.py
+      - name: Score report for the new runs
+        if: github.event_name == 'pull_request'
+        run: python3 scoring/report.py --base "origin/${{ github.base_ref }}" >> "$GITHUB_STEP_SUMMARY"
       - name: Shared data and homepage
         run: |
           python3 site/build.py data
