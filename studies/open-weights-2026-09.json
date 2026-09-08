@@ -1,0 +1,11 @@
+{
+ "id": "open-weights-2026-09",
+ "title": "Open-weight models via OpenRouter",
+ "blurb": "DeepSeek V4 Flash, Gemma 4 31B and Qwen 3.8 27B on corpus v1, the runs contributed from the pointblank runner: which architectures survive a smaller model, and at what price per correct run?",
+ "scope": {
+  "model": ["deepseek/deepseek-v4-flash-0731", "google/gemma-4-31b-it", "qwen/qwen3.8-27b"],
+  "corpus": ["v1"]
+ },
+ "by": "shibindas",
+ "ts": "2026-09-08T11:00:00+00:00"
+}

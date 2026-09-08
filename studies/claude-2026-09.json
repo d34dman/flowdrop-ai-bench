@@ -1,0 +1,11 @@
+{
+ "id": "claude-2026-09",
+ "title": "Claude across generations",
+ "blurb": "Haiku 4.5, Sonnet 4.6, Sonnet 5 and Opus 5 on corpus v1: does a newer or larger model change which workflow architecture wins, or only how often the same one wins?",
+ "scope": {
+  "model": ["claude-haiku-4-5", "claude-sonnet-4-6", "claude-sonnet-5", "claude-opus-5"],
+  "corpus": ["v1"]
+ },
+ "by": "shibindas",
+ "ts": "2026-09-08T11:00:00+00:00"
+}
