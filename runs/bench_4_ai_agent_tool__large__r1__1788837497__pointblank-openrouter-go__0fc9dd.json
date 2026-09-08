@@ -1,0 +1,62 @@
+{
+    "run_id": "bench_4_ai_agent_tool__large__r1__1788837497__pointblank-openrouter-go__0fc9dd",
+    "workflow": "bench_4_ai_agent_tool",
+    "url_key": "large",
+    "url": "https://d34dman.github.io/flowdrop-ai-bench/corpus/v1/large.html",
+    "corpus_version": "v1",
+    "page_sha256": "25e8b9c95da60123e66a3dc0c78eb5e743e3a2ac1fcd356d573efe15dbd38e4c",
+    "prompt_sha256": "272f2f41c1552fd77952bf1867eb98ffeea8cd5bc9d249166416511f69b66c8d",
+    "glyph": "████",
+    "flowdrop_version": "dev-2.x@771e7c77e1f9",
+    "harness_version": "3.3.0",
+    "model": "google/gemma-4-31b-it",
+    "rep": 1,
+    "pipeline_id": "312",
+    "context_uuid": "521df013-1eca-426f-bf82-b4db99041aa4",
+    "wall_seconds": 29.7755,
+    "launch_status": "completed",
+    "launch_error": null,
+    "tag": "pointblank-openrouter-google-gemma-4-31b-it",
+    "ts": "2026-09-08T03:18:47+00:00",
+    "pipeline_status": "completed",
+    "failed_nodes": [],
+    "job_count": 3,
+    "payload_bytes": 92626,
+    "total_seconds": 29.374,
+    "ai_seconds": 29.362,
+    "deterministic_seconds": 0.012,
+    "llm_calls": 1,
+    "models": [
+        "google/gemma-4-31b-it"
+    ],
+    "input_tokens": 4856,
+    "output_tokens": 3278,
+    "cached_tokens": 0,
+    "cost_usd": 0,
+    "retries": 0,
+    "output_chars": 15594,
+    "nodes": [
+        {
+            "node_type": "flowdrop_agents_ai_agents_executor",
+            "status": "completed",
+            "seconds": 29.362,
+            "is_ai": true,
+            "error": null
+        },
+        {
+            "node_type": "chat_output",
+            "status": "completed",
+            "seconds": 0,
+            "is_ai": false,
+            "error": null
+        },
+        {
+            "node_type": "http_request",
+            "status": "completed",
+            "seconds": 0.011,
+            "is_ai": false,
+            "error": null
+        }
+    ],
+    "annotations": []
+}

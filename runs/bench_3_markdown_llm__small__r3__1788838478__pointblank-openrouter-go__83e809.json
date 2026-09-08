@@ -1,0 +1,69 @@
+{
+    "run_id": "bench_3_markdown_llm__small__r3__1788838478__pointblank-openrouter-go__83e809",
+    "workflow": "bench_3_markdown_llm",
+    "url_key": "small",
+    "url": "https://d34dman.github.io/flowdrop-ai-bench/corpus/v1/small.html",
+    "corpus_version": "v1",
+    "page_sha256": "ab589846f40109ef1391130896cb29d8fa8dff89cfc63e0dd42e087904b5b855",
+    "prompt_sha256": "272f2f41c1552fd77952bf1867eb98ffeea8cd5bc9d249166416511f69b66c8d",
+    "glyph": "████",
+    "flowdrop_version": "dev-2.x@771e7c77e1f9",
+    "harness_version": "3.3.0",
+    "model": "google/gemma-4-31b-it",
+    "rep": 3,
+    "pipeline_id": "368",
+    "context_uuid": "2597e7da-2425-4daa-915a-a5b63eccdd08",
+    "wall_seconds": 87.7624,
+    "launch_status": "completed",
+    "launch_error": null,
+    "tag": "pointblank-openrouter-google-gemma-4-31b-it",
+    "ts": "2026-09-08T03:36:06+00:00",
+    "pipeline_status": "completed",
+    "failed_nodes": [],
+    "job_count": 4,
+    "payload_bytes": 36997,
+    "total_seconds": 87.315,
+    "ai_seconds": 87.303,
+    "deterministic_seconds": 0.012,
+    "llm_calls": 1,
+    "models": [
+        "google/gemma-4-31b-it"
+    ],
+    "input_tokens": 1100,
+    "output_tokens": 875,
+    "cached_tokens": 0,
+    "cost_usd": 0,
+    "retries": 0,
+    "output_chars": 3817,
+    "nodes": [
+        {
+            "node_type": "http_request",
+            "status": "completed",
+            "seconds": 0.009,
+            "is_ai": false,
+            "error": null
+        },
+        {
+            "node_type": "html_to_markdown",
+            "status": "completed",
+            "seconds": 0.003,
+            "is_ai": false,
+            "error": null
+        },
+        {
+            "node_type": "flowdrop_ai_provider_chat",
+            "status": "completed",
+            "seconds": 87.303,
+            "is_ai": true,
+            "error": null
+        },
+        {
+            "node_type": "chat_output",
+            "status": "completed",
+            "seconds": 0,
+            "is_ai": false,
+            "error": null
+        }
+    ],
+    "annotations": []
+}

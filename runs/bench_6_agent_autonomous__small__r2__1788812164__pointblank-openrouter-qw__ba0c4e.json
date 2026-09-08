@@ -1,0 +1,55 @@
+{
+    "run_id": "bench_6_agent_autonomous__small__r2__1788812164__pointblank-openrouter-qw__ba0c4e",
+    "workflow": "bench_6_agent_autonomous",
+    "url_key": "small",
+    "url": "https://d34dman.github.io/flowdrop-ai-bench/corpus/v1/small.html",
+    "corpus_version": "v1",
+    "page_sha256": "ab589846f40109ef1391130896cb29d8fa8dff89cfc63e0dd42e087904b5b855",
+    "prompt_sha256": "272f2f41c1552fd77952bf1867eb98ffeea8cd5bc9d249166416511f69b66c8d",
+    "glyph": "████",
+    "flowdrop_version": "dev-2.x@771e7c77e1f9",
+    "harness_version": "3.3.0",
+    "model": "qwen/qwen3.8-27b",
+    "rep": 2,
+    "pipeline_id": "69",
+    "context_uuid": "df72b631-9fa4-49fe-8579-dbe468b6e6e2",
+    "wall_seconds": 19.4995,
+    "launch_status": "completed",
+    "launch_error": null,
+    "tag": "pointblank-openrouter-qwen-qwen3-8-27b",
+    "ts": "2026-09-07T20:16:24+00:00",
+    "pipeline_status": "completed",
+    "failed_nodes": [],
+    "job_count": 2,
+    "payload_bytes": 12218,
+    "total_seconds": 19.252,
+    "ai_seconds": 19.251,
+    "deterministic_seconds": 0,
+    "llm_calls": 2,
+    "models": [
+        "qwen/qwen3.8-27b"
+    ],
+    "input_tokens": 3223,
+    "output_tokens": 1214,
+    "cached_tokens": 0,
+    "cost_usd": 0,
+    "retries": 0,
+    "output_chars": 3796,
+    "nodes": [
+        {
+            "node_type": "flowdrop_agents_ai_agents_executor",
+            "status": "completed",
+            "seconds": 19.251,
+            "is_ai": true,
+            "error": null
+        },
+        {
+            "node_type": "chat_output",
+            "status": "completed",
+            "seconds": 0,
+            "is_ai": false,
+            "error": null
+        }
+    ],
+    "annotations": []
+}

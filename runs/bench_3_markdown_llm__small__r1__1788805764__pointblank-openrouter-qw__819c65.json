@@ -1,0 +1,69 @@
+{
+    "run_id": "bench_3_markdown_llm__small__r1__1788805764__pointblank-openrouter-qw__819c65",
+    "workflow": "bench_3_markdown_llm",
+    "url_key": "small",
+    "url": "https://d34dman.github.io/flowdrop-ai-bench/corpus/v1/small.html",
+    "corpus_version": "v1",
+    "page_sha256": "ab589846f40109ef1391130896cb29d8fa8dff89cfc63e0dd42e087904b5b855",
+    "prompt_sha256": "272f2f41c1552fd77952bf1867eb98ffeea8cd5bc9d249166416511f69b66c8d",
+    "glyph": "████",
+    "flowdrop_version": "dev-2.x@771e7c77e1f9",
+    "harness_version": "3.3.0",
+    "model": "qwen/qwen3.8-27b",
+    "rep": 1,
+    "pipeline_id": "20",
+    "context_uuid": "ad005808-b122-4526-a01a-d7a5595aa167",
+    "wall_seconds": 49.2774,
+    "launch_status": "completed",
+    "launch_error": null,
+    "tag": "pointblank-openrouter-qwen-qwen3-8-27b",
+    "ts": "2026-09-07T18:30:14+00:00",
+    "pipeline_status": "completed",
+    "failed_nodes": [],
+    "job_count": 4,
+    "payload_bytes": 37249,
+    "total_seconds": 48.958,
+    "ai_seconds": 48.891,
+    "deterministic_seconds": 0.067,
+    "llm_calls": 1,
+    "models": [
+        "qwen/qwen3.8-27b"
+    ],
+    "input_tokens": 1128,
+    "output_tokens": 4522,
+    "cached_tokens": 0,
+    "cost_usd": 0,
+    "retries": 0,
+    "output_chars": 3863,
+    "nodes": [
+        {
+            "node_type": "http_request",
+            "status": "completed",
+            "seconds": 0.049,
+            "is_ai": false,
+            "error": null
+        },
+        {
+            "node_type": "html_to_markdown",
+            "status": "completed",
+            "seconds": 0.018,
+            "is_ai": false,
+            "error": null
+        },
+        {
+            "node_type": "flowdrop_ai_provider_chat",
+            "status": "completed",
+            "seconds": 48.891,
+            "is_ai": true,
+            "error": null
+        },
+        {
+            "node_type": "chat_output",
+            "status": "completed",
+            "seconds": 0,
+            "is_ai": false,
+            "error": null
+        }
+    ],
+    "annotations": []
+}
