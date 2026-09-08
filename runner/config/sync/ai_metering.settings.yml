@@ -68,6 +68,16 @@ pricing:
     output_per_token: 7.5E-5
     cache_read_per_token: 1.5E-6
     cache_write_per_token: 1.875E-5
+  'openrouter:deepseek/deepseek-v4-flash-0731':
+    input_per_token: 6.5E-8
+    output_per_token: 1.8E-7
+    cache_read_per_token: 1.6E-8
+    source: manual
+  'openrouter:google/gemma-4-31b-it':
+    input_per_token: 9.0E-8
+    output_per_token: 3.4E-7
+    cache_read_per_token: 5.0E-8
+    source: manual
 usage_retention_days: 0
 local_provider_ids: {  }
 quota:

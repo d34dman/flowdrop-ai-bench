@@ -74,6 +74,16 @@ one, OpenAI as the example:
    `bin/setup.sh` installs from that config, so on a fresh clone the provider exists and
    only the `OPENAI_KEY=` line in `.ddev/.env` is personal. A missing key leaves the provider
    unusable and everything else working.
+   Also give ai_metering a price for each model you will run, at
+   `/admin/config/ai/ai-metering` (manual entry keyed `provider:model`, per token) so the
+   `cost_usd` the runner records is not zero; `ddev drush cex -y` exports it into
+   `ai_metering.settings.yml` with the rest. Two limits of that module, both hit by
+   OpenRouter: a model id with a dot in it (`qwen/qwen3.8-27b`) cannot be a config key,
+   Drupal nests it at the dot and the lookup misses, and the LiteLLM sync stores OpenRouter
+   rows as `openrouter:openrouter/<model>`, which the lookup never matches either. Such a
+   model records `cost_usd: 0`. That is fine for the study: the site prices every run from
+   its tokens against `scoring/pricing.json` and treats the runner's figure as advisory
+   (`cost_usd_runner`); the row there is the one that must exist.
 5. **Run.** Pass `--provider=openai` on every run. `bench:run` checks the model id against
    the named provider's catalogue before it starts (default `anthropic`), and the two cells
    built on the AI Agents module (B4, B6) store `provider__model` in their config. The chat
