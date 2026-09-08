@@ -28,9 +28,14 @@ threshold), correct (recall, precision, subject, homonym, fidelity >= 0.95 and
 fabrication <= 0.05). B0 and B1 are controls: scored, classed 'control'.
 A run named in exclusions/ (see scoring/exclude.py) is classed 'excluded': kept in the
 CSVs with excluded_kind and excluded_reason, ungraded like 'stale'.
+cost_usd is computed here from the run's token counts and scoring/pricing.json (list price,
+see scoring/pricing.py); the figure the runner recorded travels along as cost_usd_runner.
+A run with tokens and no price stops the scorer.
 """
 import csv, difflib, html as htmlmod, json, os, re, sys
 from collections import Counter
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import pricing
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RUNS, OUT, DATA, EXCL = (os.path.join(ROOT, d) for d in ('runs', 'outputs', 'data', 'exclusions'))
@@ -327,7 +332,7 @@ def score(text, page, version):
 LEDGER = ['run_id', 'tag', 'workflow', 'url_key', 'corpus_version', 'page_sha256', 'prompt_sha256', 'glyph',
           'flowdrop_version', 'harness_version', 'rep', 'ts', 'pipeline_status', 'failed_nodes', 'job_count',
           'total_seconds', 'ai_seconds', 'deterministic_seconds', 'wall_seconds', 'llm_calls', 'models',
-          'input_tokens', 'output_tokens', 'cached_tokens', 'cost_usd', 'retries', 'output_chars']
+          'input_tokens', 'output_tokens', 'cached_tokens', 'cost_usd', 'cost_usd_runner', 'retries', 'output_chars']
 
 def load_exclusions():
     """{run_id: record} from exclusions/*.json; a run withdrawn from grading, with its reason."""
@@ -365,8 +370,16 @@ def task(prompt_sha):
                 _prompts[hashlib.sha256(open(os.path.join(pdir, fn), 'rb').read()).hexdigest()] = fn[:-3]
     return _prompts.get(prompt_sha or '', (prompt_sha or '')[:12] or '-')
 
+_pricing = None
+
 def flat(r, excl=None):
+    global _pricing
+    if _pricing is None: _pricing = pricing.load()
     d = {k: r.get(k, '') for k in LEDGER}
+    # Cost is the bench's list price applied to the tokens the run recorded, not the figure the
+    # contributor's metering config produced (which was 0 for every unpriced provider).
+    d['cost_usd_runner'] = r.get('cost_usd', '')
+    d['cost_usd'] = pricing.price(_pricing, r)[0]
     d['excluded_kind'] = (excl or {}).get('kind', ''); d['excluded_reason'] = (excl or {}).get('reason', '')
     d['task'] = task(r.get('prompt_sha256'))
     d['models'] = ','.join(r.get('models') or []); d['failed_nodes'] = ';'.join(r.get('failed_nodes') or [])

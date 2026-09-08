@@ -55,6 +55,10 @@ that to the maintainer.
   `claude-haiku-4-5`): an undated alias can be repointed to a newer snapshot and the run
   records only the id that was requested. The scorer groups both forms under one
   `model_family` for the published tables, so the study reads per model either way.
+  A new model also needs a row in `scoring/pricing.json` (list price per million tokens,
+  source URL, effective date): the site prices every run from its tokens against that
+  table, never from the runner's own metering, and the gate rejects a run whose model has
+  no row. That row is a code change, so open it as its own PR or ask the maintainer.
 - Repetitions of existing cells; most cells are a single draw today.
 - Failures, when the failure is the finding. Commit the failed run's JSON and say why in the PR.
 - A new variant: build it in the runner site, export config, add its cell letter to the

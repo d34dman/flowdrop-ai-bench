@@ -24,7 +24,10 @@ Full scan, every file in those folders, every time:
              (<script, <iframe, <object, <embed, javascript:, on*= handlers; page chrome such as <form> is data)
   runs       one JSON object with the required keys and types; run_id, workflow, url_key
              and rep agree with the filename; corpus_version is a folder under corpus/ and
-             url is that corpus's published URL for url_key; hashes are hex; counts >= 0
+             url is that corpus's published URL for url_key; hashes are hex; counts >= 0;
+             a run that recorded tokens names exactly one model and scoring/pricing.json has
+             a row for it in effect at the run's ts (the scorer prices runs from that table;
+             an unpriced model would publish as free, which is how OpenRouter runs once did)
   traces     valid gzip that inflates to under TRACE_INFLATED_MAX bytes (zip-bomb guard)
              and to one JSON object whose run_id is the filename; its run exists
   outputs    its run exists; a completed run that recorded output_chars > 0 has an output;
@@ -187,7 +190,28 @@ def load_json_object(rep, path, data):
     return obj
 
 
-def check_run(rep, path, run_id, r, corpora):
+def load_pricing(rep, root):
+    """{model: [rows sorted by effective_from]} from scoring/pricing.json; the same rule as scoring/pricing.py."""
+    path = os.path.join(root, 'scoring', 'pricing.json')
+    try: rows = json.load(open(path, encoding='utf-8'))['rows']
+    except Exception as e: rep.error('scoring/pricing.json', f'unreadable pricing table: {e}'); return {}
+    out = {}
+    for row in rows: out.setdefault(row['model'], []).append(row)
+    for v in out.values(): v.sort(key=lambda row: row['effective_from'])
+    return out
+
+
+def check_priced(rep, path, r, pricing):
+    tokens = (r.get('input_tokens') or 0) + (r.get('output_tokens') or 0) + (r.get('cached_tokens') or 0)
+    if not tokens: return
+    models = r.get('models') or []
+    if len(models) != 1: rep.error(path, f'{len(models)} models answered; run-level tokens cannot be priced per model'); return
+    day = r['ts'][:10]
+    if not any(row['effective_from'] <= day for row in pricing.get(models[0], [])):
+        rep.error(path, f'no price for {models[0]} at {day} in scoring/pricing.json; add a row before adding runs for this model')
+
+
+def check_run(rep, path, run_id, r, corpora, pricing):
     for k, types in RUN_SCHEMA.items():
         if k not in r: rep.error(path, f'missing key {k!r}'); continue
         v = r[k]
@@ -214,6 +238,7 @@ def check_run(rep, path, run_id, r, corpora):
     elif r['url'] != page['url']: rep.error(path, f"url {r['url']!r} is not the corpus page {page['url']}")
     elif r['page_sha256'] != page['sha256']: rep.warn(path, 'page_sha256 differs from the current manifest; the scorer will class this run stale')
     if r['prompt_sha256'] != m.get('prompt_sha256'): rep.warn(path, 'prompt_sha256 is not the current prompt; the scorer will class this run by its recorded task')
+    check_priced(rep, path, r, pricing)
 
 
 def check_exclusion(rep, path, run_id, r, run_ids):
@@ -242,6 +267,7 @@ def load_corpora(rep, root):
 
 def full_scan(rep, root):
     corpora = load_corpora(rep, root)
+    pricing = load_pricing(rep, root)
     modes = tracked_modes(root) if in_git(root) else None
     files = {d: {} for d in DATA_DIRS}          # dir -> run_id -> relpath
     seen = set()
@@ -277,7 +303,7 @@ def full_scan(rep, root):
         scan_bytes(rep, rel, data, active=False)
         r = load_json_object(rep, rel, data)
         if r is not None:
-            check_run(rep, rel, run_id, r, corpora); runs[run_id] = r
+            check_run(rep, rel, run_id, r, corpora, pricing); runs[run_id] = r
     for run_id, rel in sorted(files['outputs'].items()):
         data = open(os.path.join(root, rel), 'rb').read()
         scan_bytes(rep, rel, data, active=True)
