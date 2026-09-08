@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9a436253e52359ea1107e134eb5772a9",
+    "content-hash": "e3add86b78be9012e6ac252ce9e0abfd",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -2018,11 +2018,17 @@
         },
         {
             "name": "drupal/flowdrop",
-            "version": "dev-2.x",
+            "version": "2.5.1",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/flowdrop.git",
-                "reference": "e061097"
+                "reference": "2.5.1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/flowdrop-2.5.1.zip",
+                "reference": "2.5.1",
+                "shasum": "c4cdf8dcd28efd66b44bcc4b38d104f0cabc650b"
             },
             "require": {
                 "d34dman/vanilla-icon-picker": "^1.4",
@@ -2066,15 +2072,12 @@
             },
             "type": "drupal-module",
             "extra": {
-                "branch-alias": {
-                    "dev-2.x": "2.x-dev"
-                },
                 "drupal": {
-                    "version": "2.5.0+41-dev",
-                    "datestamp": "1788802579",
+                    "version": "2.5.1",
+                    "datestamp": "1788826924",
                     "security-coverage": {
-                        "status": "not-covered",
-                        "message": "Dev releases are not covered by Drupal security advisories."
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
                     }
                 }
             },
@@ -2914,7 +2917,7 @@
         },
         {
             "name": "drupal/flowdrop_ui_components",
-            "version": "2.5.0",
+            "version": "2.5.1",
             "require": {
                 "drupal/core": "^11.3",
                 "drupal/flowdrop": "^2"
@@ -2922,8 +2925,8 @@
             "type": "metapackage",
             "extra": {
                 "drupal": {
-                    "version": "2.5.0",
-                    "datestamp": "1788093124",
+                    "version": "2.5.1",
+                    "datestamp": "1788826924",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -4243,16 +4246,16 @@
         },
         {
             "name": "league/html-to-markdown",
-            "version": "5.1.1",
+            "version": "5.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/html-to-markdown.git",
-                "reference": "0b4066eede55c48f38bcee4fb8f0aa85654390fd"
+                "reference": "db234ecdb160b9d2b422c1c130db4b01eb3e9e24"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/html-to-markdown/zipball/0b4066eede55c48f38bcee4fb8f0aa85654390fd",
-                "reference": "0b4066eede55c48f38bcee4fb8f0aa85654390fd",
+                "url": "https://api.github.com/repos/thephpleague/html-to-markdown/zipball/db234ecdb160b9d2b422c1c130db4b01eb3e9e24",
+                "reference": "db234ecdb160b9d2b422c1c130db4b01eb3e9e24",
                 "shasum": ""
             },
             "require": {
@@ -4262,11 +4265,11 @@
             },
             "require-dev": {
                 "mikehaertl/php-shellcommand": "^1.1.0",
-                "phpstan/phpstan": "^1.8.8",
-                "phpunit/phpunit": "^8.5 || ^9.2",
+                "phpstan/phpstan": "^1.8.8 || ^2.0",
+                "phpunit/phpunit": "^8.5 || ^9.2 || ^10.5 || ^11.0 || ^12.0 || ^13.0",
                 "scrutinizer/ocular": "^1.6",
                 "unleashedtech/php-coding-standard": "^2.7 || ^3.0",
-                "vimeo/psalm": "^4.22 || ^5.0"
+                "vimeo/psalm": "^4.22 || ^5.0 || ^6.0"
             },
             "bin": [
                 "bin/html-to-markdown"
@@ -4308,7 +4311,7 @@
             ],
             "support": {
                 "issues": "https://github.com/thephpleague/html-to-markdown/issues",
-                "source": "https://github.com/thephpleague/html-to-markdown/tree/5.1.1"
+                "source": "https://github.com/thephpleague/html-to-markdown/tree/5.1.2"
             },
             "funding": [
                 {
@@ -4328,7 +4331,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-07-12T21:21:09+00:00"
+            "time": "2026-09-07T13:53:32+00:00"
         },
         {
             "name": "loilo/jsonpath",
@@ -9711,7 +9714,6 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "drupal/ai_agents": 20,
-        "drupal/flowdrop": 20,
         "drupal/flowdrop_ai_provider": 20,
         "drupal/flowdrop_tool_provider": 15
     },

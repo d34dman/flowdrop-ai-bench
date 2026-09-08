@@ -19,7 +19,7 @@
         "drupal/ai_provider_anthropic": "^1.2.2",
         "drupal/core-composer-scaffold": "^11.4.5",
         "drupal/core-recommended": "^11.4.5",
-        "drupal/flowdrop": "2.x-dev#e061097",
+        "drupal/flowdrop": "2.5.1",
         "drupal/flowdrop_agents": "^2",
         "drupal/flowdrop_ai_provider": "2.x-dev",
         "drupal/flowdrop_tool_provider": "^1.0@alpha",

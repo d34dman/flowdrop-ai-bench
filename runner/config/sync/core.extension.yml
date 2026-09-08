@@ -8,6 +8,7 @@ module:
   ai_provider_anthropic: 0
   block: 0
   config: 0
+  contextual: 0
   csv_serialization: 0
   dblog: 0
   dynamic_page_cache: 0
@@ -36,8 +37,11 @@ module:
   flowdrop_workflow: 0
   flowdrop_workflow_executor: 0
   key: 0
+  layout_builder: 0
+  layout_discovery: 0
   modeler_api: 0
   mysql: 0
+  navigation: 0
   node: 0
   options: 0
   page_cache: 0
@@ -54,4 +58,5 @@ module:
   minimal: 1000
 theme:
   stark: 0
+  claro: 0
 profile: minimal
