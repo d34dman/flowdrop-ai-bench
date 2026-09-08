@@ -1,0 +1,62 @@
+{
+    "run_id": "bench_4_ai_agent_tool__medium__r1__1788824095__pointblank-openrouter-de__e2165d",
+    "workflow": "bench_4_ai_agent_tool",
+    "url_key": "medium",
+    "url": "https://d34dman.github.io/flowdrop-ai-bench/corpus/v1/medium.html",
+    "corpus_version": "v1",
+    "page_sha256": "ea4e33df2ab05dfe9a143ce5c0d205ef250da9fe174f60008d985e8413a0a3e4",
+    "prompt_sha256": "272f2f41c1552fd77952bf1867eb98ffeea8cd5bc9d249166416511f69b66c8d",
+    "glyph": "████",
+    "flowdrop_version": "dev-2.x@771e7c77e1f9",
+    "harness_version": "3.3.0",
+    "model": "deepseek/deepseek-v4-flash-0731",
+    "rep": 1,
+    "pipeline_id": "169",
+    "context_uuid": "05df994d-1f51-4897-9ecd-4cd73edd577d",
+    "wall_seconds": 256.0732,
+    "launch_status": "completed",
+    "launch_error": null,
+    "tag": "pointblank-openrouter-deepseek-deepseek-v4-flash-0731",
+    "ts": "2026-09-07T23:39:11+00:00",
+    "pipeline_status": "completed",
+    "failed_nodes": [],
+    "job_count": 3,
+    "payload_bytes": 57800,
+    "total_seconds": 255.784,
+    "ai_seconds": 255.547,
+    "deterministic_seconds": 0.237,
+    "llm_calls": 2,
+    "models": [
+        "deepseek/deepseek-v4-flash-0731"
+    ],
+    "input_tokens": 11453,
+    "output_tokens": 13986,
+    "cached_tokens": 0,
+    "cost_usd": 0,
+    "retries": 0,
+    "output_chars": 8729,
+    "nodes": [
+        {
+            "node_type": "flowdrop_agents_ai_agents_executor",
+            "status": "completed",
+            "seconds": 255.547,
+            "is_ai": true,
+            "error": null
+        },
+        {
+            "node_type": "chat_output",
+            "status": "completed",
+            "seconds": 0,
+            "is_ai": false,
+            "error": null
+        },
+        {
+            "node_type": "http_request",
+            "status": "completed",
+            "seconds": 0.236,
+            "is_ai": false,
+            "error": null
+        }
+    ],
+    "annotations": []
+}

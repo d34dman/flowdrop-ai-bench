@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e3add86b78be9012e6ac252ce9e0abfd",
+    "content-hash": "53d45a4e859883996ea0247903a2be9e",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1632,6 +1632,57 @@
             "homepage": "https://www.drupal.org/project/ai_provider_anthropic",
             "support": {
                 "source": "https://git.drupalcode.org/project/ai_provider_anthropic"
+            }
+        },
+        {
+            "name": "drupal/ai_provider_openrouter",
+            "version": "1.1.6",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/ai_provider_openrouter.git",
+                "reference": "1.1.6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/ai_provider_openrouter-1.1.6.zip",
+                "reference": "1.1.6",
+                "shasum": "d58af5f2a506791122fbb956d49c408c4c3d1fc4"
+            },
+            "require": {
+                "drupal/ai": "^1.2.7",
+                "drupal/core": "^10.5 || ^11.2",
+                "drupal/key": "^1.18",
+                "openai-php/client": ">=0.10.1",
+                "php": ">=8.1"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "1.1.6",
+                    "datestamp": "1782456737",
+                    "security-coverage": {
+                        "status": "not-covered",
+                        "message": "Project has not opted into security advisory coverage!"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Jeff Bruton",
+                    "homepage": "https://www.drupal.org/u/bdsweb",
+                    "email": "jeff@bruton.ai",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "OpenRouter provider for the Drupal AI module",
+            "homepage": "https://www.drupal.org/project/ai_provider_openrouter",
+            "support": {
+                "source": "https://git.drupalcode.org/project/ai_provider_openrouter",
+                "issues": "https://www.drupal.org/project/issues/ai_provider_openrouter"
             }
         },
         {
