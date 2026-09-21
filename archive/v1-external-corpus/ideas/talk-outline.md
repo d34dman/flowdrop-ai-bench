@@ -1,3 +1,10 @@
+> **Superseded 2026-09-21.** This plan built the talk on the v1 benchmark, whose figures
+> were withdrawn with the third-party corpus, and its anchor claim (B5 vs B7: 18.5× tokens,
+> 6× cost) does not hold on the owned corpus (pooled B5/B7 ratio 1.0×). The published abstract
+> is about FlowDrop's chat-based workflow editor, not the benchmark. The current outline is
+> `docs/drupalcon-rotterdam-2026/tuesday/outline.md` in the FlowDrop workspace repo. Kept as a
+> record of the method.
+
 # A 45-minute plan
 
 Seven decisions in 45 minutes is ~5 minutes each, which is not enough to also present a
